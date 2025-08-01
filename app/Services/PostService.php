@@ -3,60 +3,64 @@
 namespace App\Services;
 
 use App\Models\Post;
-use App\Models\Category;
-use App\Models\Tag;
 use Illuminate\Http\Request;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class PostService
 {
     /**
-     * Получить посты с фильтрацией, сортировкой и пагинацией.
+     * Получает посты с фильтрацией и пагинацией.
      */
     public function getFilteredPosts(Request $request): LengthAwarePaginator
     {
-        $query = Post::with(['category', 'tags']);
+        $query = Post::with('category', 'tags')->latest('date');
 
-        // Фильтрация по названию
+        // Поиск по названию
         if ($request->filled('search_title')) {
-            $query->where('title', 'like', '%' . $request->input('search_title') . '%');
+            $query->where('title', 'like', '%' . $request->search_title . '%');
         }
 
-        // Фильтрация по категории
+        // Фильтр по категории
         if ($request->filled('category_id')) {
-            $query->where('category_id', $request->input('category_id'));
+            $query->where('category_id', $request->category_id);
         }
 
-        // Фильтрация по тегу
+        // Фильтр по тегу
         if ($request->filled('tag_id')) {
             $query->whereHas('tags', function ($q) use ($request) {
-                $q->where('tags.id', $request->input('tag_id'));
+                $q->where('tags.id', $request->tag_id);
             });
         }
 
-        // Сортировка
-        $sortBy = $request->input('sort_by', 'date');
-        $sortOrder = $request->input('sort_order', 'desc');
-        $query->orderBy($sortBy, $sortOrder);
-
+        // Пагинация (по 10 постов на страницу)
         return $query->paginate(10)->withQueryString();
     }
 
     /**
-     * Создать новый пост.
+     * Создает новый пост и привязывает к нему теги.
      */
-    public function createPost(array $validatedData): Post
+    public function createPost(array $data): Post
     {
-        $post = Post::create([
-            'title' => $validatedData['title'],
-            'content' => $validatedData['content'],
-            'category_id' => $validatedData['category_id'] ?? null,
-            'date' => now(), // Устанавливаем текущую дату
-        ]);
+        $data['date'] = now();
+        $post = Post::create($data);
 
-        if (!empty($validatedData['tags'])) {
-            $post->tags()->attach($validatedData['tags']);
+        if (!empty($data['tags'])) {
+            $post->tags()->attach($data['tags']);
         }
+
+        return $post;
+    }
+
+    /**
+     * Обновляет существующий пост и его теги.
+     */
+    public function updatePost(Post $post, array $data): Post
+    {
+        $post->update($data);
+
+        // sync() - удобный метод для обновления связей "многие-ко-многим"
+        // Он удалит старые теги и добавит новые.
+        $post->tags()->sync($data['tags'] ?? []);
 
         return $post;
     }

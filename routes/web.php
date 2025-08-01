@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\TagController;
+use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,12 +20,16 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [PostController::class, 'index'])->name('home');
 
 // Ресурсный маршрут для постов.
-// Laravel автоматически создаст все необходимые маршруты:
-// GET /posts -> index() - список всех постов
-// GET /posts/create -> create() - форма создания
-// POST /posts -> store() - сохранение нового поста
-// GET /posts/{post} -> show() - просмотр одного поста
-// GET /posts/{post}/edit -> edit() - форма редактирования
-// PUT/PATCH /posts/{post} -> update() - обновление поста
-// DELETE /posts/{post} -> destroy() - удаление поста
 Route::resource('posts', PostController::class);
+
+
+// Ресурсные маршруты для тегов и комментариев
+Route::resource('tags', TagController::class);
+Route::resource('comments', CommentController::class);
+Route::post('tags/store-ajax', [App\Http\Controllers\TagController::class, 'storeAjax'])->name('tags.store.ajax');
+
+// Админ маршруты (пока оставим, но можно будет удалить, если не планируете использовать)
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::resource('tags', TagController::class);
+    Route::resource('comments', CommentController::class);
+});

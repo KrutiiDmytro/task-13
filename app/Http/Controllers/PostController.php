@@ -86,4 +86,45 @@ class PostController extends Controller
         return redirect()->route('posts.show', $post)
             ->with('success', 'Пост успешно создан!');
     }
+
+        /**
+     * Показывает форму для редактирования существующего поста.
+     */
+    public function edit(Post $post): View
+    {
+        $categories = $this->categoryService->getAll();
+        $tags = $this->tagService->getAll();
+        // Передаем в вид сам пост, а также списки категорий и тегов.
+        return view('posts.edit', compact('post', 'categories', 'tags'));
+    }
+
+    /**
+     * Обновляет существующий пост в базе данных.
+     */
+    public function update(Request $request, Post $post): RedirectResponse
+    {
+        // Правила валидации похожи на store, но для title мы разрешаем использовать текущее имя поста.
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255|unique:posts,title,' . $post->id,
+            'content' => 'required|string',
+            'category_id' => 'nullable|exists:categories,id',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tags,id',
+        ]);
+
+        // Вызываем метод сервиса для обновления поста.
+        $this->postService->updatePost($post, $validatedData);
+
+        return redirect()->route('posts.show', $post)->with('success', 'Пост успешно обновлен!');
+    }
+
+    /**
+     * Удаляет пост из базы данных.
+     */
+    public function destroy(Post $post): RedirectResponse
+    {
+        $post->delete();
+        // После удаления возвращаем пользователя на главную страницу со списком постов.
+        return redirect()->route('posts.index')->with('success', 'Пост успешно удален!');
+    }
 }
