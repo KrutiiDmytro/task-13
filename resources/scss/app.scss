@@ -1,0 +1,65 @@
+/* ===== Bootstrap и переменные ========================================= */
+@import "bootstrap/scss/functions";
+
+$primary  : #ff5722;   // тёплый оранжевый
+$secondary: #607d8b;
+$body-bg  : #f5f7fa;
+$font-family-sans-serif: "Inter", "Helvetica Neue", Arial, sans-serif;
+
+@import "bootstrap/scss/bootstrap";
+
+/* ===== Карточка поста ================================================= */
+.post-card {
+    @extend .card;
+    border: none;
+    border-radius: .75rem;
+    box-shadow: 0 4px 18px rgba(#000, .06);
+    transition: transform .18s ease, box-shadow .18s ease;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 22px rgba(#000, .08);
+    }
+
+    .card-title { margin-bottom: .25rem; }
+    .card-text  { color: $secondary; }
+}
+
+/* ===== Кнопки ========================================================= */
+.btn-create {
+    @extend .btn;
+    @extend .btn-primary;
+    font-weight: 600;
+    border-radius: 50rem;
+    padding-inline: 1.5rem;
+}
+
+.btn-icon {
+    @extend .btn;
+    @extend .btn-sm;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* edit = жёлтый, delete = красный */
+.btn-edit   { @extend .btn-warning; }
+.btn-delete { @extend .btn-danger;  }
+
+/* ===== Фильтры (sidebar) ============================================= */
+.sidebar-filter .card {
+    border: none;
+    box-shadow: 0 2px 10px rgba(#000, .05);
+    border-radius: .75rem;
+    position: sticky;
+    top: 6rem;
+}
+
+.navbar-brand img,         /* SVG / PNG */
+.navbar-brand svg {
+    height: 32px;
+    width : auto;
+}

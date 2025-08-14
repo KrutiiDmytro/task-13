@@ -11,12 +11,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Post extends Model
 {
     use HasFactory;
+    
     protected $fillable = [
         'title',
         'content',
         'date',
         'image',
-        'category_id'
+        'category_id',
+        'user_id',
+        'author_name',
+        'author_email',
     ];
 
     protected $casts = [
@@ -28,13 +32,19 @@ class Post extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function tags(): BelongsToMany
+    public function tags()
     {
-        return $this->belongsToMany(Tag::class);
+    return $this->belongsToMany(\App\Models\Tag::class);
     }
 
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
+    }
+
+    // Исправлен отступ и форматирование
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

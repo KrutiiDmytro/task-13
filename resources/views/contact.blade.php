@@ -1,6 +1,8 @@
 @extends('layouts.app')
-  
-@section('content_contact')
-      <h2>Contact</h2>
-@endsection
 
+@section('content')
+<div class="container py-4">
+    <h1>Contact</h1>
+    <p>Контакты.</p>
+</div>
+@endsection

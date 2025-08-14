@@ -3,61 +3,93 @@
 @section('title', $post->title)
 
 @section('content')
-    <div class="mb-4">
-        <a href="{{ route('posts.index') }}" class="btn btn-secondary">&larr; Назад к постам</a>
-        <a href="{{ route('posts.edit', $post) }}" class="btn btn-warning">Редактировать</a>
-        <form action="{{ route('posts.destroy', $post) }}" method="POST" class="d-inline">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="btn btn-danger" onclick="return confirm('Удалить пост?')">Удалить</button>
-        </form>
-    </div>
+<div class="container py-4">
+	<div class="row justify-content-center">
+		<div class="col-lg-9">
+			{{-- керування постом (тільки власник/адмін) --}}
+			<div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
+				<a href="{{ route('posts.index') }}" class="btn btn-outline-secondary">← Назад к постам</a>
 
-    <article class="card">
-        @if($post->image)
-            <img src="{{ Storage::url($post->image) }}" class="card-img-top" alt="{{ $post->title }}" style="max-height: 400px; object-fit: cover;">
-        @endif
-        
-        <div class="card-body">
-            <h1 class="card-title">{{ $post->title }}</h1>
-            
-            <div class="mb-3">
-                <small class="text-muted">
-                    {{ $post->created_at->format('d.m.Y H:i') }}
-                    @if($post->category)
-                        | Категория: <a href="{{ route('posts.index', ['category_id' => $post->category->id]) }}">{{ $post->category->name }}</a>
-                    @endif
-                </small>
-            </div>
-            
-            <div class="mb-3">
-                @foreach($post->tags as $tag)
-                    <a href="{{ route('posts.index', ['tag_id' => $tag->id]) }}" class="badge bg-secondary text-decoration-none">{{ $tag->name }}</a>
-                @endforeach
-            </div>
-            
-            <div class="card-text">
-                {!! nl2br(e($post->content)) !!}
-            </div>
-        </div>
-    </article>
+				@auth
+					@if(auth()->id() === $post->user_id || (auth()->user()->is_admin ?? false))
+						<div class="d-flex flex-wrap gap-2">
+							<a href="{{ route('posts.edit', $post) }}" class="btn btn-warning">
+								<i class="fas fa-edit me-1"></i> Редактировать
+							</a>
+							<form action="{{ route('posts.destroy', $post) }}" method="POST" class="d-inline">
+								@csrf
+								@method('DELETE')
+								<button type="submit" class="btn btn-danger" onclick="return confirm('Удалить пост?')">
+									<i class="fas fa-trash me-1"></i> Удалить
+								</button>
+							</form>
+						</div>
+					@endif
+				@endauth
+			</div>
 
-    <!-- Комментарии -->
-    <div class="mt-5">
-        <h3>Комментарии ({{ $post->comments->count() }})</h3>
-        
-        @if($post->comments->count() > 0)
-            @foreach($post->comments as $comment)
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-muted">{{ $comment->author }}</h6>
-                        <p class="card-text">{{ $comment->content }}</p>
-                        <small class="text-muted">{{ $comment->created_at->format('d.m.Y H:i') }}</small>
-                    </div>
-                </div>
-            @endforeach
-        @else
-            <p class="text-muted">Пока нет комментариев.</p>
-        @endif
-    </div>
+			<article class="card shadow-sm">
+				<div class="card-body">
+					<h1 class="h3 card-title mb-2">{{ $post->title }}</h1>
+
+					{{-- мета --}}
+					<div class="text-muted small mb-3">
+						{{ optional($post->date)->format('d.m.Y') ?? $post->created_at->format('d.m.Y H:i') }}
+						| Автор: {{ $post->user->name ?? $post->author_name ?? 'Аноним' }}
+						@if($post->category)
+							| Категория:
+							<a href="{{ route('posts.index', ['category' => $post->category->id]) }}">
+								{{ $post->category->name }}
+							</a>
+						@endif
+					</div>
+
+					{{-- контент --}}
+					<div class="card-text mb-3">
+						{!! nl2br(e($post->content)) !!}
+					</div>
+
+					{{-- теги (клікабельні для фільтрації) --}}
+					@if($post->tags->count())
+						<div class="mt-2">
+							<span class="text-muted small me-2">Теги:</span>
+							@foreach($post->tags as $tag)
+								<a href="{{ route('posts.index', ['tag' => $tag->id]) }}"
+								   class="badge bg-secondary text-decoration-none me-1">#{{ $tag->name }}</a>
+							@endforeach
+						</div>
+					@endif
+				</div>
+
+				{{-- изображение внизу карточки --}}
+				@if($post->image)
+                    <a href="{{ Storage::url($post->image) }}" target="_blank" rel="noopener">
+                        <img src="{{ Storage::url($post->image) }}"
+                             class="card-img-bottom"
+                             alt="{{ $post->title }}">
+                    </a>
+                @endif
+			</article>
+
+			{{-- коментарі --}}
+			<div class="mt-5">
+				<h3>Комментарии ({{ $post->comments->count() }})</h3>
+
+				@if($post->comments->count())
+					@foreach($post->comments as $comment)
+						<div class="card mb-3">
+							<div class="card-body">
+								<h6 class="card-subtitle mb-2 text-muted">{{ $comment->author }}</h6>
+								<p class="card-text mb-1">{{ $comment->content }}</p>
+								<small class="text-muted">{{ $comment->created_at->format('d.m.Y H:i') }}</small>
+							</div>
+						</div>
+					@endforeach
+				@else
+					<p class="text-muted">Пока нет комментариев.</p>
+				@endif
+			</div>
+		</div>
+	</div>
+</div>
 @endsection

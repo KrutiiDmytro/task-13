@@ -5,99 +5,79 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class CommentController extends Controller
 {
-    /**
-     * Показывает список всех комментариев с пагинацией.
-     */
+    // (UA) Список коментарів з пагінацією
     public function index(): View
     {
-        $comments = Comment::with('post')
-            ->latest()
-            ->paginate(20);
-        
+        $comments = Comment::with('post')->latest()->paginate(20);
         return view('comments.index', compact('comments'));
     }
 
-    /**
-     * Показывает форму создания нового комментария.
-     */
+    // (UA) Форма створення
     public function create(): View
     {
         $posts = Post::orderBy('title')->get();
         return view('comments.create', compact('posts'));
     }
 
-    /**
-     * Сохраняет новый комментарий в базу данных.
-     */
+    // (UA) Збереження нового коментаря
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
-            'author' => 'required|string|max:255',
+        $data = $request->validate([
+            'author'  => 'required|string|max:255',
             'content' => 'required|string|max:1000',
             'post_id' => 'required|exists:posts,id',
         ]);
 
-        Comment::create([
-            'author' => $request->author,
-            'content' => $request->comment,
-            'post_id' => $request->post_id,
-        ]);
+        Comment::create($data);
 
-        return redirect()->route('comments.index')
-            ->with('success', 'Комментарий успешно создан!');
+        return redirect()
+            ->route('posts.show', $data['post_id'])
+            ->with('success', 'Комментарий успешно добавлен!');
     }
 
-    /**
-     * Показывает один конкретный комментарий.
-     */
+    // (UA) Перегляд одного коментаря
     public function show(Comment $comment): View
     {
         $comment->load('post');
         return view('comments.show', compact('comment'));
     }
 
-    /**
-     * Показывает форму редактирования комментария.
-     */
+    // (UA) Форма редагування
     public function edit(Comment $comment): View
     {
         $posts = Post::orderBy('title')->get();
         return view('comments.edit', compact('comment', 'posts'));
     }
 
-    /**
-     * Обновляет комментарий в базе данных.
-     */
+    // (UA) Оновлення
     public function update(Request $request, Comment $comment): RedirectResponse
     {
-        $request->validate([
-            'author' => 'required|string|max:255',
+        $data = $request->validate([
+            'author'  => 'required|string|max:255',
             'content' => 'required|string|max:1000',
             'post_id' => 'required|exists:posts,id',
         ]);
 
-        $comment->update([
-            'author' => $request->author,
-            'content' => $request->comment,
-            'post_id' => $request->post_id,
-        ]);
+        $comment->update($data);
 
-        return redirect()->route('comments.index')
-            ->with('success', 'Комментарий успешно обновлен!');
+        return redirect()
+            ->route('posts.show', $data['post_id'])
+            ->with('success', 'Комментарий обновлён!');
     }
 
-    /**
-     * Удаляет комментарий из базы данных.
-     */
+    // (UA) Видалення
     public function destroy(Comment $comment): RedirectResponse
     {
+        $postId = $comment->post_id;
         $comment->delete();
-        return redirect()->route('comments.index')
-            ->with('success', 'Комментарий успешно удален!');
+
+        return redirect()
+            ->route('posts.show', $postId)
+            ->with('success', 'Комментарий удалён!');
     }
 }

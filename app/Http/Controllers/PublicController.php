@@ -16,22 +16,18 @@ class PublicController extends Controller
 
     public function newsDatailsPage($id, $category = 1) {
         $news = [
-            1 => [
-                'title' => 'First news'
-            ],
-            2 => [
-                'title' => 'Second news'
-            ]
+            1 => ['title' => 'First news'],
+            2 => ['title' => 'Second news'],
         ];
 
         $categories = [
-            1 => [
-                'category' => 'News'
-            ],
-            2 => [
-                'category' => 'News IT'
-            ]
-    ];
-        return view('news-details', ['data' => $news[$id], 'category' => $categories[$category]]);
+            1 => ['category' => 'News'],
+            2 => ['category' => 'News IT'],
+        ];
+
+        return view('news-details', [
+            'data' => $news[$id] ?? ['title' => 'Not found'],
+            'category' => $categories[$category] ?? ['category' => 'Unknown'],
+        ]);
     }
 }

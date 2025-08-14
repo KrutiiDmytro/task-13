@@ -1,76 +1,152 @@
 @extends('layouts.app')
 
-@section('title', 'Все посты')
-
 @section('content')
-<div class="row">
-    <!-- Основной контент (посты) -->
-    <div class="col-md-8">
-        <h1 class="mb-4">Все посты</h1>
-        @forelse($posts as $post)
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h2 class="card-title h4">
-                        <a href="{{ route('posts.show', $post) }}" class="text-decoration-none">{{ $post->title }}</a>
-                    </h2>
-                    <p class="text-muted small">
-                        {{ $post->date->format('d.m.Y') }} |
-                        @if($post->category)
-                            <a href="{{ route('posts.index', ['category_id' => $post->category->id]) }}">{{ $post->category->name }}</a>
+<div class="container py-4">
+    <div class="row">
+        <!-- Основной контент -->
+        <div class="col-lg-8">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0">Блог</h1>
+                <a href="{{ route('posts.create') }}" class="btn btn-create">
+                    <i class="fas fa-plus me-2"></i>Создать пост
+                </a>
+            </div>
+
+            @if($posts->count() > 0)
+                @foreach($posts as $post)
+                    <div class="card post-card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{{ route('posts.show', $post) }}" class="text-decoration-none">
+                                    {{ $post->title }}
+                                </a>
+                            </h5>
+
+                            <p class="card-text">{{ Str::limit($post->content, 200) }}</p>
+
+                            {{-- Теги (показываются, если есть) --}}
+                            @if($post->tags->count())
+                                <div class="mt-2 mb-2">
+                                    <span class="text-muted me-2">Теги:</span>
+                                    @foreach($post->tags as $tag)
+                                        <a href="{{ route('posts.index', array_filter([
+                                            'search'   => request('search'),
+                                            'category' => request('category'),
+                                            'tag'      => $tag->id,
+                                        ])) }}" class="badge bg-secondary text-decoration-none me-2">#{{ $tag->name }}</a>
+                                    @endforeach
+                                </div>
+                            @endif
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    {{ $post->date->format('d.m.Y') }} | 
+                                    Автор: {{ $post->user->name ?? $post->author_name ?? 'Аноним' }}
+                                    @if($post->category)
+                                        | <a href="{{ route('posts.index', ['category' => $post->category->id]) }}">{{ $post->category->name }}</a>
+                                    @endif
+                                </small>
+                                
+                                <!-- Кнопки управления - только для авторизованных владельцев -->
+                                @auth
+                                    @if(auth()->id() === $post->user_id || (method_exists(auth()->user(),'hasRole') ? auth()->user()->hasRole('admin') : (auth()->user()->is_admin ?? false)))
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ route('posts.edit', $post) }}" class="btn btn-edit btn-sm">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form action="{{ route('posts.destroy', $post) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-delete btn-sm" onclick="return confirm('Вы уверены?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @endif
+                                @endauth
+                            </div>
+                        </div>
+
+                        {{-- Изображение --}}
+                        @if($post->image)
+                            <a href="{{ Storage::url($post->image) }}" target="_blank" rel="noopener">
+                                <img src="{{ Storage::url($post->image) }}"
+                                    alt="{{ $post->title }}"
+                                    class="card-img-bottom"
+                                    style="max-height:260px; object-fit:cover;">
+                            </a>
                         @endif
-                    </p>
-                    <p class="card-text">{{ Str::limit($post->content, 150) }}</p>
-                    <div>
-                        @foreach($post->tags as $tag)
-                            <a href="{{ route('posts.index', ['tag_id' => $tag->id]) }}" class="badge bg-secondary text-decoration-none">{{ $tag->name }}</a>
-                        @endforeach
+                    </div>
+                @endforeach
+
+                <!-- Пагинация -->
+                <div class="d-flex justify-content-center">
+                    {{ $posts->appends(request()->query())->links() }}
+                </div>
+            @else
+                <div class="text-center py-5">
+                    <h4 class="text-muted">Постов пока нет</h4>
+                    <p class="text-muted">Будьте первым, кто создаст пост!</p>
+                    <a href="{{ route('posts.create') }}" class="btn btn-create">
+                        <i class="fas fa-plus me-2"></i>Создать первый пост
+                    </a>
+                </div>
+            @endif
+        </div>
+
+        <!-- Боковая панель с фильтрами -->
+        <div class="col-lg-4">
+            <div class="sidebar-filter">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Фильтры</h5>
+                        @if(request()->hasAny(['search','category','tag']))
+                            <a href="{{ route('posts.index') }}" class="btn btn-sm btn-outline-secondary">Сбросить</a>
+                        @endif
+                    </div>
+                    <div class="card-body">
+                        <form action="{{ route('posts.index') }}" method="GET">
+                            <!-- Поиск -->
+                            <div class="mb-3">
+                                <label class="form-label">Поиск по названию</label>
+                                <input type="text" name="search" class="form-control" value="{{ request('search') }}" placeholder="Введите текст...">
+                            </div>
+
+                            <!-- Фильтр по категориям -->
+                            @if($categories->count() > 0)
+                                <div class="mb-3">
+                                    <label class="form-label">Категории</label>
+                                    @foreach($categories as $category)
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="category" id="category_{{ $category->id }}" value="{{ $category->id }}" {{ request('category') == $category->id ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="category_{{ $category->id }}">
+                                                {{ $category->name }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+
+                            <!-- Фильтр по тегам -->
+                            @if($tags->count() > 0)
+                                <div class="mb-3">
+                                    <label class="form-label">Теги</label>
+                                    @foreach($tags as $tag)
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="tag" id="tag_{{ $tag->id }}" value="{{ $tag->id }}" {{ request('tag') == $tag->id ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="tag_{{ $tag->id }}">
+                                                {{ $tag->name }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+
+                            <!-- Кнопка поиска -->
+                            <button type="submit" class="btn btn-primary w-100">🔍 Найти</button>
+                        </form>
                     </div>
                 </div>
-            </div>
-        @empty
-            <p>Пока нет ни одного поста.</p>
-        @endforelse
-
-        <!-- Пагинация -->
-        <div class="d-flex justify-content-center">
-            {{ $posts->links() }}
-        </div>
-    </div>
-
-    <!-- Боковая панель (фильтры) -->
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Фильтры</h5>
-                <form action="{{ route('posts.index') }}" method="GET">
-                    <div class="mb-3">
-                        <label for="search_title" class="form-label">Поиск по названию</label>
-                        <input type="text" id="search_title" name="search_title" class="form-control" value="{{ request('search_title') }}">
-                    </div>
-                    <div class="mb-3">
-                        <label for="category_id" class="form-label">Категория</label>
-                        <select id="category_id" name="category_id" class="form-select">
-                            <option value="">Все категории</option>
-                            @foreach($categories as $category)
-                                <option value="{{ $category->id }}" @selected(request('category_id') == $category->id)>
-                                    {{ $category->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="tag_id" class="form-label">Тег</label>
-                        <select id="tag_id" name="tag_id" class="form-select">
-                            <option value="">Все теги</option>
-                            @foreach($tags as $tag)
-                                <option value="{{ $tag->id }}" @selected(request('tag_id') == $tag->id)>
-                                    {{ $tag->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Применить</button>
-                </form>
             </div>
         </div>
     </div>

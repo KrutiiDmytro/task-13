@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
-@section('content_home')
-    <h1>Hello world</h1>
+@section('content')
+<div class="container py-4">
+    <h1>Home</h1>
+    <p>Главная страница.</p>
+</div>
 @endsection
-

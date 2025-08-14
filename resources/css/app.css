@@ -1,11 +1,93 @@
-@import 'tailwindcss';
+/* Карточка поста */
+.post-card {
+  border: none;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.post-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+}
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+/* Кнопки */
+.btn-create {
+  font-weight: 600;
+  border-radius: 50rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  background-color: #ff5722;
+  border-color: #ff5722;
+  color: #fff;
+}
+.btn-create:hover {
+  background-color: #e64a19;
+  border-color: #e64a19;
+}
+.btn-edit {
+  background-color: #ffc107;
+  border-color: #ffc107;
+  color: #000;
+}
+.btn-edit:hover {
+  background-color: #ffb300;
+  border-color: #ffb300;
+}
+.btn-delete {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: #fff;
+}
+.btn-delete:hover {
+  background-color: #c82333;
+  border-color: #c82333;
+}
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+/* Сайдбар фільтрів */
+.sidebar-filter .card {
+  border: none;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  border-radius: 0.75rem;
+  position: sticky;
+  top: 6rem;
+}
+
+/* Хедер фоновий градієнт (за потреби) */
+.header-bg {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Логотип у навбарі */
+.navbar-brand img,
+.navbar-brand svg {
+  height: 32px;
+  width: auto;
+}
+
+/* Базова типографіка */
+body {
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  background-color: #f5f7fa;
+}
+
+/* Кольорова схема */
+:root {
+  --primary-color: #ff5722;
+  --secondary-color: #607d8b;
+  --bg-color: #f5f7fa;
+}
+
+/* Навбар: читабельні посилання на світлому фоні */
+.navbar-light.bg-light .navbar-brand,
+.navbar-light.bg-light .nav-link {
+  color: #212529; /* text-dark */
+}
+.navbar-light.bg-light .nav-link:hover,
+.navbar-light.bg-light .nav-link:focus {
+  color: #0d6efd;
+}
+
+/* Дропдаун у навбарі */
+.navbar .dropdown-menu {
+  border-radius: .5rem;
 }

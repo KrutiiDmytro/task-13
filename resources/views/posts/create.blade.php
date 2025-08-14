@@ -1,103 +1,152 @@
 @extends('layouts.app')
 
-@section('title', 'Создать новый пост')
+@section('title', 'Создать пост')
 
 @section('content')
-<h1>Создать новый пост</h1>
-
-@if ($errors->any())
-    <div class="alert alert-danger">
-        <ul class="mb-0">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-
-<form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data">
-    @csrf
-    {{-- Поля для заголовка, содержимого и категории --}}
-    <div class="mb-3">
-        <label for="title" class="form-label">Заголовок</label>
-        <input type="text" id="title" name="title" class="form-control" value="{{ old('title') }}" required>
-    </div>
-    <div class="mb-3">
-        <label for="content" class="form-label">Содержимое</label>
-        <textarea id="content" name="content" class="form-control" rows="10" required>{{ old('content') }}</textarea>
-    </div>
-    <div class="mb-3">
-        <label for="category_id" class="form-label">Категория</label>
-        <select id="category_id" name="category_id" class="form-select">
-            <option value="">Без категории</option>
-            @foreach($categories as $category)
-                <option value="{{ $category->id }}" @selected(old('category_id') == $category->id)>
-                    {{ $category->name }}
-                </option>
-            @endforeach
-        </select>
-    </div>
-
-    {{-- Блок для тегов --}}
-    <div class="mb-3">
-        <div class="d-flex justify-content-between align-items-center">
-            <label class="form-label mb-0">Теги</label>
-            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#createTagModal">
-                Создать новый тег
-            </button>
-        </div>
-        <div class="border rounded p-2 mt-2" id="tags-container" style="max-height: 200px; overflow-y: auto;">
-            @foreach($tags as $tag)
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="tags[]" value="{{ $tag->id }}" id="tag-{{ $tag->id }}" @checked(in_array($tag->id, old('tags', [])))>
-                    <label class="form-check-label" for="tag-{{ $tag->id }}">
-                        {{ $tag->name }}
-                    </label>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Создать новый пост</h4>
                 </div>
-            @endforeach
+                <div class="card-body">
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        
+                        <!-- Поля для неавторизованных пользователей -->
+                        @guest
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="author_name" class="form-label">Ваше имя <span class="text-danger">*</span></label>
+                                <input type="text" 
+                                       class="form-control @error('author_name') is-invalid @enderror" 
+                                       id="author_name" 
+                                       name="author_name" 
+                                       value="{{ old('author_name') }}" 
+                                       required
+                                       placeholder="Введите ваше имя">
+                                @error('author_name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label for="author_email" class="form-label">Email (необязательно)</label>
+                                <input type="email" 
+                                       class="form-control @error('author_email') is-invalid @enderror" 
+                                       id="author_email" 
+                                       name="author_email" 
+                                       value="{{ old('author_email') }}"
+                                       placeholder="email@example.com">
+                                @error('author_email')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        @endguest
+                        
+                        <!-- Заголовок поста -->
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Заголовок <span class="text-danger">*</span></label>
+                            <input type="text" 
+                                   class="form-control @error('title') is-invalid @enderror" 
+                                   id="title" 
+                                   name="title" 
+                                   value="{{ old('title') }}" 
+                                   required
+                                   placeholder="Введите заголовок поста">
+                            @error('title')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Категория -->
+                        <div class="mb-3">
+                            <label for="category_id" class="form-label">Категория</label>
+                            <select class="form-control" id="category_id" name="category_id">
+                                <option value="">Выберите категорию</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Теги -->
+                        <div class="mb-3">
+                            <label for="tags" class="form-label">Теги</label>
+                            <select class="form-control" id="tags" name="tags[]" multiple>
+                                @foreach($tags as $tag)
+                                    <option value="{{ $tag->id }}" {{ in_array($tag->id, old('tags', [])) ? 'selected' : '' }}>
+                                        {{ $tag->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <small class="form-text text-muted">
+                                Держите Ctrl для выбора нескольких тегов или введите новые через запятую
+                            </small>
+                        </div>
+
+                        <!-- Содержание -->
+                        <div class="mb-3">
+                            <label for="content" class="form-label">Содержание <span class="text-danger">*</span></label>
+                            <textarea class="form-control @error('content') is-invalid @enderror" 
+                                      id="content" 
+                                      name="content" 
+                                      rows="10" 
+                                      required
+                                      placeholder="Напишите содержание поста...">{{ old('content') }}</textarea>
+                            @error('content')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ route('posts.index') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Назад
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Создать пост
+                            </button>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="image">Изображение</label>
+                            <input type="file" class="form-control @error('image') is-invalid @enderror"
+                                id="image" name="image" accept=".jpg,.jpeg,.png,.webp,.gif">
+                            @error('image')
+                                <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
-    
-    {{-- Поле для изображения --}}
-    <div class="mb-3">
-        <label for="image" class="form-label">Изображение</label>
-        <input type="file" id="image" name="image" class="form-control" accept="image/*">
-    </div>
-    
-    <button type="submit" class="btn btn-primary">Создать пост</button>
-    <a href="{{ route('posts.index') }}" class="btn btn-secondary">Отмена</a>
-</form>
-
-
-{{-- Модальное окно для создания тега --}}
-<div class="modal fade" id="createTagModal" tabindex="-1" aria-labelledby="createTagModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="createTagModalLabel">Создать новый тег</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        {{-- Передаем URL в JS через data-атрибут --}}
-        <form id="createTagForm" data-store-url="{{ route('tags.store.ajax') }}">
-            <input type="hidden" name="_token" value="{{ csrf_token() }}">
-            <div class="mb-3">
-                <label for="newTagName" class="form-label">Название тега</label>
-                <input type="text" class="form-control" id="newTagName" name="name" required>
-                <div id="tagNameError" class="invalid-feedback"></div>
-            </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-        <button type="button" class="btn btn-primary" id="saveTagButton">Сохранить тег</button>
-      </div>
-    </div>
-  </div>
 </div>
 @endsection
 
 @push('scripts')
-    {{-- Подключаем наш новый JS файл --}}
-    <script src="{{ asset('js/tag-creator.js') }}" defer></script>
+<script>
+$(document).ready(function() {
+    // Инициализируем Select2 для тегов
+    $('#tags').select2({
+        tags: true,
+        tokenSeparators: [','],
+        placeholder: 'Выберите или введите теги...'
+    });
+});
+</script>
 @endpush

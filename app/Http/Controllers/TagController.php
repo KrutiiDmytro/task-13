@@ -12,10 +12,20 @@ class TagController extends Controller
     /**
      * Показывает список всех тегов.
      */
-    public function index(): View
+    public function index(Request $request)
     {
-        $tags = Tag::withCount('posts')->orderBy('name')->get();
-        return view('tags.index', compact('tags'));
+        $q = trim($request->get('q', ''));
+
+        $tags = Tag::query()
+            //  Якщо є запит, фільтруємо по 'name'
+            ->when($q !== '', function ($builder) use ($q) {
+                $builder->where('name', 'like', '%' . $q . '%');
+            })
+            ->orderBy('name')
+            ->paginate(24)
+            ->withQueryString();
+
+        return view('tags.index', compact('tags', 'q'));
     }
 
     /**
@@ -29,28 +39,43 @@ class TagController extends Controller
     /**
      * Сохраняет новый тег в базу данных.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255|unique:tags',
+        // (UA) Валідація: унікальне ім’я тегу
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:tags,name',
         ]);
 
-        Tag::create([
-            'name' => $request->name,
-        ]);
+        $tag = Tag::create($validated); // (UA) slug згенерується автоматично в моделі
 
-        return redirect()->route('tags.index')
-            ->with('success', 'Тег успешно создан!');
+        return response()->json([
+            'success' => true,
+            'tag' => [
+                'id' => $tag->id,
+                'name' => $tag->name,
+                'slug' => $tag->slug,
+            ]
+        ]);
     }
 
-    /**
-     * Показывает один конкретный тег.
+/**
+     * Показати пости за конкретним тегом (slug).
+     *  Видаємо список постів, прикріплених до цього тегу, з пагінацією.
      */
-    public function show(Tag $tag): View
+        public function show(string $slug): View
     {
-        $tag->load('posts');
-        return view('tags.show', compact('tag'));
+        $tag = Tag::where('slug', $slug)->firstOrFail();
+
+        // (UA) Витягуємо пости цього тегу; можна додати with('user','category','tags') за потреби
+        $posts = $tag->posts()
+            ->with('tags') // (UA) щоб одразу мати теги кожного поста
+            ->latest('id')
+            ->paginate(10);
+
+        return view('tags.show', compact('tag', 'posts'));
     }
+
+
 
     /**
      * Показывает форму редактирования тега.

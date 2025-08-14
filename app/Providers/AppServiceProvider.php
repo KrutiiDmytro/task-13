@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
+use App\Services\PostService;
+use App\Services\CategoryService;
+use App\Services\TagService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -11,7 +15,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Регистрируем сервисы
+        $this->app->singleton(PostService::class, function ($app) {
+            return new PostService();
+        });
+
+        $this->app->singleton(CategoryService::class, function ($app) {
+            return new CategoryService();
+        });
+
+        $this->app->singleton(TagService::class, function ($app) {
+            return new TagService();
+        });
     }
 
     /**
@@ -19,6 +34,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Paginator::useBootstrapFive();
     }
 }
