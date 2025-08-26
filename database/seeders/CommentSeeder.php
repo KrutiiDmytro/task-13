@@ -13,6 +13,8 @@ class CommentSeeder extends Seeder
         $comments = [
             ['post_title' => 'Введение в PHP 8.1', 'author' => 'Алексей', 'content' => 'Отличная статья!'],
             ['post_title' => 'Введение в PHP 8.1', 'author' => 'Мария', 'content' => 'Спасибо за объяснение.'],
+            ['post_title' => 'Создание REST API с Laravel', 'author' => 'Петр', 'content' => 'Отличный пример!'],
+['post_title' => 'Основы JavaScript ES6+', 'author' => 'Анна', 'content' => 'Полезная информация.'],
             // ... остальные комментарии
         ];
         
