@@ -10,6 +10,8 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicController;
+use App\Http\Controllers\Admin\DashboardController;                 // Дашборд адмінки
+use App\Http\Controllers\Admin\PostController as AdminPostController; // Адмінський контролер постів
 
 /* ------------------------------------------------------------------------
    ТЕСТ / ВІДЛАДКА (не обов'язково)
@@ -17,13 +19,6 @@ use App\Http\Controllers\PublicController;
 Route::get('/test', function () {
     return view('test');
 });
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|  Публічні маршрути + захищені + адмінські. Без дублікатів.
-*/
 
 /* =========================
  * ПУБЛІЧНІ МАРШРУТИ
@@ -40,7 +35,7 @@ Route::post('/posts',       [PostController::class, 'store'])->name('posts.store
 //  Перегляд одного поста — публічно
 Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
 
-// (укр.) /home -> на список постів (деякі шаблони посилаються на home)
+// /home -> на список постів (деякі шаблони посилаються на home)
 Route::get('/home', fn () => redirect()->route('posts.index'))->name('home');
 
 //  Теги — список та перегляд за slug (без resource, щоб уникнути конфліктів)
@@ -88,7 +83,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile',  [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    //Dashboard (приклад: потребує підтвердження email)
+    // Dashboard (приклад: потребує підтвердження email)
     Route::view('/dashboard', 'dashboard')->middleware('verified')->name('dashboard');
 });
 
@@ -96,10 +91,13 @@ Route::middleware('auth')->group(function () {
  * АДМІН-ПАНЕЛЬ (AUTH + ADMIN)
  * ========================= */
 
-Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
-    // ( Мінімальні роути, які повертають 200 для адміна (потрібно для тестів)
-    Route::get('/',      fn () => response('OK'))->name('admin.dashboard');
-    Route::get('/posts', fn () => response('OK'))->name('admin.posts.index');
+// Всі маршрути під /admin захищені 'auth' + 'admin', іменування починається з 'admin.'
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Мінімальні роути
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+    //  Повний ресурс постів в адмінці → створює admin.posts.index/show/create/store/edit/update/destroy
+    Route::resource('posts', AdminPostController::class);
 
     //  Приклади повних CRUD у адмінці (якщо реалізовані контролери)
     Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
