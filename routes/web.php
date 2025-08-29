@@ -1,114 +1,126 @@
 <?php
 
-/* ----- аутентифікація/реєстрація (Breeze) ------------------------------- */
+use Illuminate\Support\Facades\Route;
+
+/* ----- аутентификация/регистрация (Breeze) ------------------------------ */
 require __DIR__ . '/auth.php';
 
-/* ----- контролери -------------------------------------------------------- */
-use Illuminate\Support\Facades\Route;
+/* ----- контроллеры ------------------------------------------------------ */
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicController;
-use App\Http\Controllers\Admin\DashboardController;                 // Дашборд адмінки
-use App\Http\Controllers\Admin\PostController as AdminPostController; // Адмінський контролер постів
 
 /* ------------------------------------------------------------------------
-   ТЕСТ / ВІДЛАДКА (не обов'язково)
+   ТЕСТ / ОТЛАДКА
    ------------------------------------------------------------------------ */
 Route::get('/test', function () {
     return view('test');
 });
 
-/* =========================
- * ПУБЛІЧНІ МАРШРУТИ
- * ========================= */
+/* ------------------------------------------------------------------------
+   ПУБЛИЧНАЯ ЧАСТЬ
+   ------------------------------------------------------------------------ */
+// ---------------- ТЕГИ: пошук та перегляд ----------------
+//  Сторінка списку тегів + пошук по назві тегу (?q=)
+Route::get('/tags', [TagController::class, 'index'])->name('tags.index');
 
-//  Головна і список постів доступні за двома шляхами (деякі тести ходять на /posts)
-Route::get('/',      [PostController::class, 'index'])->name('posts.index');
-Route::get('/posts', [PostController::class, 'index'])->name('posts.index.path');
-
-//  Створення поста — публічно (тести очікують можливість для гостя)
-Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
-Route::post('/posts',       [PostController::class, 'store'])->name('posts.store');
-
-//  Перегляд одного поста — публічно
-Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
-
-// /home -> на список постів (деякі шаблони посилаються на home)
-Route::get('/home', fn () => redirect()->route('posts.index'))->name('home');
-
-//  Теги — список та перегляд за slug (без resource, щоб уникнути конфліктів)
-Route::get('/tags',        [TagController::class, 'index'])->name('tags.index');
+// Пости за конкретним тегом
 Route::get('/tags/{slug}', [TagController::class, 'show'])->name('tags.show');
 
-//  Публічні сторінки (пошук/категорія/теґ)
-Route::get('/search',          [PublicController::class, 'search'])->name('search');
-Route::get('/category/{slug}', [PublicController::class, 'byCategory'])->name('category.show');
-Route::get('/tag/{slug}',      [PublicController::class, 'byTag'])->name('tag.show');
+/** Главная: список постов (поиск + фильтры + пагинация) */
+Route::get('/', [PostController::class, 'index'])->name('posts.index');
 
-//  Приклад додаткових публічних сторінок
+/** Редирект /home -> на главную (удобно для ссылок из шаблонов) */
+Route::get('/home', function () {
+    return redirect()->route('posts.index');
+})->name('home');
+
+/** Публичные страницы */
 Route::get('/contact', [PublicController::class, 'contactPage'])->name('contact');
-Route::get('/news/{id}/{category?}', [PublicController::class, 'newsDatailsPage']) // TODO: назва методу в контролері: newsDatailsPage чи newsDetailsPage?
+
+/** Детали новости с необязательной категорией */
+Route::get('/news/{id}/{category?}', [PublicController::class, 'newsDatailsPage'])
     ->whereNumber('id')
     ->whereNumber('category')
     ->name('news.details');
 
-/* =========================
- * КОМЕНТАРІ
- * ========================= */
-
-//  Коментарі — публічні дії: список/створення/перегляд/збереження
-Route::resource('comments', CommentController::class)->only([
-    'index', 'create', 'store', 'show'
+/** Посты — публично: список / просмотр / создание / сохранение */
+Route::resource('posts', PostController::class)->only([
+     'show', 'create', 'store'
 ]);
 
-/* =========================
- * ЗАХИЩЕНІ МАРШРУТИ (AUTH)
- * ========================= */
+Route::get('/posts', [PostController::class, 'index']);
+
+/** Теги — список / просмотр */
+Route::resource('tags', TagController::class)->only([
+    'index', 'show'
+]);
+
+/** Комментарии — доступно всем: список / создание / сохранение / просмотр */
+Route::resource('comments', CommentController::class)->only([
+    'index', 'store', 'create', 'show'
+]);
 
 Route::middleware('auth')->group(function () {
-    //  Пост — редагування/оновлення/видалення (власник або адмін — додаткова перевірка у контролері)
+    Route::resource('comments', \App\Http\Controllers\CommentController::class)->only([
+        'edit', 'update', 'destroy'
+    ]);
+});
+
+/* ------------------------------------------------------------------------
+   АВТОРИЗОВАННЫЕ ПОЛЬЗОВАТЕЛИ
+   ------------------------------------------------------------------------ */
+Route::middleware('auth')->group(function () {
+
+    /** Посты — только для авторизованных: редактирование/обновление/удаление */
     Route::resource('posts', PostController::class)->only([
         'edit', 'update', 'destroy'
     ]);
 
-    //  Коментарі — редагування/оновлення/видалення
+    /** Комментарии — редактирование/обновление/удаление (публічної частини) */
     Route::resource('comments', CommentController::class)->only([
         'edit', 'update', 'destroy'
     ]);
 
-    //  Профіль
+    /** Личный кабинет */
     Route::get('/profile',    [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile',  [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Dashboard (приклад: потребує підтвердження email)
+    /** Dashboard (пример: требуется подтверждённый email) */
     Route::view('/dashboard', 'dashboard')->middleware('verified')->name('dashboard');
-});
+    });
 
-/* =========================
- * АДМІН-ПАНЕЛЬ (AUTH + ADMIN)
- * ========================= */
+    /* ------------------------------------------------------------------------
+        АДМИН-ПАНЕЛЬ
+    ------------------------------------------------------------------------ */
+    Route::middleware(['auth'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
 
-// Всі маршрути під /admin захищені 'auth' + 'admin', іменування починається з 'admin.'
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    // Мінімальні роути
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        // Главная страница админки
+        Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])
+            ->name('dashboard');
 
-    //  Повний ресурс постів в адмінці → створює admin.posts.index/show/create/store/edit/update/destroy
-    Route::resource('posts', AdminPostController::class);
+        // CRUD для постов
+        Route::resource('posts', \App\Http\Controllers\Admin\PostController::class);
 
-    //  Приклади повних CRUD у адмінці (якщо реалізовані контролери)
-    Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
-    Route::resource('comments',   \App\Http\Controllers\Admin\CommentController::class);
-    Route::resource('users',      \App\Http\Controllers\Admin\UserController::class);
-});
+        // CRUD для категорий
+        Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
 
-/* =========================
- * ВІДЛАДКА (AUTH)
- * ========================= */
+        // CRUD для комментариев
+        Route::resource('comments', \App\Http\Controllers\Admin\CommentController::class);
 
+        // CRUD для пользователей
+        Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+    });
+
+/* ------------------------------------------------------------------------
+   ОТЛАДОЧНЫЙ МАРШРУТ (вне админ-группы)
+   ------------------------------------------------------------------------ */
 Route::middleware('auth')->get('/debug-posts-create', function () {
     return 'Отладочный маршрут работает! Пользователь: ' . (auth()->check() ? auth()->user()->name : 'не авторизован');
 });

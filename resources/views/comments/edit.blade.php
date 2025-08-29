@@ -24,12 +24,10 @@
                     <label for="author" class="form-label">Автор</label>
                     <input type="text" id="author" name="author" class="form-control" value="{{ old('author', $comment->author) }}" required>
                 </div>
-
                 <div class="mb-3">
-                    <label for="content" class="form-label">Комментарий</label>
-                    <textarea id="content" name="content" class="form-control" rows="4" required>{{ old('content', $comment->content) }}</textarea>
+                    <label for="comment" class="form-label">Комментарий</label>
+                    <textarea id="comment" name="comment" class="form-control" rows="4" required>{{ old('comment', $comment->content) }}</textarea>
                 </div>
-
                 <div class="mb-3">
                     <label for="post_id" class="form-label">Пост</label>
                     <select id="post_id" name="post_id" class="form-control" required>
@@ -41,7 +39,6 @@
                         @endforeach
                     </select>
                 </div>
-                
                 <button type="submit" class="btn btn-primary">Обновить комментарий</button>
                 <a href="{{ route('comments.index') }}" class="btn btn-secondary">Отмена</a>
             </form>
