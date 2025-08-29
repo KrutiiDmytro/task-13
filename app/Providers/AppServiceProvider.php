@@ -2,14 +2,11 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 use App\Services\PostService;
 use App\Services\CategoryService;
 use App\Services\TagService;
-use Illuminate\Support\Facades\Route;
-use App\Http\Middleware\AdminMiddleware;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,11 +34,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Schema::defaultStringLength(191);
-
-         // реєстрація кастомного middleware під псевдонімом 'admin'
-        Route::aliasMiddleware('admin', AdminMiddleware::class);
-
         Paginator::useBootstrapFive();
     }
 }

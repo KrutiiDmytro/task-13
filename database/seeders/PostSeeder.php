@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use App\Models\Post;
 use App\Models\Category;
 use App\Models\Tag;
@@ -65,23 +64,17 @@ class PostSeeder extends Seeder
         ];
 
         foreach ($posts as $postData) {
-    $category = Category::where('name', $postData['category_name'])->first();
-    
-    // Получаем случайного пользователя или создаем тестового
-    $user = User::first() ?? User::factory()->create();
+            $category = Category::where('name', $postData['category_name'])->first();
 
-    $post = Post::create([
-        'title' => $postData['title'],
-        'content' => $postData['content'],
-        'date' => $postData['date'],
-        'category_id' => $category ? $category->id : null,
-        'user_id' => $user->id,
-        'author_name' => $user->name,
-        'author_email' => $user->email,
-    ]);
+            $post = Post::create([
+                'title' => $postData['title'],
+                'content' => $postData['content'],
+                'date' => $postData['date'],
+                'category_id' => $category ? $category->id : null,
+            ]);
 
-    $tags = Tag::whereIn('name', $postData['tags'])->get();
-    $post->tags()->attach($tags);
-}
+            $tags = Tag::whereIn('name', $postData['tags'])->get();
+            $post->tags()->attach($tags);
+        }
     }
 }
