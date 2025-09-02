@@ -11,6 +11,16 @@ use App\Models\Tag;
 
 class DashboardController extends Controller
 {
+    public function __construct()
+    {
+        // Проверка прав администратора для всех методов этого контроллера
+        $this->middleware(function ($request, $next) {
+            if (!auth()->user()->isAdmin()) {
+                abort(403, 'Доступ запрещен. Требуются права администратора.');
+            }
+            return $next($request);
+        });
+    }
     public function index()
     {
         $stats = [

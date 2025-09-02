@@ -38,7 +38,7 @@
                     </a>
                 </li>
 
-                {{-- Авторизован / выпадающее меню --}}
+                 {{-- Авторизован / выпадающее меню --}}
                 @auth
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-dark"
@@ -49,13 +49,27 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
-                                <a class="dropdown-item" href="{{ route('profile.edit') }}">Профиль</a>
+                                <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                                    <i class="fas fa-user me-2"></i>Профиль
+                                </a>
                             </li>
+                            
+                            {{-- Админ-панель в меню для удобства --}}
+                            @if(auth()->user()->isAdmin())
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
+                                        <i class="fas fa-tools me-2"></i>Админ-панель
+                                    </a>
+                                </li>
+                            @endif
+                            
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-                                    <button type="submit" class="dropdown-item">Выйти</button>
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Выйти
+                                    </button>
                                 </form>
                             </li>
                         </ul>

@@ -77,12 +77,12 @@ Route::middleware('auth')->group(function () {
     /** Посты — только для авторизованных: редактирование/обновление/удаление */
     Route::resource('posts', PostController::class)->only([
         'edit', 'update', 'destroy'
-    ]);
+    ])->middleware('post.owner'); // Добавляем middleware для проверки прав
 
     /** Комментарии — редактирование/обновление/удаление (публічної частини) */
-    Route::resource('comments', CommentController::class)->only([
+    Route::resource('comments', \App\Http\Controllers\CommentController::class)->only([
         'edit', 'update', 'destroy'
-    ]);
+    ])->middleware('comment.owner');
 
     /** Личный кабинет */
     Route::get('/profile',    [ProfileController::class, 'edit'])->name('profile.edit');
@@ -96,7 +96,7 @@ Route::middleware('auth')->group(function () {
     /* ------------------------------------------------------------------------
         АДМИН-ПАНЕЛЬ
     ------------------------------------------------------------------------ */
-    Route::middleware(['auth'])
+    Route::middleware(['auth', 'admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {

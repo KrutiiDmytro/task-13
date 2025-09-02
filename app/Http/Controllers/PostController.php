@@ -118,25 +118,9 @@ class PostController extends Controller
     return redirect()->route('posts.show', $post)->with('success', 'Пост успешно создан!');
     }
 
-    /* ---------- Форма редактирования --------------------------------------- */
-    public function edit(Post $post): View
-    {
-        if (auth()->id() !== $post->user_id && !$this->isAdmin()) {
-            abort(403, 'У вас нет прав для редактирования этого поста');
-        }
-
-        $categories = $this->categoryService->getAll();
-        $tags       = $this->tagService->getAll();
-
-        return view('posts.edit', compact('post', 'categories', 'tags'));
-    }
     /* ---------- Обновляем существующий пост -------------------------------- */
     public function update(Request $request, Post $post): RedirectResponse
     {
-    // права
-    if (auth()->id() !== $post->user_id && !$this->isAdmin()) {
-        abort(403, 'У вас нет прав для редактирования этого поста');
-    }
 
     $data = $request->validate([
         'title'       => 'required|string|max:255|unique:posts,title,' . $post->id,
@@ -144,7 +128,6 @@ class PostController extends Controller
         'category_id' => 'nullable|exists:categories,id',
         'tags'        => 'nullable|array',
         'tags.*'      => 'string|max:30',
-        // при необходимости добавьте dimensions: ...
         'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:4096',
     ]);
 
@@ -172,15 +155,28 @@ class PostController extends Controller
     return redirect()->route('posts.show', $post)->with('success', 'Пост успешно обновлён!');
     }
 
-    /* ---------- Удаляем пост ------------------------------------------------ */
+        /* ---------- Форма редактирования ---------------------------------------- */
+    public function edit(Post $post): View
+    {
+        // Проверка прав выполняется в middleware post.owner
+        $categories = $this->categoryService->getAll();
+        $tags       = $this->tagService->getAll();
+
+        return view('posts.edit', compact('post', 'categories', 'tags'));
+    }
+
+    /* ---------- Удаление поста ---------------------------------------------- */
     public function destroy(Post $post): RedirectResponse
     {
-        // Проверяем права: либо владелец поста, либо админ
-                if (auth()->id() !== $post->user_id && !$this->isAdmin()) {
-            abort(403, 'У вас нет прав для удаления этого поста');
+        // Проверка прав выполняется в middleware post.owner
+        
+        // Удаляем изображение если есть
+        if ($post->image) {
+            Storage::disk('public')->delete($post->image);
         }
-
+        
         $post->delete();
+        
         return redirect()->route('posts.index')
                          ->with('success', 'Пост успешно удалён!');
     }

@@ -4,15 +4,15 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
     /**
-     * Display the login view.
+     * Показ форми логіну.
      */
     public function create(): View
     {
@@ -20,34 +20,36 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Handle an incoming authentication request.
+     * Обробка логіну з редіректом за роллю.
+     *
+     * Якщо користувач адмін — ведемо в адмінку (/admin).
+     * Інакше — на головну (список постів).
+     * Використовуємо intended, щоб поважати сторінку, куди користувач намагався потрапити до логіну.
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-    $request->authenticate();
-    $request->session()->regenerate();
+        $request->authenticate();              // аутентифікація
+        $request->session()->regenerate();     // захист від фіксації сесії
 
-    $user = $request->user();
-    $isAdmin = method_exists($user, 'hasRole')
-        ? $user->hasRole('admin')
-        : (bool)($user->is_admin ?? false);
+        $user = $request->user();
 
-    if ($isAdmin) {
-        return redirect()->intended(route('admin.dashboard', absolute: false));
-    }
+        if ($user && (bool)($user->is_admin ?? false)) {
+            // адмін — у адмін-панель
+            return redirect()->intended(route('admin.dashboard'));
+        }
 
-    return redirect()->intended(route('dashboard', absolute: false));
+        // звичайний користувач — на головну
+        return redirect()->intended(route('posts.index'));
     }
 
     /**
-     * Destroy an authenticated session.
+     * Логаут.
      */
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/');

@@ -16,6 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+            // Middleware для проверки прав на редактирование постов
+            'post.owner' => \App\Http\Middleware\PostOwnerMiddleware::class,
+            'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'comment.owner' => \App\Http\Middleware\CommentOwnerMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

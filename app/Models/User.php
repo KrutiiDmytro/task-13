@@ -23,6 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_admin',
     ];
 
     /**
@@ -45,9 +46,25 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'boolean',
         ];
     }
+     /**
+     * Проверяет, является ли пользователь администратором
+     */
+    public function isAdmin(): bool
+    {
+        return $this->is_admin || $this->hasRole('admin');
+    }
 
+    /**
+     * Проверяет, может ли пользователь редактировать пост
+     */
+    public function canEditPost(Post $post): bool
+    {
+        return $this->id === $post->user_id || $this->isAdmin();
+    }
+    
     /**
      * Связь: пользователь имеет много постов
      */

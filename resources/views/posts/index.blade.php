@@ -47,18 +47,18 @@
                                     @endif
                                 </small>
                                 
-                                <!-- Кнопки управления - только для авторизованных владельцев -->
+                                                                <!-- Кнопки управления - для владельцев и администраторов -->
                                 @auth
-                                    @if(auth()->id() === $post->user_id || (method_exists(auth()->user(),'hasRole') ? auth()->user()->hasRole('admin') : (auth()->user()->is_admin ?? false)))
+                                    @if(auth()->user()->canEditPost($post))
                                         <div class="btn-group" role="group">
-                                            <a href="{{ route('posts.edit', $post) }}" class="btn btn-edit btn-sm">
-                                                <i class="fas fa-edit"></i>
+                                            <a href="{{ route('posts.edit', $post) }}" class="btn btn-edit btn-sm" title="Редактировать">
+                                                <i class="fas fa-edit"></i> Редактировать
                                             </a>
                                             <form action="{{ route('posts.destroy', $post) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-delete btn-sm" onclick="return confirm('Вы уверены?')">
-                                                    <i class="fas fa-trash"></i>
+                                                <button type="submit" class="btn btn-delete btn-sm" title="Удалить" onclick="return confirm('Вы уверены, что хотите удалить этот пост?')">
+                                                    <i class="fas fa-trash"></i> Удалить
                                                 </button>
                                             </form>
                                         </div>

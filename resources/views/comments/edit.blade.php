@@ -25,8 +25,8 @@
                     <input type="text" id="author" name="author" class="form-control" value="{{ old('author', $comment->author) }}" required>
                 </div>
                 <div class="mb-3">
-                    <label for="comment" class="form-label">Комментарий</label>
-                    <textarea id="comment" name="comment" class="form-control" rows="4" required>{{ old('comment', $comment->content) }}</textarea>
+                    <label for="content" class="form-label">Комментарий</label>
+                    <textarea id="content" name="content" class="form-control" rows="4" required>{{ old('content', $comment->content) }}</textarea>
                 </div>
                 <div class="mb-3">
                     <label for="post_id" class="form-label">Пост</label>
