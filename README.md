@@ -111,7 +111,7 @@ php artisan serve
 ## 👤 Учетные записи по умолчанию
 
 ### Администратор
-- **Email**: admin@admin.com
+- **Email**: krutiidmytro@gmail.com
 - **Пароль**: admin123
 - **Доступ**: Админ-панель (http://localhost:8000/admin)
 
