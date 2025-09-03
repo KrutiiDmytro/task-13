@@ -38,8 +38,7 @@ class AuthTest extends TestCase
         $response->assertRedirect(route('posts.index'));
         $this->assertAuthenticated();
     }
-
-    public function test_user_can_logout()
+   public function test_user_can_logout()
     {
         $user = User::factory()->create();
 

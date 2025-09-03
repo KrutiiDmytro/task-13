@@ -96,7 +96,7 @@ Route::middleware('auth')->group(function () {
     /* ------------------------------------------------------------------------
         АДМИН-ПАНЕЛЬ
     ------------------------------------------------------------------------ */
-    Route::middleware(['auth'])
+    Route::middleware(['auth', 'admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
