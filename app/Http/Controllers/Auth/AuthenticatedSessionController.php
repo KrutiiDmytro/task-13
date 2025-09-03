@@ -24,19 +24,23 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-    $request->authenticate();
-    $request->session()->regenerate();
+        $request->authenticate();
+        $request->session()->regenerate();
 
-    $user = $request->user();
-    $isAdmin = method_exists($user, 'hasRole')
-        ? $user->hasRole('admin')
-        : (bool)($user->is_admin ?? false);
+        $user = $request->user();
+        
+        // Проверяем является ли пользователь администратором
+        if ($user->isAdmin()) {
+            try {
+                return redirect()->intended(route('admin.dashboard'));
+            } catch (\Exception $e) {
+                // Fallback если админ маршрут не работает
+                return redirect()->intended('/');
+            }
+        }
 
-    if ($isAdmin) {
-        return redirect()->intended(route('admin.dashboard', absolute: false));
-    }
-
-    return redirect()->intended(route('dashboard', absolute: false));
+        // Обычные пользователи идут на главную страницу
+        return redirect()->intended(route('posts.index'));
     }
 
     /**
