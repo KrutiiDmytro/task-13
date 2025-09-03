@@ -118,6 +118,14 @@
         @stack('styles')
     </head>
     <body class="font-sans antialiased">
+        
+        @if(session('logout_success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('logout_success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
         <div class="min-h-screen bg-gray-100">
             @include('layouts.navigation')
 

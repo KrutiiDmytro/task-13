@@ -12,20 +12,15 @@ class AuthTest extends TestCase
 
     public function test_user_can_register()
     {
-        $userData = [
+        $response = $this->post('/register', [
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'password',
             'password_confirmation' => 'password',
-        ];
-
-        $response = $this->post('/register', $userData);
-
-        $response->assertRedirect('/dashboard');
-        $this->assertDatabaseHas('users', [
-            'name' => 'Test User',
-            'email' => 'test@example.com',
         ]);
+
+        $response->assertRedirect(route('posts.index'));  
+        $this->assertAuthenticated();
     }
 
     public function test_user_can_login()
@@ -40,7 +35,7 @@ class AuthTest extends TestCase
             'password' => 'password',
         ]);
 
-        $response->assertRedirect('/dashboard');
+        $response->assertRedirect(route('posts.index'));
         $this->assertAuthenticated();
     }
 
@@ -50,7 +45,7 @@ class AuthTest extends TestCase
 
         $response = $this->actingAs($user)->post('/logout');
 
-        $response->assertRedirect('/');
+        $response->assertRedirect('/login');
         $this->assertGuest();
     }
 

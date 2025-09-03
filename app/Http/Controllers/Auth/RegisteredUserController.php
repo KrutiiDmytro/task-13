@@ -45,6 +45,12 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        // Проверяем роль пользователя и перенаправляем соответственно
+        if ($user->isAdmin()) {
+            return redirect(route('admin.dashboard', absolute: false));
+        }
+
+        // Обычные пользователи идут на главную страницу
+        return redirect(route('posts.index', absolute: false));
     }
 }
