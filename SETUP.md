@@ -11,7 +11,7 @@ cp .env.example .env
 php artisan key:generate
 
 # 3. Настроить базу данных в .env файле
-# Открыть .env и прописать настройки БД
+# Открыть .env и указать: DB_DATABASE=blog_posts
 
 # 4. Создать базу и заполнить данными
 php artisan migrate:fresh --seed
@@ -42,15 +42,23 @@ php artisan test
 ```
 ```
 
-## **Шаг 3: Выполнить команды**
+### **2. Выполнить команды в PowerShell:**
 
 ```powershell
-# Добавить файлы
+# Добавить файлы в git
 git add .
 
-# Коммит
-git commit -m "feat: add complete setup instructions and admin seeder with roles"
+# Сделать коммит
+git commit -m "docs: add complete setup instructions for mentor"
 
-# Отправить
+# Отправить в репозиторий
 git push origin main
 ```
+
+### **3. Проверить что отправилось:**
+
+```powershell
+git status
+```
+
+**Должно показать:** `Your branch is up to date with 'origin/main'`
