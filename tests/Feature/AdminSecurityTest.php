@@ -12,7 +12,7 @@ class AdminSecurityTest extends TestCase
 
     public function test_regular_user_cannot_access_admin_panel()
     {
-        $user = User::factory()->create(['is_admin' => false]);
+        $user = User::factory()->create();
 
         $response = $this->actingAs($user)->get('/admin');
 
@@ -21,7 +21,7 @@ class AdminSecurityTest extends TestCase
 
     public function test_admin_can_access_admin_panel()
     {
-        $admin = User::factory()->create(['is_admin' => true]);
+        $admin = User::factory()->admin()->create();
 
         $response = $this->actingAs($admin)->get('/admin');
 

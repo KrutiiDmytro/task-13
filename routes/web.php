@@ -116,6 +116,14 @@ Route::middleware('auth')->group(function () {
 
         // CRUD для пользователей
         Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+
+        // Профиль администратора
+        Route::get('/profile', [\App\Http\Controllers\Admin\AdminProfileController::class, 'edit'])
+            ->name('profile.edit');
+        Route::patch('/profile', [\App\Http\Controllers\Admin\AdminProfileController::class, 'update'])
+            ->name('profile.update');
+        Route::put('/profile/password', [\App\Http\Controllers\Admin\AdminProfileController::class, 'updatePassword'])
+            ->name('profile.password');
     });
 
 /* ------------------------------------------------------------------------
