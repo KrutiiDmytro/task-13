@@ -1,6 +1,6 @@
-# Блог на Laravel
+# Блог на Laravel с REST API
 
-Современная блог-платформа на Laravel 12 с админ-панелью, системой прав доступа и полным покрытием тестами.
+Современная блог-платформа на Laravel 12 с админ-панелью, системой прав доступа, REST API и полным покрытием тестами.
 
 ## 🚀 Возможности
 
@@ -27,14 +27,24 @@
 - ✅ **Статистика** — количество постов, пользователей, комментариев
 - ✅ **Быстрый доступ** — кнопка "Админ-панель" в навигации
 
-## 🛠 Технологии
+### REST API
+- ✅ **API для постов** — CRUD операции с постами
+- ✅ **API для комментариев** — создание и получение комментариев
+- ✅ **API для категорий** — управление категориями
+- ✅ **API документация** — Swagger/OpenAPI документация
+- ✅ **JSON/XML ответы** — поддержка разных форматов данных
+- ✅ **API Resources** — трансформация данных для API
+
+## �� Технологии
 
 - **Backend**: Laravel 12, PHP 8.2+
 - **Frontend**: Bootstrap 5, Font Awesome, AdminLTE 3
+- **API**: REST API с JSON/XML поддержкой
 - **База данных**: MySQL / SQLite
-- **Аутентификация**: Laravel Breeze
+- **Аутентификация**: Laravel Breeze + API Token
 - **Авторизация**: Custom Middleware + Spatie Permission
-- **Тестирование**: PHPUnit (100+ тестов)
+- **Тестирование**: PHPUnit (150+ тестов)
+- **Документация**: Swagger/OpenAPI
 
 ## 📦 Требования
 
@@ -44,12 +54,12 @@
 - Node.js 18+/20+ (для сборки assets)
 - Расширения PHP: gd (для тестовых изображений), pdo, mbstring и др.
 
-## 🚀 Установка
+## �� Установка
 
 ### 1) Клонирование репозитория
 ```bash
 git clone <repository-url>
-cd Task-11
+cd Task-12
 ```
 
 ### 2) Установка зависимостей
@@ -120,18 +130,27 @@ php artisan serve
 
 ## 📁 Структура проекта
 
-Task-11/
+Task-12/
 ├── app/
 │ ├── Http/
 │ │ ├── Controllers/
 │ │ │ ├── PostController.php # публичные страницы постов
 │ │ │ ├── CommentController.php # публичные комментарии
+│ │ │ ├── Api/V1/ # API контроллеры
+│ │ │ │ ├── PostController.php # API для постов
+│ │ │ │ ├── CommentController.php # API для комментариев
+│ │ │ │ └── CategoryController.php # API для категорий
 │ │ │ └── Admin/ # контроллеры админ-панели
 │ │ │ ├── DashboardController.php # главная админки
 │ │ │ ├── PostController.php # управление постами
 │ │ │ ├── UserController.php # управление пользователями
 │ │ │ ├── CategoryController.php # управление категориями
 │ │ │ └── CommentController.php # управление комментариями
+│ │ ├── Resources/Api/V1/ # API Resources для трансформации данных
+│ │ │ ├── PostResource.php
+│ │ │ ├── PostCollection.php
+│ │ │ ├── CommentResource.php
+│ │ │ └── CommentCollection.php
 │ │ └── Middleware/
 │ │ ├── AdminMiddleware.php # проверка прав администратора
 │ │ ├── PostOwnerMiddleware.php # проверка прав на посты
@@ -157,12 +176,12 @@ Task-11/
 │ │ └── navigation.blade.php # навигация с кнопкой админ-панели
 │ └── css/
 │ └── app.css # основные стили
-└── tests/
-├── Unit/ # Unit-тесты (модели, middleware)
-└── Feature/ # Feature-тесты (контроллеры, интеграция)
+├── tests/
+│ ├── Unit/ # Unit-тесты (модели, middleware, сервисы, компоненты)
+│ └── Feature/ # Feature-тесты (контроллеры, API, интеграция)
+└── storage/api-docs/ # Swagger документация
 
-
-## 🎨 Дизайн
+## �� Дизайн
 
 ### Основной сайт
 - **Bootstrap 5** с кастомными стилями
@@ -175,7 +194,7 @@ Task-11/
 - **Таблицы с данными** — последние посты и комментарии
 - **Боковое меню** для навигации
 
-## 🔗 Основные маршруты
+## �� Основные маршруты
 
 ### Публичные
 
@@ -186,7 +205,6 @@ GET /posts/create # форма создания поста
 POST /posts # создать пост
 GET /comments # список комментариев
 POST /comments # создать комментарий
-
 
 ### Защищенные (требуется авторизация)
 
@@ -199,7 +217,6 @@ DELETE /comments/{id} # удаление комментария (владеле�
 GET /profile # профиль
 PATCH /profile # обновление профиля
 
-
 ### Админ-панель (требуется is_admin = true)
 
 GET /admin # главная админки
@@ -208,8 +225,28 @@ GET /admin/users # управление пользователями
 GET /admin/comments # управление комментариями
 GET /admin/categories # управление категориями
 
+### REST API
 
-## 🔐 Система прав доступа
+#### Посты
+GET /api/v1/posts # список постов
+GET /api/v1/posts/{id} # получить пост
+POST /api/v1/posts # создать пост
+PUT /api/v1/posts/{id} # обновить пост
+DELETE /api/v1/posts/{id} # удалить пост
+
+#### Комментарии
+GET /api/v1/comments # список комментариев
+GET /api/v1/comments/{id} # получить комментарий
+POST /api/v1/comments # создать комментарий
+
+#### Категории
+GET /api/v1/categories # список категорий
+GET /api/v1/categories/{id} # получить категорию
+POST /api/v1/categories # создать категорию
+PUT /api/v1/categories/{id} # обновить категорию
+DELETE /api/v1/categories/{id} # удалить категорию
+
+## �� Система прав доступа
 
 ### Middleware
 - **AdminMiddleware** — доступ к админ-панели только для администраторов
@@ -240,18 +277,24 @@ $user->canEditPost($post)           // может ли редактироват�
 php artisan test                     # все тесты
 php artisan test --testsuite=Unit    # только Unit тесты
 php artisan test --testsuite=Feature # только Feature тесты
-php artisan test --coverage          # с покрытием кода
+php artisan test --coverage-html coverage-html  # HTML отчет покрытия
+php artisan test --coverage-text     # текстовый отчет покрытия
 php artisan test --filter="Admin"    # только админские тесты
+php artisan test --filter="Api"      # только API тесты
 ```
 
-### Покрытие тестами (100+ тестов)
+### Покрытие тестами (150+ тестов)
 - ✅ **Модели**: User, Post, Comment, Category, Tag
 - ✅ **Контроллеры**: Post, Comment, Admin контроллеры
+- ✅ **API контроллеры**: Post, Comment, Category API
 - ✅ **Middleware**: Admin, PostOwner, CommentOwner
 - ✅ **Сервисы**: PostService, CategoryService, TagService
+- ✅ **View Components**: AppLayout, GuestLayout
 - ✅ **Аутентификация**: регистрация, вход/выход, защищенные маршруты
 - ✅ **Авторизация**: права владельца/админа на посты и комментарии
 - ✅ **Админ-панель**: доступ, статистика, управление контентом
+- ✅ **REST API**: CRUD операции, JSON/XML ответы
+- ✅ **API Resources**: трансформация данных
 - ✅ **Навигация**: отображение кнопок для разных ролей
 - ✅ **Валидация**: поля постов, изображения, комментарии
 - ✅ **Связи моделей**: отношения между Post, Comment, User, Category, Tag
@@ -263,18 +306,40 @@ php artisan test tests/Feature/PostPermissionsTest.php
 php artisan test tests/Feature/CommentPermissionsTest.php
 
 # Тесты админ-панели
-php artisan test tests/Feature/AdminDashboardTest.php
+php artisan test tests/Feature/Admin/AdminDashboardTest.php
 
-# Тесты навигации
-php artisan test tests/Feature/NavigationTest.php
+# Тесты API
+php artisan test tests/Feature/Api/PostControllerTest.php
+php artisan test tests/Feature/Api/CommentControllerTest.php
+
+# Тесты сервисов
+php artisan test tests/Unit/Services/PostServiceTest.php
+
+# Тесты компонентов
+php artisan test tests/Unit/View/Components/AppLayoutTest.php
 ```
 
-## 🔐 Безопасность
+### Генерация отчета о покрытии
+```bash
+# HTML отчет (откройте coverage-html/index.html)
+php artisan test --coverage-html coverage-html
+
+# Текстовый отчет
+php artisan test --coverage-text
+
+# XML отчет для CI/CD
+php artisan test --coverage-clover coverage.xml
+```
+
+**Отчет о покрытии:** `file:///C:/Foxminded/Task-12/coverage-html/index.html`
+
+## �� Безопасность
 
 - **CSRF-защита** форм
 - **Серверная валидация** данных
 - **Авторизация по ролям** (is_admin флаг + Spatie Permission)
 - **Middleware защита** маршрутов
+- **API Token аутентификация** для REST API
 - **Защита от SQL-инъекций** (Eloquent/Query Builder)
 - **XSS-защита** в Blade шаблонах
 - **Проверка прав** на уровне контроллеров и middleware
@@ -286,8 +351,9 @@ php artisan test tests/Feature/NavigationTest.php
 - **Пагинация** списков
 - **Ленивая загрузка** изображений
 - **Сервисы** для бизнес-логики
+- **API Resources** для оптимизации JSON ответов
 
-## 🚢 Развертывание
+## �� Развертывание
 
 ### Продакшн
 ```bash
@@ -317,13 +383,14 @@ SESSION_DRIVER=redis
 QUEUE_CONNECTION=redis
 ```
 
-## 🤝 Участие в проекте
+## �� Участие в проекте
 
 1. Форкните репозиторий
 2. Создайте ветку `feature/new-feature`
 3. Внесите изменения + добавьте тесты
 4. Убедитесь, что все тесты проходят: `php artisan test`
-5. Откройте Pull Request
+5. Проверьте покрытие кода: `php artisan test --coverage-html`
+6. Откройте Pull Request
 
 ## 📝 Лицензия
 
@@ -338,7 +405,7 @@ QUEUE_CONNECTION=redis
 ## 🎯 Roadmap
 
 ### Версия 2.0
-- [ ] Публичное API (для мобильных клиентов)
+- [ ] Публичное API (для мобильных клиентов) ✅
 - [ ] Система уведомлений
 - [ ] Экспорт в PDF
 - [ ] Многоязычность интерфейса
@@ -360,20 +427,23 @@ QUEUE_CONNECTION=redis
 - **Middleware** — централизованная проверка прав доступа
 - **Repository Pattern** — через Eloquent ORM
 - **Request Validation** — валидация на уровне контроллеров
+- **API Resources** — трансформация данных для API
 
 ### Безопасность
 - **Двойная защита** — и в middleware, и в контроллерах
 - **Проверка владельца** — пользователи могут редактировать только свой контент
 - **Админские права** — полный доступ для администраторов
+- **API Token** — безопасная аутентификация для API
 
 ### Тестирование
-- **100+ автотестов** — полное покрытие функциональности
+- **150+ автотестов** — полное покрытие функциональности
 - **Feature тесты** — тестирование пользовательских сценариев
 - **Unit тесты** — тестирование отдельных компонентов
+- **API тесты** — тестирование REST API
 - **Middleware тесты** — проверка системы прав доступа
 
 ---
 
 **Сделано с ❤️ на Laravel 12**
 
-🎉 **Готово к использованию!** Запустите `php artisan serve` и откройте http://localhost:8000
+🎉 **Готово к использованию!** Запустите `php artisan   serve` и откройте http://localhost:8000

@@ -59,11 +59,12 @@ class User extends Authenticatable
     }
 
     /**
-     * Связь: пользователь имеет много комментариев (если нужно)
+     * Связь: пользователь имеет много комментариев
+     * Поскольку в таблице comments нет user_id, связываем по полю author
      */
     public function comments(): HasMany
     {
-        return $this->hasMany(Comment::class);
+        return $this->hasMany(Comment::class, 'author', 'name');
     }
 
         public function isAdmin(): bool

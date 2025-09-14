@@ -7,7 +7,6 @@
     
     <div class="mb-4">
         <a href="{{ route('tags.index') }}" class="btn btn-secondary">&larr; Назад к тегам</a>
-        <a href="{{ route('tags.edit', $tag) }}" class="btn btn-warning">Редактировать</a>
     </div>
 
     <div class="card">

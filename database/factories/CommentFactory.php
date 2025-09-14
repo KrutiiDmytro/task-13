@@ -21,7 +21,7 @@ class CommentFactory extends Factory
         return [
             'author' => fake()->name(),
             'content' => fake()->paragraph(),
-            'post_id' => Post::factory(),
+        'post_id' => Post::query()->inRandomOrder()->value('id') ?? Post::factory(),
         ];
     }
 }

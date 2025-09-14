@@ -33,7 +33,9 @@ class PostControllerTest extends TestCase
 
     public function test_can_view_create_post_form()
     {
-        $response = $this->get('/posts/create');
+        $user = User::factory()->create();
+        
+        $response = $this->actingAs($user)->get('/posts/create');
 
         $response->assertStatus(200);
         $response->assertViewIs('posts.create');
@@ -52,7 +54,7 @@ class PostControllerTest extends TestCase
             'author_email' => 'test@example.com',
         ];
 
-        $response = $this->post('/posts', $postData);
+        $response = $this->actingAs($user)->post('/posts', $postData);
 
         $response->assertRedirect();
         $this->assertDatabaseHas('posts', [
@@ -63,7 +65,9 @@ class PostControllerTest extends TestCase
 
     public function test_cannot_create_post_without_required_fields()
     {
-        $response = $this->post('/posts', []);
+        $user = User::factory()->create();
+        
+        $response = $this->actingAs($user)->post('/posts', []);
 
         $response->assertSessionHasErrors(['title', 'content']);
     }
@@ -99,7 +103,7 @@ class PostControllerTest extends TestCase
         $updateData = [
             'title' => 'Updated Post',
             'content' => 'Updated content.',
-            'category_id' => $category->id, // Добавляем category_id
+            'category_id' => $category->id,
         ];
 
         $response = $this->actingAs($user)->put("/posts/{$post->id}", $updateData);

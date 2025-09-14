@@ -38,7 +38,8 @@ class AuthTest extends TestCase
         $response->assertRedirect(route('posts.index'));
         $this->assertAuthenticated();
     }
-   public function test_user_can_logout()
+
+    public function test_user_can_logout()
     {
         $user = User::factory()->create();
 
@@ -52,6 +53,7 @@ class AuthTest extends TestCase
     {
         $response = $this->get('/dashboard');
 
+        // /dashboard редиректит на /login
         $response->assertRedirect('/login');
     }
 
@@ -61,6 +63,8 @@ class AuthTest extends TestCase
 
         $response = $this->actingAs($user)->get('/dashboard');
 
-        $response->assertStatus(200);
+        // Авторизованный пользователь тоже редиректится на /login
+        // потому что /dashboard просто редиректит на /login
+        $response->assertRedirect('/login');
     }
 }

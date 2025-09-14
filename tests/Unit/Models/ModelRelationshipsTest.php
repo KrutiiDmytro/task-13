@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
@@ -88,5 +89,61 @@ class ModelRelationshipsTest extends TestCase
         // 3. Перевіряємо, що зв'язок 'category' існує і є екземпляром класу Category
         $this->assertInstanceOf(Category::class, $post->category);
         $this->assertEquals($category->name, $post->category->name);
+    }
+
+    // === Тесты для модели User ===
+
+    /**
+     * Тестируем связь "один ко многим" между User и Post.
+     */
+    #[Test]
+    public function a_user_has_many_posts(): void
+    {
+        // 1. Создаем пользователя
+        $user = User::factory()->create();
+
+        // 2. Создаем два поста, связанных с этим пользователем
+        Post::factory()->create(['user_id' => $user->id]);
+        Post::factory()->create(['user_id' => $user->id]);
+
+        // 3. Проверяем, что у пользователя есть связь 'posts' и это коллекция
+        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Collection::class, $user->posts);
+
+        // 4. Убеждаемся, что в коллекции ровно 2 поста
+        $this->assertCount(2, $user->posts);
+    }
+
+    /**
+     * Тестируем связь "один ко многим" между User и Comment.
+     */
+    #[Test]
+    public function a_user_has_many_comments(): void
+    {
+        // 1. Создаем пользователя
+        $user = User::factory()->create(['name' => 'Test Author']);
+
+        // 2. Создаем пост
+        $post = Post::factory()->create();
+
+        // 3. Создаем два комментария от этого пользователя
+        Comment::factory()->create([
+            'post_id' => $post->id,
+            'author' => $user->name,
+            'content' => 'First comment'
+        ]);
+        Comment::factory()->create([
+            'post_id' => $post->id,
+            'author' => $user->name,
+            'content' => 'Second comment'
+        ]);
+
+        // 4. Проверяем связь comments()
+        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Collection::class, $user->comments);
+        $this->assertCount(2, $user->comments);
+
+        // 5. Проверяем, что комментарии действительно принадлежат пользователю
+        foreach ($user->comments as $comment) {
+            $this->assertEquals($user->name, $comment->author);
+        }
     }
 }

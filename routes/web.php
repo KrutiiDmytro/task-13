@@ -1,33 +1,22 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
-/* ----- аутентификация/регистрация (Breeze) ------------------------------ */
-require __DIR__ . '/auth.php';
-
-/* ----- контроллеры ------------------------------------------------------ */
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\TagController;
-use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicController;
+use Illuminate\Support\Facades\Route;
 
-/* ------------------------------------------------------------------------
-   ТЕСТ / ОТЛАДКА
-   ------------------------------------------------------------------------ */
-Route::get('/test', function () {
-    return view('test');
-});
-
-/* ------------------------------------------------------------------------
-   ПУБЛИЧНАЯ ЧАСТЬ
-   ------------------------------------------------------------------------ */
-// ---------------- ТЕГИ: пошук та перегляд ----------------
-//  Сторінка списку тегів + пошук по назві тегу (?q=)
-Route::get('/tags', [TagController::class, 'index'])->name('tags.index');
-
-// Пости за конкретним тегом
-Route::get('/tags/{slug}', [TagController::class, 'show'])->name('tags.show');
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+*/
 
 /** Главная: список постов (поиск + фильтры + пагинация) */
 Route::get('/', [PostController::class, 'index'])->name('posts.index');
@@ -37,66 +26,66 @@ Route::get('/home', function () {
     return redirect()->route('posts.index');
 })->name('home');
 
+/** Dashboard - редирект на логин для неавторизованных */
+Route::get('/dashboard', function () {
+    return redirect('/login');
+})->name('dashboard');
+
+/** Посты — список (доступно всем) */
+Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+
 /** Публичные страницы */
 Route::get('/contact', [PublicController::class, 'contactPage'])->name('contact');
+Route::get('/news/{id}', [PublicController::class, 'newsDatailsPage'])->name('news.show');
+Route::get('/news/{id}/{category}', [PublicController::class, 'newsDatailsPage'])->name('news.show.category');
 
-/** Детали новости с необязательной категорией */
-Route::get('/news/{id}/{category?}', [PublicController::class, 'newsDatailsPage'])
-    ->whereNumber('id')
-    ->whereNumber('category')
-    ->name('news.details');
-
-/** Посты — публично: список / просмотр / создание / сохранение */
-Route::resource('posts', PostController::class)->only([
-     'show', 'create', 'store'
-]);
-
-Route::get('/posts', [PostController::class, 'index']);
-
-/** Теги — список / просмотр */
-Route::resource('tags', TagController::class)->only([
-    'index', 'show'
-]);
+/** Теги — полный CRUD */
+Route::get('/tags', [TagController::class, 'index'])->name('tags.index');
+Route::get('/tags/create', [TagController::class, 'create'])->name('tags.create');
+Route::post('/tags', [TagController::class, 'store'])->name('tags.store');
+Route::get('/tags/{slug}', [TagController::class, 'show'])->name('tags.show');
+Route::get('/tags/{tag}/edit', [TagController::class, 'edit'])->name('tags.edit');
+Route::put('/tags/{tag}', [TagController::class, 'update'])->name('tags.update');
+Route::delete('/tags/{tag}', [TagController::class, 'destroy'])->name('tags.destroy');
+Route::post('/tags/ajax', [TagController::class, 'storeAjax'])->name('tags.storeAjax');
 
 /** Комментарии — доступно всем: список / создание / сохранение / просмотр */
 Route::resource('comments', CommentController::class)->only([
     'index', 'store', 'create', 'show'
 ]);
 
+/** Комментарии — редактирование / обновление / удаление (только для авторизованных) */
 Route::middleware('auth')->group(function () {
-    Route::resource('comments', \App\Http\Controllers\CommentController::class)->only([
+    Route::resource('comments', CommentController::class)->only([
         'edit', 'update', 'destroy'
     ]);
 });
 
-/* ------------------------------------------------------------------------
-   АВТОРИЗОВАННЫЕ ПОЛЬЗОВАТЕЛИ
-   ------------------------------------------------------------------------ */
+/** Посты — создание / редактирование / обновление / удаление (только для авторизованных) */
 Route::middleware('auth')->group(function () {
+    Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
+    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+    Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
+    Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
+    Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+});
 
-    /** Посты — только для авторизованных: редактирование/обновление/удаление */
-    Route::resource('posts', PostController::class)->only([
-        'edit', 'update', 'destroy'
-    ]);
+/** Посты — просмотр отдельного поста (доступно всем, должно быть после create/edit) */
+Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
 
-    /** Комментарии — редактирование/обновление/удаление (публічної частини) */
-    Route::resource('comments', CommentController::class)->only([
-        'edit', 'update', 'destroy'
-    ]);
-
-    /** Личный кабинет */
-    Route::get('/profile',    [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile',  [ProfileController::class, 'update'])->name('profile.update');
+/** Профиль пользователя (только для авторизованных) */
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
-    /** Dashboard (пример: требуется подтверждённый email) */
-    Route::view('/dashboard', 'dashboard')->middleware('verified')->name('dashboard');
-    });
+require __DIR__.'/auth.php';
 
-    /* ------------------------------------------------------------------------
-        АДМИН-ПАНЕЛЬ
-    ------------------------------------------------------------------------ */
-    Route::middleware(['auth', 'admin'])
+/* ------------------------------------------------------------------------
+    АДМИН-ПАНЕЛЬ
+------------------------------------------------------------------------ */
+Route::middleware(['auth', 'admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
@@ -122,13 +111,6 @@ Route::middleware('auth')->group(function () {
             ->name('profile.edit');
         Route::patch('/profile', [\App\Http\Controllers\Admin\AdminProfileController::class, 'update'])
             ->name('profile.update');
-        Route::put('/profile/password', [\App\Http\Controllers\Admin\AdminProfileController::class, 'updatePassword'])
+        Route::patch('/profile/password', [\App\Http\Controllers\Admin\AdminProfileController::class, 'updatePassword'])
             ->name('profile.password');
     });
-
-/* ------------------------------------------------------------------------
-   ОТЛАДОЧНЫЙ МАРШРУТ (вне админ-группы)
-   ------------------------------------------------------------------------ */
-Route::middleware('auth')->get('/debug-posts-create', function () {
-    return 'Отладочный маршрут работает! Пользователь: ' . (auth()->check() ? auth()->user()->name : 'не авторизован');
-});

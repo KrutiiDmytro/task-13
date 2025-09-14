@@ -12,7 +12,7 @@ class AdminProfileController extends Controller
 {
     public function edit(): View
     {
-        return view('profile.edit', [
+        return view('admin.profile.edit', [
             'user' => auth()->user()
         ]);
     }
@@ -29,7 +29,7 @@ class AdminProfileController extends Controller
         $user->update($data);
 
         return redirect()
-            ->route('profile.edit')
+            ->route('admin.profile.edit')
             ->with('success', 'Профиль успешно обновлен!');
     }
 
@@ -53,7 +53,7 @@ class AdminProfileController extends Controller
         ]);
 
         return redirect()
-            ->route('profile.edit')
+            ->route('admin.profile.edit')
             ->with('password_success', 'Пароль успешно изменен!');
     }
 }

@@ -41,12 +41,19 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        // (UA) Валідація: унікальне ім’я тегу
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:tags,name',
-        ]);
+        // Валидация с правильной обработкой ошибок для JSON
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255|unique:tags,name',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'errors' => $e->errors()
+            ], 422);
+        }
 
-        $tag = Tag::create($validated); // (UA) slug згенерується автоматично в моделі
+        $tag = Tag::create($validated);
 
         return response()->json([
             'success' => true,
@@ -58,11 +65,11 @@ class TagController extends Controller
         ]);
     }
 
-/**
+    /**
      * Показати пости за конкретним тегом (slug).
      *  Видаємо список постів, прикріплених до цього тегу, з пагінацією.
      */
-        public function show(string $slug): View
+    public function show(string $slug): View
     {
         $tag = Tag::where('slug', $slug)->firstOrFail();
 
@@ -74,8 +81,6 @@ class TagController extends Controller
 
         return view('tags.show', compact('tag', 'posts'));
     }
-
-
 
     /**
      * Показывает форму редактирования тега.
@@ -112,14 +117,21 @@ class TagController extends Controller
             ->with('success', 'Тег успешно удален!');
     }
 
-        /**
+    /**
      * Сохраняет новый тег через AJAX запрос.
      */
     public function storeAjax(Request $request): \Illuminate\Http\JsonResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:tags,name',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255|unique:tags,name',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'errors' => $e->errors()
+            ], 422);
+        }
 
         $tag = Tag::create($validated);
 
