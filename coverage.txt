@@ -1,12 +1,12 @@
 
 
 [1;37;40mCode Coverage Report:      [0m
-[1;37;40m  2025-09-14 15:31:31      [0m
+[1;37;40m  2025-09-14 15:52:48      [0m
 [1;37;40m                           [0m
 [1;37;40m Summary:                  [0m
-[30;43m  Classes: 82.50% (33/40)  [0m
-[30;42m  Methods: 92.86% (117/126)[0m
-[30;42m  Lines:   98.59% (771/782)[0m
+[30;43m  Classes: 87.50% (35/40)  [0m
+[30;42m  Methods: 94.44% (119/126)[0m
+[30;42m  Lines:   98.98% (774/782)[0m
 
 App\Http\Controllers\Admin\AdminProfileController
   [30;42mMethods: 100.00% ( 3/ 3)[0m   [30;42mLines: 100.00% ( 27/ 27)[0m
@@ -45,7 +45,7 @@ App\Http\Controllers\Auth\RegisteredUserController
 App\Http\Controllers\Auth\VerifyEmailController
   [37;41mMethods:   0.00% ( 0/ 1)[0m   [30;43mLines:  80.00% (  4/  5)[0m
 App\Http\Controllers\CommentController
-  [30;43mMethods:  85.71% ( 6/ 7)[0m   [30;42mLines:  93.55% ( 29/ 31)[0m
+  [30;42mMethods: 100.00% ( 7/ 7)[0m   [30;42mLines: 100.00% ( 31/ 31)[0m
 App\Http\Controllers\Controller
   [30;42mMethods:  ( 0/ 0)[0m   [30;42mLines:  (  0/  0)[0m
 App\Http\Controllers\PostController
@@ -53,7 +53,7 @@ App\Http\Controllers\PostController
 App\Http\Controllers\ProfileController
   [30;42mMethods: 100.00% ( 3/ 3)[0m   [30;42mLines: 100.00% ( 17/ 17)[0m
 App\Http\Controllers\PublicController
-  [30;43mMethods:  66.67% ( 2/ 3)[0m   [30;42mLines:  92.86% ( 13/ 14)[0m
+  [30;42mMethods: 100.00% ( 3/ 3)[0m   [30;42mLines: 100.00% ( 14/ 14)[0m
 App\Http\Controllers\TagController
   [30;43mMethods:  87.50% ( 7/ 8)[0m   [30;42mLines:  98.39% ( 61/ 62)[0m
 App\Http\Requests\Auth\LoginRequest

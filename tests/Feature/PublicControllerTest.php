@@ -74,4 +74,92 @@ class PublicControllerTest extends TestCase
         $category = $response->viewData('category');
         $this->assertEquals('Unknown', $category['category']);
     }
+
+    // === Новые тесты для покрытия метода homePage ===
+
+    #[Test]
+    public function home_page_controller_method_returns_home_view()
+    {
+        // Создаем экземпляр контроллера
+        $controller = new \App\Http\Controllers\PublicController();
+        
+        // Вызываем метод homePage напрямую
+        $response = $controller->homePage();
+        
+        // Проверяем, что возвращается view
+        $this->assertInstanceOf(\Illuminate\View\View::class, $response);
+        
+        // Проверяем имя view более безопасным способом
+        $viewName = $response->name();
+        $this->assertEquals('home', $viewName);
+    }
+
+    #[Test]
+    public function contact_page_controller_method_returns_contact_view()
+    {
+        // Создаем экземпляр контроллера
+        $controller = new \App\Http\Controllers\PublicController();
+        
+        // Вызываем метод contactPage напрямую
+        $response = $controller->contactPage();
+        
+        // Проверяем, что возвращается view
+        $this->assertInstanceOf(\Illuminate\View\View::class, $response);
+        
+        // Проверяем имя view
+        $viewName = $response->name();
+        $this->assertEquals('contact', $viewName);
+    }
+
+    #[Test]
+    public function news_details_controller_method_returns_correct_data()
+    {
+        // Создаем экземпляр контроллера
+        $controller = new \App\Http\Controllers\PublicController();
+        
+        // Вызываем метод newsDatailsPage напрямую
+        $response = $controller->newsDatailsPage(1, 1);
+        
+        // Проверяем, что возвращается view
+        $this->assertInstanceOf(\Illuminate\View\View::class, $response);
+        
+        // Проверяем имя view
+        $viewName = $response->name();
+        $this->assertEquals('news-details', $viewName);
+        
+        // Проверяем данные
+        $data = $response->getData();
+        $this->assertEquals('First news', $data['data']['title']);
+        $this->assertEquals('News', $data['category']['category']);
+    }
+
+    #[Test]
+    public function news_details_controller_method_with_invalid_id_returns_not_found()
+    {
+        // Создаем экземпляр контроллера
+        $controller = new \App\Http\Controllers\PublicController();
+        
+        // Вызываем метод newsDatailsPage с несуществующим ID
+        $response = $controller->newsDatailsPage(999, 1);
+        
+        // Проверяем данные
+        $data = $response->getData();
+        $this->assertEquals('Not found', $data['data']['title']);
+        $this->assertEquals('News', $data['category']['category']);
+    }
+
+    #[Test]
+    public function news_details_controller_method_with_invalid_category_returns_unknown()
+    {
+        // Создаем экземпляр контроллера
+        $controller = new \App\Http\Controllers\PublicController();
+        
+        // Вызываем метод newsDatailsPage с несуществующей категорией
+        $response = $controller->newsDatailsPage(1, 999);
+        
+        // Проверяем данные
+        $data = $response->getData();
+        $this->assertEquals('First news', $data['data']['title']);
+        $this->assertEquals('Unknown', $data['category']['category']);
+    }
 }

@@ -91,6 +91,72 @@ class CommentControllerExtendedTest extends TestCase
         $this->assertEquals(['Alpha Post', 'Beta Post', 'Zebra Post'], $postTitles);
     }
 
+    // === Новые тесты для метода show ===
+
+    #[Test]
+    public function can_view_single_comment()
+    {
+        $comment = Comment::factory()->create();
+
+        $response = $this->get("/comments/{$comment->id}");
+
+        $response->assertStatus(200);
+        $response->assertViewIs('comments.show');
+        $response->assertViewHas('comment');
+        
+        // Проверяем, что комментарий загружен с связями
+        $viewComment = $response->viewData('comment');
+        $this->assertTrue($viewComment->relationLoaded('post'));
+    }
+
+    #[Test]
+    public function comment_show_loads_post_relationship()
+    {
+        $comment = Comment::factory()->create();
+
+        $response = $this->get("/comments/{$comment->id}");
+
+        $response->assertStatus(200);
+        $comment = $response->viewData('comment');
+        $this->assertTrue($comment->relationLoaded('post'));
+        $this->assertInstanceOf(Post::class, $comment->post);
+    }
+
+    #[Test]
+    public function comment_show_displays_comment_data()
+    {
+        $comment = Comment::factory()->create([
+            'author' => 'Test Author',
+            'content' => 'Test comment content'
+        ]);
+
+        $response = $this->get("/comments/{$comment->id}");
+
+        $response->assertStatus(200);
+        $response->assertSee('Test Author');
+        $response->assertSee('Test comment content');
+    }
+
+    #[Test]
+    public function comment_show_displays_related_post_info()
+    {
+        $post = Post::factory()->create(['title' => 'Related Post Title']);
+        $comment = Comment::factory()->create(['post_id' => $post->id]);
+
+        $response = $this->get("/comments/{$comment->id}");
+
+        $response->assertStatus(200);
+        $response->assertSee('Related Post Title');
+    }
+
+    #[Test]
+    public function comment_show_returns_404_for_non_existent_comment()
+    {
+        $response = $this->get('/comments/999');
+
+        $response->assertStatus(404);
+    }
+
     #[Test]
     public function can_create_comment()
     {
