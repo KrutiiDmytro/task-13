@@ -16,13 +16,15 @@ class CommentTest extends TestCase
         $post = Post::factory()->create();
 
         $comment = Comment::create([
-            'author' => 'Test Author',
+            'author_name' => 'Test Author',
+            'author_email' => 'test@example.com',
             'content' => 'This is a test comment.',
             'post_id' => $post->id,
         ]);
 
         $this->assertInstanceOf(Comment::class, $comment);
-        $this->assertEquals('Test Author', $comment->author);
+        $this->assertEquals('Test Author', $comment->author_name);
+        $this->assertEquals('test@example.com', $comment->author_email);
         $this->assertEquals('This is a test comment.', $comment->content);
         $this->assertEquals($post->id, $comment->post_id);
     }
@@ -40,7 +42,8 @@ class CommentTest extends TestCase
     {
         $comment = new Comment();
 
-        $this->assertContains('author', $comment->getFillable());
+        $this->assertContains('author_name', $comment->getFillable());
+        $this->assertContains('author_email', $comment->getFillable());
         $this->assertContains('content', $comment->getFillable());
         $this->assertContains('post_id', $comment->getFillable());
     }

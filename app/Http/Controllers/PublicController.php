@@ -56,56 +56,59 @@ class PublicController extends Controller
 
         return view('public.search', [
             'posts' => $posts,
-            'q'     => $term,
+            'q'     => $term, // Изменено с 'term' на 'q'
         ]);
     }
 
-    //  сторінка категорії за slug
+    //  показ постів за категорією
     public function byCategory(string $slug)
     {
         $category = Category::where('slug', $slug)->firstOrFail();
 
         $posts = Post::query()
             ->with(['category', 'tags'])
-            ->published()
             ->where('category_id', $category->id)
+            ->published()
             ->latest('published_at')
-            ->paginate(10)
-            ->withQueryString();
+            ->paginate(10);
 
         return view('public.category', [
             'category' => $category,
-            'posts'    => $posts,
+            'posts' => $posts,
         ]);
     }
 
-    // сторінка теґу за slug
+    //  показ постів за тегом
     public function byTag(string $slug)
     {
         $tag = Tag::where('slug', $slug)->firstOrFail();
 
         $posts = Post::query()
             ->with(['category', 'tags'])
-            ->published()
-            ->whereHas('tags', function ($q) use ($tag) {
-                $q->where('tags.id', $tag->id);
+            ->whereHas('tags', function ($query) use ($tag) {
+                $query->where('tags.id', $tag->id);
             })
+            ->published()
             ->latest('published_at')
-            ->paginate(10)
-            ->withQueryString();
+            ->paginate(10);
 
         return view('public.tag', [
-            'tag'   => $tag,
+            'tag' => $tag,
             'posts' => $posts,
         ]);
     }
 
-    // перегляд одного поста за slug (якщо потрібно)
-    public function show(string $slug)
+    //  показ одного поста
+    public function show(string $slugOrId)
     {
-        $post = Post::with(['category', 'tags'])
+        // Сначала пробуем найти по slug, потом по id
+        $post = Post::query()
+            ->with(['category', 'tags'])
+            ->where(function ($query) use ($slugOrId) {
+                $query->where('slug', $slugOrId)
+                      ->orWhere('id', $slugOrId);
+            })
             ->published()
-            ->where('slug', $slug)
             ->firstOrFail();
 
         return view('public.post', [

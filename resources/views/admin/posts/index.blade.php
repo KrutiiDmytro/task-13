@@ -21,8 +21,7 @@
                                     {{ $post->title }}
                                 </a>
                             </h5>
-                            <p class="card-text">{{ Str::limit($post->content, 200) }}</p>
-                            
+                            <p class="card-text">{{ \Illuminate\Support\Str::limit($post->content, 200) }}</p>                            
                             {{-- Теги поста (клікабельні для фільтрації) --}}
                             @if($post->tags->count() > 0)
                                 <div class="mt-2 mb-2">

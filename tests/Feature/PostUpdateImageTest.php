@@ -8,6 +8,7 @@ use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 use App\Models\Post;
 use App\Models\User;
+use App\Models\Category;
 
 class PostUpdateImageTest extends TestCase
 {
@@ -17,6 +18,7 @@ class PostUpdateImageTest extends TestCase
     {
         Storage::fake('public');
         $u = User::factory()->create();
+        $category = Category::factory()->create();
         $this->actingAs($u);
 
         $old = UploadedFile::fake()->image('old.jpg', 1200, 675)->store('posts', 'public');
@@ -24,6 +26,9 @@ class PostUpdateImageTest extends TestCase
             'title' => 'С картинкой',
             'content' => '...',
             'user_id' => $u->id,
+            'category_id' => $category->id,
+            'author_name' => 'Test Author',
+            'author_email' => 'test@example.com',
             'image' => $old,
             'date' => now()->toDateString(),
         ]);
@@ -33,6 +38,9 @@ class PostUpdateImageTest extends TestCase
         $res = $this->put(route('posts.update', $post), [
             'title' => 'С картинкой',
             'content' => 'Обновлено',
+            'category_id' => $category->id,
+            'author_name' => 'Test Author',
+            'author_email' => 'test@example.com',
             'image' => $new,
         ]);
 

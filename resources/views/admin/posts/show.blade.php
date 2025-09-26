@@ -174,10 +174,8 @@
                     <tbody>
                         @foreach($post->comments->take(5) as $comment)
                         <tr>
-                            <td>{{ $comment->name ?: 'Аноним' }}</td>
-                            <td>{{ Str::limit($comment->content, 80) }}</td>
-                            <td>{{ $comment->created_at->format('d.m.Y H:i') }}</td>
-                            <td>
+                            <td>{{ $comment->author_name ?: 'Аноним' }}</td>
+                            <td>{{ \Illuminate\Support\Str::limit($comment->content, 80) }}</td>                            <td>
                                 <a href="{{ route('admin.comments.show', $comment) }}" class="btn btn-sm btn-info">
                                     <i class="fas fa-eye"></i>
                                 </a>

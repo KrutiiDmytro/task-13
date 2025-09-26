@@ -17,38 +17,45 @@ class PostStoreTest extends TestCase
 
     public function test_authenticated_user_can_create_post_with_image_and_tags(): void
     {
-    Storage::fake('public');
-    $user = User::factory()->create();
-    $this->actingAs($user);
+        Storage::fake('public');
+        $user = User::factory()->create();
+        $this->actingAs($user);
 
-    $cat = Category::create(['name' => 'PHP']);
-    $file = UploadedFile::fake()->image('cover.jpg', 1200, 675);
+        $cat = Category::create(['name' => 'PHP']);
+        $file = UploadedFile::fake()->image('cover.jpg', 1200, 675);
 
-    $existing = Tag::create(['name' => 'CSS']); 
+        $existing = Tag::create(['name' => 'CSS']); 
 
-    $res = $this->post(route('posts.store'), [
-        'title'       => 'Новый пост',
-        'content'     => 'Текст',
-        'category_id' => $cat->id,
-        'tags'        => ['API', $existing->id], 
-        'image'       => $file,
-    ]);
+        $res = $this->post(route('posts.store'), [
+            'title'       => 'Новый пост',
+            'content'     => 'Текст',
+            'category_id' => $cat->id,
+            'author_name' => 'Test Author',
+            'author_email' => 'test@example.com',
+            'tags'        => ['API', $existing->id], 
+            'image'       => $file,
+        ]);
 
-    $res->assertRedirect();
-    
+        $res->assertRedirect();
     }
 
-    public function test_guest_can_create_post_with_guest_author(): void
+    public function test_guest_cannot_create_post(): void
     {
-        $res = $this->post(route('posts.store'), [
+        $category = Category::factory()->create();
+        
+        $response = $this->post(route('posts.store'), [
             'title' => 'От гостя',
             'content' => 'Контент',
+            'category_id' => $category->id,
             'author_name' => 'Гость',
             'author_email' => 'guest@example.com',
         ]);
 
-        $res->assertRedirect();
-        $this->assertDatabaseHas('posts', [
+        // Гости должны быть перенаправлены на страницу логина
+        $response->assertRedirect('/login');
+        
+        // Пост не должен быть создан
+        $this->assertDatabaseMissing('posts', [
             'title' => 'От гостя',
             'author_name' => 'Гость',
             'author_email' => 'guest@example.com',

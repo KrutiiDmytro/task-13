@@ -1,114 +1,103 @@
 <?php
 
-/* ----- аутентифікація/реєстрація (Breeze) ------------------------------- */
-require __DIR__ . '/auth.php';
-
-/* ----- контролери -------------------------------------------------------- */
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\PostController as AdminPostController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\CommentController as AdminCommentController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\PostController;
-use App\Http\Controllers\TagController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicController;
-use App\Http\Controllers\Admin\DashboardController;                 // Дашборд адмінки
-use App\Http\Controllers\Admin\PostController as AdminPostController; // Адмінський контролер постів
 
-/* ------------------------------------------------------------------------
-   ТЕСТ / ВІДЛАДКА (не обов'язково)
-   ------------------------------------------------------------------------ */
-Route::get('/test', function () {
-    return view('test');
+// Публичные роуты через PublicController
+Route::get('/', [PublicController::class, 'index'])->name('home');
+Route::get('/search', [PublicController::class, 'search'])->name('public.search');
+Route::get('/category/{slug}', [PublicController::class, 'byCategory'])->name('public.category');
+Route::get('/tag/{slug}', [PublicController::class, 'byTag'])->name('public.tag');
+Route::get('/post/{slug}', [PublicController::class, 'show'])->name('public.post');
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+require __DIR__.'/auth.php';
+
+// Admin routes
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::resource('posts', AdminPostController::class);
+    Route::resource('categories', AdminCategoryController::class);
+    Route::resource('comments', AdminCommentController::class);
+    Route::resource('users', AdminUserController::class);
 });
 
-/* =========================
- * ПУБЛІЧНІ МАРШРУТИ
- * ========================= */
-
-//  Головна і список постів доступні за двома шляхами (деякі тести ходять на /posts)
-Route::get('/',      [PostController::class, 'index'])->name('posts.index');
-Route::get('/posts', [PostController::class, 'index'])->name('posts.index.path');
-
-//  Створення поста — публічно (тести очікують можливість для гостя)
-Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
-Route::post('/posts',       [PostController::class, 'store'])->name('posts.store');
-
-//  Перегляд одного поста — публічно
-Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
-
-// /home -> на список постів (деякі шаблони посилаються на home)
-Route::get('/home', fn () => redirect()->route('posts.index'))->name('home');
-
-//  Теги — список та перегляд за slug (без resource, щоб уникнути конфліктів)
-Route::get('/tags',        [TagController::class, 'index'])->name('tags.index');
-Route::get('/tags/{slug}', [TagController::class, 'show'])->name('tags.show');
-
-//  Публічні сторінки (пошук/категорія/теґ)
-Route::get('/search',          [PublicController::class, 'search'])->name('search');
-Route::get('/category/{slug}', [PublicController::class, 'byCategory'])->name('category.show');
-Route::get('/tag/{slug}',      [PublicController::class, 'byTag'])->name('tag.show');
-
-//  Приклад додаткових публічних сторінок
-Route::get('/contact', [PublicController::class, 'contactPage'])->name('contact');
-Route::get('/news/{id}/{category?}', [PublicController::class, 'newsDatailsPage']) // TODO: назва методу в контролері: newsDatailsPage чи newsDetailsPage?
-    ->whereNumber('id')
-    ->whereNumber('category')
-    ->name('news.details');
-
-/* =========================
- * КОМЕНТАРІ
- * ========================= */
-
-//  Коментарі — публічні дії: список/створення/перегляд/збереження
-Route::resource('comments', CommentController::class)->only([
-    'index', 'create', 'store', 'show'
-]);
-
-/* =========================
- * ЗАХИЩЕНІ МАРШРУТИ (AUTH)
- * ========================= */
+// Публичные маршруты
+Route::resource('posts', PostController::class);
+Route::resource('comments', CommentController::class);
+Route::resource('tags', TagController::class);
 
 Route::middleware('auth')->group(function () {
-    //  Пост — редагування/оновлення/видалення (власник або адмін — додаткова перевірка у контролері)
-    Route::resource('posts', PostController::class)->only([
-        'edit', 'update', 'destroy'
-    ]);
-
-    //  Коментарі — редагування/оновлення/видалення
-    Route::resource('comments', CommentController::class)->only([
-        'edit', 'update', 'destroy'
-    ]);
-
-    //  Профіль
-    Route::get('/profile',    [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile',  [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    // Dashboard (приклад: потребує підтвердження email)
-    Route::view('/dashboard', 'dashboard')->middleware('verified')->name('dashboard');
 });
 
-/* =========================
- * АДМІН-ПАНЕЛЬ (AUTH + ADMIN)
- * ========================= */
+// Маршруты для Swagger UI
+Route::get('/api/documentation', function () {
+    return view('l5-swagger::index', [
+        'documentation' => 'default',
+        'documentationTitle' => 'Blog API Documentation',
+        'urlsToDocs' => [
+            'Blog API' => url('/api/docs.json')
+        ],
+        'useAbsolutePath' => true,
+        'operationsSorter' => config('l5-swagger.defaults.ui.operationsSorter', null),
+        'configUrl' => config('l5-swagger.defaults.ui.configUrl', null),
+        'validatorUrl' => config('l5-swagger.defaults.ui.validatorUrl', null),
+        'additionalConfigUrl' => null,
+        'requestInterceptor' => null,
+        'responseInterceptor' => null,
+    ]);
+})->name('l5-swagger.default.docs');
 
-// Всі маршрути під /admin захищені 'auth' + 'admin', іменування починається з 'admin.'
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    // Мінімальні роути
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/api/docs.json', function () {
+    $filePath = storage_path('api-docs/api-docs.json');
+    if (file_exists($filePath)) {
+        return response()->file($filePath, [
+            'Content-Type' => 'application/json',
+        ]);
+    }
+    return response()->json(['error' => 'Documentation not found'], 404);
+})->name('l5-swagger.default.api');
 
-    //  Повний ресурс постів в адмінці → створює admin.posts.index/show/create/store/edit/update/destroy
-    Route::resource('posts', AdminPostController::class);
+// Добавим маршрут для OAuth2 callback (требуется для Swagger UI)
+Route::get('/api/oauth2-redirect.html', function () {
+    return response('<!DOCTYPE html><html><head><title>Swagger UI: OAuth2 Redirect</title></head><body></body></html>');
+})->name('l5-swagger.default.oauth2_callback');
 
-    //  Приклади повних CRUD у адмінці (якщо реалізовані контролери)
-    Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
-    Route::resource('comments',   \App\Http\Controllers\Admin\CommentController::class);
-    Route::resource('users',      \App\Http\Controllers\Admin\UserController::class);
-});
+// Маршрут для редиректа на API документацию
+Route::get('/docs', function () {
+    return redirect('/api/documentation');
+})->name('api.docs');
 
-/* =========================
- * ВІДЛАДКА (AUTH)
- * ========================= */
-
-Route::middleware('auth')->get('/debug-posts-create', function () {
-    return 'Отладочный маршрут работает! Пользователь: ' . (auth()->check() ? auth()->user()->name : 'не авторизован');
-});
+// Информация об API
+Route::get('/api-info', function () {
+    return response()->json([
+        'api_name' => 'Blog API',
+        'version' => '1.0.0',
+        'description' => 'REST API для системы управления блогом',
+        'documentation_url' => url('/api/documentation'),
+        'base_url' => url('/api/v1'),
+        'supported_formats' => ['json', 'xml'],
+        'authentication' => 'Laravel Sanctum',
+        'endpoints' => [
+            'posts' => url('/api/v1/posts'),
+            'categories' => url('/api/v1/categories'),
+            'comments' => url('/api/v1/comments'),
+            'tags' => url('/api/v1/tags'),
+        ]
+    ]);
+})->name('api.info');

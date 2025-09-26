@@ -24,19 +24,23 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-    $request->authenticate();
-    $request->session()->regenerate();
+        $request->authenticate();
+        
+        // Проверяем наличие сессии перед регенерацией
+        if ($request->hasSession()) {
+            $request->session()->regenerate();
+        }
 
-    $user = $request->user();
-    $isAdmin = method_exists($user, 'hasRole')
-        ? $user->hasRole('admin')
-        : (bool)($user->is_admin ?? false);
+        $user = $request->user();
+        $isAdmin = method_exists($user, 'hasRole')
+            ? $user->hasRole('admin')
+            : (bool)($user->admin ?? false);
 
-    if ($isAdmin) {
-        return redirect()->intended(route('admin.dashboard', absolute: false));
-    }
+        if ($isAdmin) {
+            return redirect()->intended(route('admin.dashboard', absolute: false));
+        }
 
-    return redirect()->intended(route('dashboard', absolute: false));
+        return redirect()->intended(route('dashboard', absolute: false));
     }
 
     /**
@@ -46,9 +50,10 @@ class AuthenticatedSessionController extends Controller
     {
         Auth::guard('web')->logout();
 
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
+        if ($request->hasSession()) {
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
 
         return redirect('/');
     }

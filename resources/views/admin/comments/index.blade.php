@@ -35,19 +35,19 @@
                             @foreach($comments as $comment)
                                 <tr>
                                     <td>{{ $comment->id }}</td>
-                                    <td>{{ Str::limit($comment->content, 50) }}</td>
+                                    <td>{{ \Illuminate\Support\Str::limit($comment->content, 50) }}</td>
                                     <td>
                                         @if($comment->post)
                                             <a href="{{ route('admin.posts.show', $comment->post) }}" 
                                                class="text-primary">
-                                                {{ Str::limit($comment->post->title, 30) }}
+                                                {{ \Illuminate\Support\Str::limit($comment->post->title, 30) }}
                                             </a>
                                         @else
                                             <span class="text-muted">Пост удален</span>
                                         @endif
                                     </td>
-                                    <td>{{ $comment->name ?: 'Аноним' }}</td>
-                                    <td>{{ $comment->email ?: 'Не указан' }}</td>
+                                    <td>{{ $comment->author_name ?: 'Аноним' }}</td>
+                                    <td>{{ $comment->author_email ?: 'Не указан' }}</td>
                                     <td>{{ $comment->created_at->format('d.m.Y H:i') }}</td>
                                     <td>
                                         <div class="btn-group" role="group">

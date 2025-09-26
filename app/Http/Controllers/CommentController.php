@@ -10,21 +10,18 @@ use Illuminate\View\View;
 
 class CommentController extends Controller
 {
-    // (UA) Список коментарів з пагінацією
     public function index(): View
     {
         $comments = Comment::with('post')->latest()->paginate(20);
         return view('comments.index', compact('comments'));
     }
 
-    // (UA) Форма створення
     public function create(): View
     {
         $posts = Post::orderBy('title')->get();
         return view('comments.create', compact('posts'));
     }
 
-    // (UA) Збереження нового коментаря
     public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([
@@ -33,28 +30,27 @@ class CommentController extends Controller
             'post_id' => 'required|exists:posts,id',
         ]);
 
-        Comment::create($data);
+        Comment::create([
+            'author_name' => $data['author'],
+            'content'     => $data['content'],
+            'post_id'     => $data['post_id'],
+        ]);
 
-        return redirect()
-            ->route('posts.show', $data['post_id'])
-            ->with('success', 'Комментарий успешно добавлен!');
+        return redirect()->route('posts.show', $data['post_id']);
     }
 
-    // (UA) Перегляд одного коментаря
     public function show(Comment $comment): View
     {
         $comment->load('post');
         return view('comments.show', compact('comment'));
     }
 
-    // (UA) Форма редагування
     public function edit(Comment $comment): View
     {
         $posts = Post::orderBy('title')->get();
         return view('comments.edit', compact('comment', 'posts'));
     }
 
-    // (UA) Оновлення
     public function update(Request $request, Comment $comment): RedirectResponse
     {
         $data = $request->validate([
@@ -63,21 +59,18 @@ class CommentController extends Controller
             'post_id' => 'required|exists:posts,id',
         ]);
 
-        $comment->update($data);
+        $comment->update([
+            'author_name' => $data['author'],
+            'content'     => $data['content'],
+            'post_id'     => $data['post_id'],
+        ]);
 
-        return redirect()
-            ->route('posts.show', $data['post_id'])
-            ->with('success', 'Комментарий обновлён!');
+        return redirect()->route('comments.show', $comment);
     }
 
-    // (UA) Видалення
     public function destroy(Comment $comment): RedirectResponse
     {
-        $postId = $comment->post_id;
         $comment->delete();
-
-        return redirect()
-            ->route('posts.show', $postId)
-            ->with('success', 'Комментарий удалён!');
+        return redirect()->route('comments.index');
     }
 }

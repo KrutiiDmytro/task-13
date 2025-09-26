@@ -26,13 +26,13 @@ class PostController extends Controller
     }
 
     public function create(): View
-    {
-        $categories = Category::all();
-        $tags = Tag::all();
-        
-        return view('admin.posts.create', compact('categories', 'tags'));
-    }
-
+{
+    $categories = Category::all();
+    $tags = Tag::all();
+    $users = \App\Models\User::all();
+    
+    return view('admin.posts.create', compact('categories', 'tags', 'users'));
+}
     public function store(Request $request): RedirectResponse
     {
     $data = $request->validate([

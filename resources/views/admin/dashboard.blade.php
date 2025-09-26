@@ -92,7 +92,7 @@
                                 <tr>
                                     <td>
                                         <a href="{{ route('admin.posts.show', $post) }}">
-                                            {{ Str::limit($post->title, 30) }}
+                                            {{ \Illuminate\Support\Str::limit($post->title, 30) }}
                                         </a>
                                     </td>
                                     <td>{{ $post->user->name ?? 'Неизвестно' }}</td>
@@ -127,11 +127,10 @@
                         <tbody>
                             @forelse($recentComments as $comment)
                                 <tr>
-                                    <td>{{ Str::limit($comment->content, 30) }}</td>
+                                    <td>{{ \Illuminate\Support\Str::limit($comment->content, 30) }}</td>
                                     <td>
                                         <a href="{{ route('admin.posts.show', $comment->post) }}">
-                                            {{ Str::limit($comment->post->title, 20) }}
-                                        </a>
+                                        {{ \Illuminate\Support\Str::limit($comment->post->title, 20) }}                                        </a>
                                     </td>
                                     <td>{{ $comment->created_at->format('d.m.Y') }}</td>
                                 </tr>

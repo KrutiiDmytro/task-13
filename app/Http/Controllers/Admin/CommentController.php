@@ -27,19 +27,23 @@ class CommentController extends Controller
     }
 
     public function store(Request $request): RedirectResponse
-    {
-        $data = $request->validate([
-            'author' => 'required|string|max:255',
-            'content' => 'required|string|max:1000',
-            'post_id' => 'required|exists:posts,id',
-        ]);
+{
+    $data = $request->validate([
+        'author' => 'required|string|max:255',
+        'content' => 'required|string|max:1000',
+        'post_id' => 'required|exists:posts,id',
+    ]);
 
-        Comment::create($data);
+    Comment::create([
+        'author_name' => $data['author'],
+        'content' => $data['content'],
+        'post_id' => $data['post_id'],
+    ]);
 
-        return redirect()
-            ->route('admin.comments.index')
-            ->with('success', 'Комментарий успешно создан!');
-    }
+    return redirect()
+        ->route('admin.comments.index')
+        ->with('success', 'Комментарий успешно создан!');
+}
 
     public function show(Comment $comment): View
     {
@@ -54,19 +58,23 @@ class CommentController extends Controller
     }
 
     public function update(Request $request, Comment $comment): RedirectResponse
-    {
-        $data = $request->validate([
-            'author' => 'required|string|max:255',
-            'content' => 'required|string|max:1000',
-            'post_id' => 'required|exists:posts,id',
-        ]);
+{
+    $data = $request->validate([
+        'author' => 'required|string|max:255',
+        'content' => 'required|string|max:1000',
+        'post_id' => 'required|exists:posts,id',
+    ]);
 
-        $comment->update($data);
+    $comment->update([
+        'author_name' => $data['author'],
+        'content' => $data['content'],
+        'post_id' => $data['post_id'],
+    ]);
 
-        return redirect()
-            ->route('admin.comments.index')
-            ->with('success', 'Комментарий успешно обновлён!');
-    }
+    return redirect()
+        ->route('admin.comments.index')
+        ->with('success', 'Комментарий успешно обновлён!');
+}
 
     public function destroy(Comment $comment): RedirectResponse
     {

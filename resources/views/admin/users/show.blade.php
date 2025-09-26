@@ -151,7 +151,7 @@
                         <tr>
                             <td>
                                 <a href="{{ route('admin.posts.show', $post) }}">
-                                    {{ Str::limit($post->title, 50) }}
+                                    {{ \Illuminate\Support\Str::limit($post->title, 50) }}
                                 </a>
                             </td>
                             <td>

@@ -25,15 +25,16 @@
                     @foreach($comments as $comment)
                         <tr>
                             <td>{{ $comment->id }}</td>
-                            <td>{{ $comment->author }}</td>
-                            <td>{{ Str::limit($comment->content, 50) }}</td>
+                            <td>{{ $comment->author_name ?? 'Не указан' }}</td>
+                            <td>{{ \Illuminate\Support\Str::limit($comment->content, 50) }}</td>
                             <td>
                                 <a href="{{ route('posts.show', $comment->post) }}" class="text-decoration-none">
-                                    {{ Str::limit($comment->post->title, 30) }}
+                                    {{ \Illuminate\Support\Str::limit($comment->post->title, 30) }}
                                 </a>
                             </td>
                             <td>{{ $comment->created_at->format('d.m.Y H:i') }}</td>
                             <td>
+                                <a href="{{ route('comments.show', $comment) }}" class="btn btn-sm btn-info">Просмотр</a>
                                 <a href="{{ route('comments.edit', $comment) }}" class="btn btn-sm btn-warning">Редактировать</a>
                                 <form action="{{ route('comments.destroy', $comment) }}" method="POST" class="d-inline">
                                     @csrf

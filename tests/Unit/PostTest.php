@@ -56,12 +56,13 @@ class PostTest extends TestCase
     {
         $post = Post::factory()->create();
         $comment = $post->comments()->create([
-            'author' => 'Test Commenter',
+            'author_name' => 'Test Commenter',
+            'author_email' => 'test@example.com',
             'content' => 'Test comment content',
         ]);
 
         $this->assertCount(1, $post->comments);
-        $this->assertEquals('Test Commenter', $post->comments->first()->author);
+        $this->assertEquals('Test Commenter', $post->comments->first()->author_name);
     }
 
     public function test_post_can_have_tags()

@@ -6,6 +6,7 @@ use App\Models\Post;
 use App\Models\User;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 class PostFactory extends Factory
 {
@@ -13,14 +14,18 @@ class PostFactory extends Factory
 
     public function definition()
     {
+        $title = $this->faker->sentence();
+        
         return [
-            'title' => $this->faker->sentence(),
+            'title' => $title,
+            'slug' => Str::slug($title) . '-' . $this->faker->unique()->randomNumber(4),
             'content' => $this->faker->paragraphs(3, true),
             'user_id' => User::factory(),
             'category_id' => Category::factory(),
             'date' => $this->faker->date(),
             'author_name' => $this->faker->name(),
             'author_email' => $this->faker->email(),
+            'published_at' => $this->faker->dateTimeBetween('-1 month', 'now'),
         ];
     }
 }

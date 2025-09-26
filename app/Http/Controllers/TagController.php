@@ -41,21 +41,29 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        // (UA) Валідація: унікальне ім’я тегу
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:tags,name',
-        ]);
+        try {
+            // (UA) Валідація: унікальне ім'я тегу
+            $validated = $request->validate([
+                'name' => 'required|string|max:255|unique:tags,name',
+            ]);
 
-        $tag = Tag::create($validated); // (UA) slug згенерується автоматично в моделі
+            $tag = Tag::create($validated); // (UA) slug згенерується автоматично в моделі
 
-        return response()->json([
-            'success' => true,
-            'tag' => [
-                'id' => $tag->id,
-                'name' => $tag->name,
-                'slug' => $tag->slug,
-            ]
-        ]);
+            return response()->json([
+                'success' => true,
+                'tag' => [
+                    'id' => $tag->id,
+                    'name' => $tag->name,
+                    'slug' => $tag->slug,
+                ]
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'The given data was invalid.',
+                'errors' => $e->errors()
+            ], 422);
+        }
     }
 
 /**

@@ -104,8 +104,7 @@
                         <tr>
                             <td>
                                 <a href="{{ route('admin.posts.show', $post) }}">
-                                    {{ Str::limit($post->title, 50) }}
-                                </a>
+                                {{ \Illuminate\Support\Str::limit($post->title, 50) }}                                </a>
                             </td>
                             <td>{{ $post->user->name ?? 'Неизвестно' }}</td>
                             <td>{{ $post->created_at->format('d.m.Y H:i') }}</td>

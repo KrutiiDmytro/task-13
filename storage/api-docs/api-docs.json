@@ -1,0 +1,2146 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Blog API Documentation",
+        "description": "Полная документация REST API для системы управления блогом. API поддерживает форматы JSON и XML.",
+        "contact": {
+            "name": "API Support",
+            "email": "support@example.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Local Development Server"
+        },
+        {
+            "url": "http://127.0.0.1:8000",
+            "description": "Alternative Local Server"
+        }
+    ],
+    "paths": {
+        "/api/v1/categories": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Получить список категорий",
+                "description": "Возвращает список всех категорий с количеством постов",
+                "operationId": "e225c2b7eb5daf7fb16e00f4f07ff030",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Номер страницы",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Количество категорий на странице",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Поиск по названию категории",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "Технологии"
+                        }
+                    },
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "description": "Формат ответа (json или xml)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "xml"
+                            ],
+                            "example": "json"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Category"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Создать новую категорию",
+                "description": "Создает новую категорию",
+                "operationId": "dd76b8d73b7ea8b4951f03d7c0904c92",
+                "parameters": [
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "description": "Формат ответа (json или xml)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "xml"
+                            ],
+                            "example": "json"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Технологии"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Описание категории",
+                                        "nullable": true
+                                    },
+                                    "slug": {
+                                        "type": "string",
+                                        "example": "technologies",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Категория успешно создана",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Category"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/categories/{category}": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Получить категорию по ID",
+                "description": "Возвращает конкретную категорию с количеством постов",
+                "operationId": "d5023633bd2ab475b5f7d3fe21113fd9",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "path",
+                        "description": "ID категории",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "include_posts",
+                        "in": "query",
+                        "description": "Включить список постов категории",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "example": false
+                        }
+                    },
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "description": "Формат ответа (json или xml)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "xml"
+                            ],
+                            "example": "json"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Category"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Категория не найдена"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Обновить категорию",
+                "description": "Обновляет существующую категорию",
+                "operationId": "fef831466f74165300ad79335535294d",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "path",
+                        "description": "ID категории",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "description": "Формат ответа (json или xml)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "xml"
+                            ],
+                            "example": "json"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Обновленное название"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Обновленное описание",
+                                        "nullable": true
+                                    },
+                                    "slug": {
+                                        "type": "string",
+                                        "example": "updated-slug",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Категория успешно обновлена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Category"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Категория не найдена"
+                    },
+                    "422": {
+                        "description": "Ошибка валидации"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Удалить категорию",
+                "description": "Удаляет категорию по ID (только если нет связанных постов)",
+                "operationId": "9d956da3b4cf5d9bf6b8b59812334243",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "path",
+                        "description": "ID категории",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "description": "Формат ответа (json или xml)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "xml"
+                            ],
+                            "example": "json"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Категория успешно удалена"
+                    },
+                    "404": {
+                        "description": "Категория не найдена"
+                    },
+                    "409": {
+                        "description": "Нельзя удалить категорию с постами"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/comments": {
+            "get": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Получить список комментариев",
+                "description": "Возвращает пагинированный список всех комментариев",
+                "operationId": "31364881058187fc38a42287e9d904a1",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Номер страницы",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Количество комментариев на странице",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 15
+                        }
+                    },
+                    {
+                        "name": "post_id",
+                        "in": "query",
+                        "description": "ID поста для фильтрации комментариев",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "description": "Формат ответа",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "xml"
+                            ],
+                            "example": "json"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список комментариев получен успешно",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/CommentResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "application/xml": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/CommentResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Создать новый комментарий",
+                "description": "Создает новый комментарий к посту",
+                "operationId": "51f741718cabbf7ddf0e49b69f645dbe",
+                "parameters": [
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "description": "Формат ответа",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "xml"
+                            ],
+                            "example": "json"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "content",
+                                    "post_id"
+                                ],
+                                "properties": {
+                                    "content": {
+                                        "type": "string",
+                                        "example": "Отличная статья!"
+                                    },
+                                    "author_name": {
+                                        "type": "string",
+                                        "example": "Иван Иванов"
+                                    },
+                                    "author_email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "ivan@example.com"
+                                    },
+                                    "post_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Комментарий создан успешно",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/CommentResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/comments/{id}": {
+            "get": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Получить комментарий по ID",
+                "description": "Возвращает один комментарий по его ID",
+                "operationId": "777c46622a95594629c0edd49d053aa5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID комментария",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "description": "Формат ответа",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "xml"
+                            ],
+                            "example": "json"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Комментарий найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/CommentResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Комментарий не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Comment not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Обновить комментарий",
+                "description": "Обновляет существующий комментарий",
+                "operationId": "79fa2dc0465f2d26344c4c190b09349c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID комментария",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "description": "Формат ответа",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "xml"
+                            ],
+                            "example": "json"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "content": {
+                                        "type": "string",
+                                        "example": "Обновленный комментарий"
+                                    },
+                                    "author_name": {
+                                        "type": "string",
+                                        "example": "Иван Петров"
+                                    },
+                                    "author_email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "ivan.petrov@example.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Комментарий обновлен успешно",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/CommentResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Комментарий не найден"
+                    },
+                    "422": {
+                        "description": "Ошибка валидации"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Удалить комментарий",
+                "description": "Удаляет комментарий по ID",
+                "operationId": "d933860fea70edb69e3fca232aaccff5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID комментария",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "description": "Формат ответа",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "xml"
+                            ],
+                            "example": "json"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Комментарий удален успешно",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Comment deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Комментарий не найден"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/posts": {
+            "get": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Получить список постов",
+                "operationId": "7b253f6aade6833019f938c1f2ef08ed",
+                "responses": {
+                    "200": {
+                        "description": "Список постов"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Создать новый пост",
+                "operationId": "b996500c6caf55100cd024d3e3b49dd5",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "content",
+                                    "category_id"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "Новый пост"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "Текст..."
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1,
+                                        "nullable": true
+                                    },
+                                    "author_name": {
+                                        "type": "string",
+                                        "example": "Иван",
+                                        "nullable": true
+                                    },
+                                    "author_email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "ivan@example.com",
+                                        "nullable": true
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "example": "images/post.jpg",
+                                        "nullable": true
+                                    },
+                                    "tags": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "example": [
+                                            "php",
+                                            "laravel"
+                                        ],
+                                        "nullable": true
+                                    },
+                                    "tags_text": {
+                                        "type": "string",
+                                        "example": "php, laravel",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Пост создан"
+                    }
+                }
+            }
+        },
+        "/api/v1/posts/{post}": {
+            "get": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Получить пост по ID",
+                "operationId": "a8c7efde35a86efcbbf0bfbfc04b10be",
+                "responses": {
+                    "200": {
+                        "description": "Пост найден"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Обновить пост",
+                "operationId": "6c7a852cde873d1dccbac9d2ac4cb0f5",
+                "parameters": [
+                    {
+                        "name": "post",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Обновленный заголовок"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "Обновленный текст"
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "user_id": {
+                                        "type": "integer",
+                                        "nullable": true
+                                    },
+                                    "author_name": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "author_email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "nullable": true
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "tags": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "nullable": true
+                                    },
+                                    "tags_text": {
+                                        "type": "string",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Пост обновлен"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Удалить пост",
+                "operationId": "c8a5edc6ae443a76b3c3ea3abeeb6d54",
+                "responses": {
+                    "204": {
+                        "description": "Пост удален"
+                    }
+                }
+            }
+        },
+        "/api/v1/tags": {
+            "get": {
+                "tags": [
+                    "Tags"
+                ],
+                "summary": "Получить список тегов",
+                "description": "Возвращает пагинированный список всех тегов с количеством постов",
+                "operationId": "e320cb59dba3e323dacbbc502509717c",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Номер страницы",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Количество тегов на странице",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 20
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Поиск по названию тега",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "php"
+                        }
+                    },
+                    {
+                        "name": "include_posts",
+                        "in": "query",
+                        "description": "Включить посты в ответ",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "example": false
+                        }
+                    },
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "description": "Формат ответа",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "xml"
+                            ],
+                            "example": "json"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список тегов получен успешно",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TagResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "application/xml": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TagResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Tags"
+                ],
+                "summary": "Создать новый тег",
+                "description": "Создает новый тег",
+                "operationId": "d5b48558ae6b21f20e758584734e2cd7",
+                "parameters": [
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "description": "Формат ответа",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "xml"
+                            ],
+                            "example": "json"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Laravel"
+                                    },
+                                    "slug": {
+                                        "type": "string",
+                                        "example": "laravel"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Тег создан успешно",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TagResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/tags/{id}": {
+            "get": {
+                "tags": [
+                    "Tags"
+                ],
+                "summary": "Получить тег по ID",
+                "description": "Возвращает один тег по его ID с опциональными постами",
+                "operationId": "a3d7580f0301bd6fff879d635b82a2fb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID тега",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "include_posts",
+                        "in": "query",
+                        "description": "Включить посты в ответ",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "example": true
+                        }
+                    },
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "description": "Формат ответа",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "xml"
+                            ],
+                            "example": "json"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Тег найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TagResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Тег не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tag not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Tags"
+                ],
+                "summary": "Обновить тег",
+                "description": "Обновляет существующий тег",
+                "operationId": "ab9fc572397025dcf3a29db57acdebdd",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID тега",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "description": "Формат ответа",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "xml"
+                            ],
+                            "example": "json"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Laravel Framework"
+                                    },
+                                    "slug": {
+                                        "type": "string",
+                                        "example": "laravel-framework"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Тег обновлен успешно",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TagResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Тег не найден"
+                    },
+                    "422": {
+                        "description": "Ошибка валидации"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Tags"
+                ],
+                "summary": "Удалить тег",
+                "description": "Удаляет тег по ID",
+                "operationId": "fab7e3dec2348caad78c23998aa54ba3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID тега",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "description": "Формат ответа",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "xml"
+                            ],
+                            "example": "json"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Тег удален успешно",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tag deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Тег не найден"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ApiResponse": {
+                "title": "API Response",
+                "description": "Стандартный формат ответа API",
+                "properties": {
+                    "data": {
+                        "description": "Данные ответа"
+                    },
+                    "meta": {
+                        "description": "Метаданные ответа",
+                        "properties": {
+                            "total": {
+                                "type": "integer",
+                                "example": 100
+                            },
+                            "count": {
+                                "type": "integer",
+                                "example": 10
+                            },
+                            "per_page": {
+                                "type": "integer",
+                                "example": 10
+                            },
+                            "current_page": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "total_pages": {
+                                "type": "integer",
+                                "example": 10
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "links": {
+                        "description": "Ссылки для пагинации",
+                        "properties": {
+                            "first": {
+                                "type": "string",
+                                "example": "http://localhost:8000/api/v1/posts?page=1"
+                            },
+                            "last": {
+                                "type": "string",
+                                "example": "http://localhost:8000/api/v1/posts?page=10"
+                            },
+                            "prev": {
+                                "type": "string",
+                                "example": null,
+                                "nullable": true
+                            },
+                            "next": {
+                                "type": "string",
+                                "example": "http://localhost:8000/api/v1/posts?page=2"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "ErrorResponse": {
+                "title": "Error Response",
+                "description": "Формат ответа при ошибке",
+                "properties": {
+                    "message": {
+                        "description": "Сообщение об ошибке",
+                        "type": "string",
+                        "example": "Validation failed"
+                    },
+                    "errors": {
+                        "description": "Детали ошибок валидации",
+                        "properties": {
+                            "title": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "example": "The title field is required."
+                                }
+                            },
+                            "email": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "example": "The email must be a valid email address."
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "SuccessResponse": {
+                "title": "Success Response",
+                "description": "Формат успешного ответа",
+                "properties": {
+                    "message": {
+                        "description": "Сообщение об успехе",
+                        "type": "string",
+                        "example": "Operation completed successfully"
+                    },
+                    "data": {
+                        "description": "Данные ответа"
+                    }
+                },
+                "type": "object"
+            },
+            "CategoryResource": {
+                "title": "Category Resource",
+                "description": "Ресурс категории для API ответов",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Технологии"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "technologies"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Описание категории",
+                        "nullable": true
+                    },
+                    "posts_count": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "posts": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PostResource"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "CommentCollection": {
+                "title": "Comment Collection",
+                "description": "Коллекция комментариев с пагинацией",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CommentResource"
+                        }
+                    },
+                    "links": {
+                        "properties": {
+                            "first": {
+                                "type": "string",
+                                "example": "http://localhost:8000/api/v1/comments?page=1"
+                            },
+                            "last": {
+                                "type": "string",
+                                "example": "http://localhost:8000/api/v1/comments?page=10"
+                            },
+                            "prev": {
+                                "type": "string",
+                                "example": null,
+                                "nullable": true
+                            },
+                            "next": {
+                                "type": "string",
+                                "example": "http://localhost:8000/api/v1/comments?page=2"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "meta": {
+                        "properties": {
+                            "current_page": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "from": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "last_page": {
+                                "type": "integer",
+                                "example": 10
+                            },
+                            "per_page": {
+                                "type": "integer",
+                                "example": 15
+                            },
+                            "to": {
+                                "type": "integer",
+                                "example": 15
+                            },
+                            "total": {
+                                "type": "integer",
+                                "example": 150
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "CommentResource": {
+                "title": "Comment Resource",
+                "description": "Ресурс комментария для API ответов",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "content": {
+                        "type": "string",
+                        "example": "Содержание комментария"
+                    },
+                    "author_name": {
+                        "type": "string",
+                        "example": "Имя автора"
+                    },
+                    "author_email": {
+                        "type": "string",
+                        "example": "author@example.com"
+                    },
+                    "post_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "PostResource": {
+                "title": "Post Resource",
+                "description": "Ресурс поста для API ответов",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Заголовок поста"
+                    },
+                    "content": {
+                        "type": "string",
+                        "example": "Содержание поста"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2023-01-01"
+                    },
+                    "image": {
+                        "type": "string",
+                        "example": "images/post.jpg",
+                        "nullable": true
+                    },
+                    "author_name": {
+                        "type": "string",
+                        "example": "Имя автора",
+                        "nullable": true
+                    },
+                    "author_email": {
+                        "type": "string",
+                        "example": "author@example.com",
+                        "nullable": true
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1,
+                        "nullable": true
+                    },
+                    "category_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "category": {
+                        "$ref": "#/components/schemas/CategoryResource"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TagResource"
+                        }
+                    },
+                    "comments": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CommentResource"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "TagCollection": {
+                "title": "Tag Collection",
+                "description": "Коллекция тегов с пагинацией",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TagResource"
+                        }
+                    },
+                    "links": {
+                        "properties": {
+                            "first": {
+                                "type": "string",
+                                "example": "http://localhost:8000/api/v1/tags?page=1"
+                            },
+                            "last": {
+                                "type": "string",
+                                "example": "http://localhost:8000/api/v1/tags?page=5"
+                            },
+                            "prev": {
+                                "type": "string",
+                                "example": null,
+                                "nullable": true
+                            },
+                            "next": {
+                                "type": "string",
+                                "example": "http://localhost:8000/api/v1/tags?page=2"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "meta": {
+                        "properties": {
+                            "current_page": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "from": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "last_page": {
+                                "type": "integer",
+                                "example": 5
+                            },
+                            "per_page": {
+                                "type": "integer",
+                                "example": 20
+                            },
+                            "to": {
+                                "type": "integer",
+                                "example": 20
+                            },
+                            "total": {
+                                "type": "integer",
+                                "example": 85
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "TagResource": {
+                "title": "Tag Resource",
+                "description": "Ресурс тега для API ответов",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "PHP"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "php"
+                    },
+                    "posts_count": {
+                        "type": "integer",
+                        "example": 12
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "posts": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PostResource"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Category": {
+                "title": "Category",
+                "description": "Модель категории постов",
+                "required": [
+                    "id",
+                    "name",
+                    "slug"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Уникальный идентификатор категории",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "Название категории",
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Технологии"
+                    },
+                    "slug": {
+                        "description": "URL-дружественный идентификатор категории",
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "technologies"
+                    },
+                    "description": {
+                        "description": "Описание категории",
+                        "type": "string",
+                        "maxLength": 500,
+                        "example": "Статьи о современных технологиях и разработке",
+                        "nullable": true
+                    },
+                    "posts_count": {
+                        "description": "Количество постов в категории",
+                        "type": "integer",
+                        "example": 15
+                    },
+                    "created_at": {
+                        "description": "Дата создания категории",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-12-01T10:00:00.000000Z"
+                    },
+                    "updated_at": {
+                        "description": "Дата последнего обновления категории",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-12-01T15:30:00.000000Z"
+                    },
+                    "posts": {
+                        "description": "Посты в категории (загружается по запросу)",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Post"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Comment": {
+                "title": "Comment",
+                "description": "Модель комментария к посту",
+                "required": [
+                    "id",
+                    "content",
+                    "post_id"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Уникальный идентификатор комментария",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "content": {
+                        "description": "Содержание комментария",
+                        "type": "string",
+                        "example": "Отличная статья! Очень полезная информация."
+                    },
+                    "author_name": {
+                        "description": "Имя автора комментария",
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Петр Петров"
+                    },
+                    "author_email": {
+                        "description": "Email автора комментария",
+                        "type": "string",
+                        "format": "email",
+                        "example": "petr@example.com"
+                    },
+                    "post_id": {
+                        "description": "ID поста, к которому относится комментарий",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "created_at": {
+                        "description": "Дата создания комментария",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-12-01T10:00:00.000000Z"
+                    },
+                    "updated_at": {
+                        "description": "Дата последнего обновления комментария",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-12-01T15:30:00.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Post": {
+                "title": "Post",
+                "description": "Модель поста блога",
+                "required": [
+                    "id",
+                    "title",
+                    "content",
+                    "category_id"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Уникальный идентификатор поста",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "title": {
+                        "description": "Заголовок поста",
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Как создать REST API с Laravel"
+                    },
+                    "content": {
+                        "description": "Полное содержание поста",
+                        "type": "string",
+                        "example": "Подробное руководство по созданию REST API..."
+                    },
+                    "date": {
+                        "description": "Дата поста",
+                        "type": "string",
+                        "format": "date",
+                        "example": "2023-12-01"
+                    },
+                    "image": {
+                        "description": "URL изображения поста",
+                        "type": "string",
+                        "example": "images/post-image.jpg",
+                        "nullable": true
+                    },
+                    "author_name": {
+                        "description": "Имя автора поста",
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Иван Иванов",
+                        "nullable": true
+                    },
+                    "author_email": {
+                        "description": "Email автора поста",
+                        "type": "string",
+                        "format": "email",
+                        "example": "ivan@example.com",
+                        "nullable": true
+                    },
+                    "user_id": {
+                        "description": "ID пользователя-автора",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1,
+                        "nullable": true
+                    },
+                    "category_id": {
+                        "description": "ID категории поста",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "created_at": {
+                        "description": "Дата создания",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-12-01T10:00:00.000000Z"
+                    },
+                    "updated_at": {
+                        "description": "Дата последнего обновления",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-12-01T15:30:00.000000Z"
+                    },
+                    "category": {
+                        "$ref": "#/components/schemas/Category"
+                    },
+                    "tags": {
+                        "description": "Теги поста",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Tag"
+                        }
+                    },
+                    "comments": {
+                        "description": "Комментарии к посту",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Comment"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Tag": {
+                "title": "Tag",
+                "description": "Модель тега",
+                "required": [
+                    "id",
+                    "name",
+                    "slug"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Уникальный идентификатор тега",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "Название тега",
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "PHP"
+                    },
+                    "slug": {
+                        "description": "URL-дружественный идентификатор тега",
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "php"
+                    },
+                    "created_at": {
+                        "description": "Дата создания тега",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-12-01T10:00:00.000000Z"
+                    },
+                    "updated_at": {
+                        "description": "Дата последнего обновления тега",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-12-01T15:30:00.000000Z"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "parameters": {
+            "FormatParameter": {
+                "name": "format",
+                "in": "query",
+                "description": "Формат ответа",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "default": "json",
+                    "enum": [
+                        "json",
+                        "xml"
+                    ]
+                }
+            },
+            "PageParameter": {
+                "name": "page",
+                "in": "query",
+                "description": "Номер страницы",
+                "required": false,
+                "schema": {
+                    "type": "integer",
+                    "default": 1,
+                    "minimum": 1
+                }
+            },
+            "PerPageParameter": {
+                "name": "per_page",
+                "in": "query",
+                "description": "Количество элементов на странице",
+                "required": false,
+                "schema": {
+                    "type": "integer",
+                    "default": 10,
+                    "maximum": 100,
+                    "minimum": 1
+                }
+            },
+            "SearchParameter": {
+                "name": "search",
+                "in": "query",
+                "description": "Поисковый запрос",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Categories",
+            "description": "Операции с категориями"
+        },
+        {
+            "name": "Comments",
+            "description": "Операции с комментариями к постам"
+        },
+        {
+            "name": "Posts",
+            "description": "Операции с постами блога"
+        },
+        {
+            "name": "Tags",
+            "description": "Операции с тегами постов"
+        }
+    ]
+}

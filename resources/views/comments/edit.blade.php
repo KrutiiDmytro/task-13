@@ -22,7 +22,7 @@
                 @method('PUT')
                 <div class="mb-3">
                     <label for="author" class="form-label">Автор</label>
-                    <input type="text" id="author" name="author" class="form-control" value="{{ old('author', $comment->author) }}" required>
+                    <input type="text" id="author" name="author" class="form-control" value="{{ old('author', $comment->author_name) }}" required>
                 </div>
 
                 <div class="mb-3">
@@ -43,7 +43,7 @@
                 </div>
                 
                 <button type="submit" class="btn btn-primary">Обновить комментарий</button>
-                <a href="{{ route('comments.index') }}" class="btn btn-secondary">Отмена</a>
+                <a href="{{ route('comments.show', $comment) }}" class="btn btn-secondary">Отмена</a>
             </form>
         </div>
     </div>
