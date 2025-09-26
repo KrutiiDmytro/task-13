@@ -5,9 +5,13 @@
 ## 🚀 Основные функции
 
 - **API Versioning** - управление версиями через пространство имен (`/api/v1/`)
+
 - **Swagger Documentation** - полная документация API с интерактивным интерфейсом
+
 - **Comprehensive Testing** - функциональные тесты для всех endpoints с отчетом покрытия
+
 - **Multiple Response Formats** - поддержка JSON и XML форматов
+
 - **Authentication** - защищенные endpoints с Sanctum
 - **CRUD Operations** - полный набор операций для Posts, Categories, Tags, Comments
 
@@ -320,13 +324,6 @@ php artisan test --coverage
 
 # Генерация Swagger документации
 php artisan l5-swagger:generate
-
-# Проверка стиля кода (если установлен)
-./vendor/bin/phpcs
-
-# Статический анализ (если установлен)
-./vendor/bin/phpstan analyse
-```
 
 ## 🚀 Развертывание
 
