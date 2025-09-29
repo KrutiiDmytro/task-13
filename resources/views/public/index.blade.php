@@ -6,7 +6,32 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h1 class="mb-4">Последние посты</h1>
+
+                @auth
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h1>Последние посты</h1>
+                        <div class="d-flex gap-2">
+                            <span class="text-muted">Привет, {{ Auth::user()->name }}!</span>
+                            <a href="{{ route('profile.edit') }}" class="btn btn-outline-primary btn-sm">Профиль</a>
+                            @if(Auth::user()->admin)
+                                <a href="{{ route('admin.dashboard') }}" class="btn btn-outline-success btn-sm">Админ</a>
+                            @endif
+                            <a href="{{ route('posts.create') }}" class="btn btn-primary btn-sm">Создать пост</a>
+                            <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+                                @csrf
+                                <button type="submit" class="btn btn-outline-danger btn-sm">Выйти</button>
+                            </form>
+                        </div>
+                    </div>
+                @else
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h1>Последние посты</h1>
+                        <div class="d-flex gap-2">
+                            <a href="{{ route('login') }}" class="btn btn-outline-primary btn-sm">Войти</a>
+                            <a href="{{ route('register') }}" class="btn btn-primary btn-sm">Регистрация</a>
+                        </div>
+                    </div>
+                @endauth
                 
                 @if($posts->count() > 0)
                     <div class="row">

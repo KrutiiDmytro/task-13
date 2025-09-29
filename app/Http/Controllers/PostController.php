@@ -85,17 +85,29 @@ class PostController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $validatedData = $request->validate([
+        // Для авторизованных пользователей поля author_name и author_email необязательны
+        $isAuthenticated = auth()->check();
+        
+        $rules = [
             'title'        => 'required|string|max:255',
             'content'      => 'required|string',
             'category_id'  => 'required|exists:categories,id',
             'user_id'      => 'nullable|exists:users,id',
-            'author_name'  => 'required|string|max:255',
-            'author_email' => 'required|email|max:255',
             'image'        => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'tags'         => 'nullable|array',
             'tags.*'       => 'string|max:255',
-        ]);
+        ];
+        
+        // Добавляем правила для author_name и author_email только для гостей
+        if (!$isAuthenticated) {
+            $rules['author_name'] = 'required|string|max:255';
+            $rules['author_email'] = 'required|email|max:255';
+        } else {
+            $rules['author_name'] = 'nullable|string|max:255';
+            $rules['author_email'] = 'nullable|email|max:255';
+        }
+        
+        $validatedData = $request->validate($rules);
 
         if ($request->hasFile('image')) {
             $validatedData['image'] = $request->file('image')->store('images/posts', 'public');
@@ -104,6 +116,17 @@ class PostController extends Controller
         // Устанавливаем user_id текущего пользователя, если не указан
         if (!isset($validatedData['user_id'])) {
             $validatedData['user_id'] = auth()->id();
+        }
+        
+        // Для авторизованных пользователей автоматически заполняем author_name и author_email
+        if ($isAuthenticated) {
+            $user = auth()->user();
+            if (empty($validatedData['author_name'])) {
+                $validatedData['author_name'] = $user->name;
+            }
+            if (empty($validatedData['author_email'])) {
+                $validatedData['author_email'] = $user->email;
+            }
         }
 
         $post = $this->postService->createPost($validatedData);
@@ -137,17 +160,29 @@ class PostController extends Controller
             abort(403);
         }
 
-        $validatedData = $request->validate([
+        // Для авторизованных пользователей поля author_name и author_email необязательны
+        $isAuthenticated = auth()->check();
+        
+        $rules = [
             'title'        => 'required|string|max:255',
             'content'      => 'required|string',
             'category_id'  => 'required|exists:categories,id',
             'user_id'      => 'nullable|exists:users,id',
-            'author_name'  => 'required|string|max:255',
-            'author_email' => 'required|email|max:255',
             'image'        => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'tags'         => 'nullable|array',
             'tags.*'       => 'string|max:255',
-        ]);
+        ];
+        
+        // Добавляем правила для author_name и author_email только для гостей
+        if (!$isAuthenticated) {
+            $rules['author_name'] = 'required|string|max:255';
+            $rules['author_email'] = 'required|email|max:255';
+        } else {
+            $rules['author_name'] = 'nullable|string|max:255';
+            $rules['author_email'] = 'nullable|email|max:255';
+        }
+        
+        $validatedData = $request->validate($rules);
 
         if ($request->hasFile('image')) {
             // Удаляем старое изображение, если оно есть
@@ -155,6 +190,17 @@ class PostController extends Controller
                 Storage::disk('public')->delete($post->image);
             }
             $validatedData['image'] = $request->file('image')->store('images/posts', 'public');
+        }
+        
+        // Для авторизованных пользователей автоматически заполняем author_name и author_email
+        if ($isAuthenticated) {
+            $user = auth()->user();
+            if (empty($validatedData['author_name'])) {
+                $validatedData['author_name'] = $user->name;
+            }
+            if (empty($validatedData['author_email'])) {
+                $validatedData['author_email'] = $user->email;
+            }
         }
 
         $this->postService->updatePost($post, $validatedData);

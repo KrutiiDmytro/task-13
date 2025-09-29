@@ -56,7 +56,7 @@ class PublicController extends Controller
 
         return view('public.search', [
             'posts' => $posts,
-            'q'     => $term, // Изменено с 'term' на 'q'
+            'q'     => $term, 
         ]);
     }
 

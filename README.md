@@ -71,6 +71,87 @@ php artisan permission:create-role user
 
 ## 🏗️ Архитектура API
 
+# Blog API - Получение токена авторизации
+
+## Способы получения API токена
+
+### 1. Через PowerShell (Windows)
+
+```powershell
+# Создаем тело запроса
+$body = @{
+    email = "admin@example.com"
+    password = "password123"
+} | ConvertTo-Json
+
+# Создаем заголовки
+$headers = @{
+    "Content-Type" = "application/json"
+    "Accept" = "application/json"
+}
+
+# Отправляем POST запрос
+$response = Invoke-RestMethod -Uri "http://localhost:8000/api/login" -Method Post -Body $body -Headers $headers
+
+# Выводим токен
+Write-Host "Token: $($response.token)"
+Write-Host "User: $($response.user.name)"
+```
+
+### 2. Через curl (Linux/Mac/WSL)
+
+```bash
+curl -X POST http://localhost:8000/api/login \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "email": "admin@example.com",
+    "password": "password123"
+  }'
+```
+
+### 3. Через браузерную консоль
+
+1. Откройте `http://localhost:8000`
+2. Нажмите F12 → Console
+3. Выполните:
+
+```javascript
+fetch('/api/login', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    },
+    body: JSON.stringify({
+        email: 'admin@example.com',
+        password: 'password123'
+    })
+})
+.then(response => response.json())
+.then(data => console.log('Token:', data.token));
+```
+
+## Использование токена
+
+После получения токена используйте его в заголовке `Authorization`:
+
+```powershell
+# Пример запроса с токеном
+$token = "1|your-token-here"
+$headers = @{
+    "Authorization" = "Bearer $token"
+    "Accept" = "application/json"
+}
+
+$response = Invoke-RestMethod -Uri "http://localhost:8000/api/v1/posts" -Headers $headers
+```
+
+## Учетные данные по умолчанию
+
+- **Email:** admin@example.com
+- **Password:** password123
+
 ### Управление версиями (API Versioning)
 
 API использует версионирование через пространство имен:

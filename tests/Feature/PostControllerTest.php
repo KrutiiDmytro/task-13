@@ -65,11 +65,13 @@ class PostControllerTest extends TestCase
     }
 
     #[Test]
-    public function create_redirects_guest_to_login(): void
+    public function store_redirects_guests_to_login(): void
     {
-        $response = $this->get(route('posts.create'));
+        // Тест для неавторизованного пользователя
+        $response = $this->post(route('posts.store'), []);
 
-        $response->assertRedirect('/login');
+        // Гости перенаправляются на страницу логина
+        $response->assertRedirect(route('login'));
     }
 
     #[Test]
@@ -101,7 +103,8 @@ class PostControllerTest extends TestCase
     {
         $response = $this->actingAs($this->user)->post(route('posts.store'), []);
 
-        $response->assertSessionHasErrors(['title', 'content', 'category_id', 'author_name', 'author_email']);
+        // Для авторизованных пользователей author_name и author_email необязательны
+        $response->assertSessionHasErrors(['title', 'content', 'category_id']);
     }
 
     #[Test]
@@ -187,7 +190,8 @@ class PostControllerTest extends TestCase
 
         $response = $this->actingAs($this->user)->put(route('posts.update', $post), []);
 
-        $response->assertSessionHasErrors(['title', 'content', 'category_id', 'author_name', 'author_email']);
+        // Для авторизованных пользователей author_name и author_email необязательны
+        $response->assertSessionHasErrors(['title', 'content', 'category_id']);
     }
 
     #[Test]
@@ -473,5 +477,23 @@ class PostControllerTest extends TestCase
         
         // Проверяем, что файл действительно сохранен
         Storage::disk('public')->assertExists($post->image);
+    }
+
+    #[Test]
+    public function store_auto_fills_author_data_for_authenticated_users(): void
+    {
+        $category = Category::factory()->create();
+        
+        $response = $this->actingAs($this->user)->post(route('posts.store'), [
+            'title' => 'Test Post',
+            'content' => 'Test Content',
+            'category_id' => $category->id,
+        ]);
+
+        $response->assertRedirect(route('posts.index'));
+        
+        $post = Post::where('title', 'Test Post')->first();
+        $this->assertEquals($this->user->name, $post->author_name);
+        $this->assertEquals($this->user->email, $post->author_email);
     }
 }

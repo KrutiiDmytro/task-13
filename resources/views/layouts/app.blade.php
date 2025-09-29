@@ -14,8 +14,8 @@
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
         <!-- Bootstrap CSS -->
-
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
         <!-- Font Awesome -->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
@@ -119,6 +119,7 @@
         
         @stack('styles')
     </head>
+
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
             @include('layouts.navigation')
@@ -140,6 +141,26 @@
 
         <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Инициализация dropdown -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Проверяем, что Bootstrap загружен
+                if (typeof bootstrap !== 'undefined') {
+                    console.log('Bootstrap loaded successfully');
+                    
+                    // Инициализируем все dropdown элементы
+                    var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
+                    var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+                        return new bootstrap.Dropdown(dropdownToggleEl);
+                    });
+                    
+                    console.log('Dropdowns initialized:', dropdownList.length);
+                } else {
+                    console.error('Bootstrap not loaded!');
+                }
+            });
+        </script>
         
         @stack('scripts')
     </body>

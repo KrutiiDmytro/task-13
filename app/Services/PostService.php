@@ -120,6 +120,7 @@ class PostService
         }
 
         $data['date'] = now();
+        $data['published_at'] = now();
         $post = Post::create($data);
 
         if (!empty($tagIds)) {
@@ -171,12 +172,19 @@ class PostService
             }
         }
 
+        // Если пост еще не опубликован, публикуем его при обновлении
+        if (!isset($data['published_at']) && is_null($post->published_at)) {
+            $data['published_at'] = now();
+        }
+
         $post->update($data);
 
-        // sync() - удобный метод для обновления связей "многие-ко-многим"
-        // Синхронизируем теги только если параметр 'tags' или 'tags_text' был передан
-        if (array_key_exists('tags', $data) || array_key_exists('tags_text', $data)) {
-            $post->tags()->sync(array_unique($tagIds)); // убираем дубликаты
+        // Обновляем теги
+        if (!empty($tagIds)) {
+            $post->tags()->sync(array_unique($tagIds));
+        } elseif (array_key_exists('tags', $data) || array_key_exists('tags_text', $data)) {
+            // Если теги были переданы, но массив пустой - очищаем все теги
+            $post->tags()->detach();
         }
 
         // Загружаем отношения для возврата
