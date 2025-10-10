@@ -50,21 +50,75 @@
                         </div>
                     </footer>
                 </article>
-            </div>
-            
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5>Навигация</h5>
-                    </div>
-                    <div class="card-body">
-                        <a href="{{ route('home') }}" class="btn btn-outline-primary btn-sm mb-2 d-block">← Все посты</a>
-                        <a href="{{ route('public.category', $post->category->slug) }}" class="btn btn-outline-secondary btn-sm d-block">
-                            Другие посты в категории "{{ $post->category->name }}"
-                        </a>
+
+                                {{-- Секция комментариев --}}
+                <div class="mt-5">
+                    <h3>Комментарии ({{ $post->comments->count() }})</h3>
+
+                    {{-- Список комментариев --}}
+                    @if($post->comments->count())
+                        @foreach($post->comments as $comment)
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-subtitle mb-2 text-muted">
+                                        {{ $comment->author_name ?? 'Аноним' }}
+                                    </h6>
+                                    <p class="card-text mb-1">{{ $comment->content }}</p>
+                                    <small class="text-muted">
+                                        {{ $comment->created_at->format('d.m.Y H:i') }}
+                                    </small>
+                                </div>
+                            </div>
+                        @endforeach
+                    @else
+                        <p class="text-muted">Пока нет комментариев. Будьте первым!</p>
+                    @endif
+
+                    {{-- Форма добавления комментария --}}
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Добавить комментарий</h5>
+                        </div>
+                        <div class="card-body">
+                            <form action="{{ route('comments.store') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="post_id" value="{{ $post->id }}">
+
+                                <div class="mb-3">
+                                    <label for="author" class="form-label">
+                                        Ваше имя <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control @error('author') is-invalid @enderror" 
+                                           id="author" 
+                                           name="author" 
+                                           value="{{ old('author', auth()->user()->name ?? '') }}" 
+                                           required>
+                                    @error('author')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="content" class="form-label">
+                                        Комментарий <span class="text-danger">*</span>
+                                    </label>
+                                    <textarea class="form-control @error('content') is-invalid @enderror" 
+                                              id="content" 
+                                              name="content" 
+                                              rows="4" 
+                                              required>{{ old('content') }}</textarea>
+                                    @error('content')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane me-1"></i> Отправить комментарий
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 @endsection
