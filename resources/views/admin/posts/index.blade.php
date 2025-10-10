@@ -65,8 +65,15 @@
                                 @endauth
                             </div>
                         </div>
+                        {{-- Изображение --}}
+                        <x-post-image :post="$post" 
+                                    class="card-img-bottom" 
+                                    style="max-height:200px; object-fit:cover;" 
+                                    :showPlaceholder="false" />
                     </div>
                 @endforeach
+
+                
 
                 <!-- Пагинация -->
                 <div class="d-flex justify-content-center">

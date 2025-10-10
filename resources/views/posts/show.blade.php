@@ -62,13 +62,9 @@
 				</div>
 
 				{{-- изображение внизу карточки --}}
-				@if($post->image)
-                    <a href="{{ Storage::url($post->image) }}" target="_blank" rel="noopener">
-                        <img src="{{ Storage::url($post->image) }}"
-                             class="card-img-bottom"
-                             alt="{{ $post->title }}">
-                    </a>
-                @endif
+			<x-post-image :post="$post" 
+						class="card-img-bottom" 
+						:showPlaceholder="false" />
 			</article>
 
 			{{-- коментарі --}}

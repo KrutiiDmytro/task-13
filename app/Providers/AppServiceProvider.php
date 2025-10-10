@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use App\Services\PostService;
 use App\Services\CategoryService;
 use App\Services\TagService;
+use App\Services\CommentService;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AdminMiddleware;
 
@@ -29,6 +30,10 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(TagService::class, function ($app) {
             return new TagService();
+        });
+
+         $this->app->singleton(CommentService::class, function ($app) {
+            return new CommentService();
         });
     }
 

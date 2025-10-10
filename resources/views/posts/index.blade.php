@@ -69,12 +69,10 @@
 
                         {{-- Изображение --}}
                         @if($post->image)
-                            <a href="{{ Storage::url($post->image) }}" target="_blank" rel="noopener">
-                                <img src="{{ Storage::url($post->image) }}"
-                                    alt="{{ $post->title }}"
-                                    class="card-img-bottom"
-                                    style="max-height:260px; object-fit:cover;">
-                            </a>
+                            <x-post-image :post="$post" 
+                                            class="card-img-bottom" 
+                                            style="max-height:260px; object-fit:cover;" 
+                                            :showPlaceholder="false" />
                         @endif
                     </div>
                 @endforeach

@@ -49,7 +49,7 @@ class PostController extends Controller
         ->all();
 
     $imagePath = $request->file('image')
-        ? $request->file('image')->store('posts', 'public')
+        ? $request->file('image')->store('images/posts', 'public')
         : null;
 
     $post = Post::create([
@@ -59,6 +59,7 @@ class PostController extends Controller
         'user_id'     => auth()->id(),
         'image'       => $imagePath,
         'date'        => now()->toDateString(),
+        'published_at' => now(),
     ]);
 
     $post->tags()->sync($tagIds);
@@ -95,6 +96,7 @@ class PostController extends Controller
         'title'       => $data['title'],
         'content'     => $data['content'],
         'category_id' => $data['category_id'] ?? null,
+        'published_at' => $post->published_at ?? now(),
     ]);
 
     if ($request->hasFile('image')) {

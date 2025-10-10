@@ -15,7 +15,7 @@ class PostService
      */
        public function getFilteredPosts(Request $request): LengthAwarePaginator
     {
-        $query = Post::with(['category', 'tags', 'user']);
+        $query = Post::with(['category', 'tags', 'user'])->published();
 
         // Фильтр по поиску (title или content)
         $search = $request->get('q') ?: $request->get('search') ?: $request->get('search_title');

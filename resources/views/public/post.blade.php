@@ -17,10 +17,11 @@
                                 @endif
                             </small>
                         </div>
-                        
-                        @if($post->image)
-                            <img src="{{ asset('storage/' . $post->image) }}" class="img-fluid rounded mb-4" alt="{{ $post->title }}">
-                        @endif
+
+                        {{-- изображение --}}
+                        <x-post-image :post="$post" 
+                                    class="img-fluid rounded mb-4" 
+                                    :showPlaceholder="false" />
                     </header>
                     
                     <div class="content">

@@ -127,13 +127,13 @@ class Post extends Model
         'user_id',
         'author_name',
         'author_email',
-        'slug',          // Добавляем slug
-        'published_at',  // Добавляем published_at
+        'slug',
+        'published_at',          
     ];
 
     protected $casts = [
         'date' => 'date',
-        'published_at' => 'datetime',  // Добавляем cast для published_at
+        'published_at' => 'datetime', 
     ];
 
     // Автоматическая генерация slug

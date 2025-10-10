@@ -38,9 +38,14 @@
                         @foreach($posts as $post)
                             <div class="col-md-6 col-lg-4 mb-4">
                                 <div class="card h-100">
-                                    @if($post->image)
-                                        <img src="{{ asset('storage/' . $post->image) }}" class="card-img-top" alt="{{ $post->title }}">
-                                    @endif
+
+                                    {{-- изображение --}}
+                                   <x-post-image :post="$post" 
+                                                class="card-img-top" 
+                                                style="height: 200px; object-fit: cover;" 
+                                                :clickable="false"
+                                                :showPlaceholder="false" />
+
                                     <div class="card-body d-flex flex-column">
                                         <h5 class="card-title">{{ $post->title }}</h5>
                                         <p class="card-text">{{ \Illuminate\Support\Str::limit($post->content, 100) }}</p>
