@@ -33,6 +33,7 @@ class PostIndexTest extends TestCase
             'user_id' => $user->id,
             'image' => $path,
             'date' => now()->toDateString(),
+            'published_at' => now(),
         ]);
         $post->tags()->sync([$tag1->id, $tag2->id]);
 
@@ -58,6 +59,7 @@ class PostIndexTest extends TestCase
             'category_id' => $catPhp->id,
             'user_id' => $u->id,
             'date' => now()->toDateString(),
+            'published_at' => now(),
         ]);
         $p1->tags()->sync([$tagApi->id]);
 
