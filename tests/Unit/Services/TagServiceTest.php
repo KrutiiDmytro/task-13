@@ -5,8 +5,8 @@ namespace Tests\Unit\Services;
 use App\Models\Tag;
 use App\Services\TagService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class TagServiceTest extends TestCase
 {

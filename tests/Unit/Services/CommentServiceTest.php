@@ -2,13 +2,13 @@
 
 namespace Tests\Unit\Services;
 
-use Tests\TestCase;
-use App\Services\CommentService;
-use App\Models\Post;
 use App\Models\Comment;
+use App\Models\Post;
+use App\Services\CommentService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Tests\TestCase;
 
 class CommentServiceTest extends TestCase
 {
@@ -41,19 +41,19 @@ class CommentServiceTest extends TestCase
         $post = Post::factory()->create();
 
         $comment = $this->service->create([
-            'author'       => 'Test Author',
+            'author' => 'Test Author',
             'author_email' => 'test@example.com',
-            'content'      => 'Hello world',
-            'post_id'      => $post->id,
+            'content' => 'Hello world',
+            'post_id' => $post->id,
         ]);
 
         $this->assertInstanceOf(Comment::class, $comment);
         $this->assertDatabaseHas('comments', [
-            'id'           => $comment->id,
-            'author_name'  => 'Test Author',
+            'id' => $comment->id,
+            'author_name' => 'Test Author',
             'author_email' => 'test@example.com',
-            'content'      => 'Hello world',
-            'post_id'      => $post->id,
+            'content' => 'Hello world',
+            'post_id' => $post->id,
         ]);
     }
 
@@ -63,9 +63,9 @@ class CommentServiceTest extends TestCase
         $comment = Comment::factory()->create(['post_id' => $post->id]);
 
         $updated = $this->service->update($comment, [
-            'author'       => 'Updated Author',
+            'author' => 'Updated Author',
             'author_email' => 'updated@example.com',
-            'content'      => 'Updated content',
+            'content' => 'Updated content',
         ]);
 
         $this->assertSame('Updated Author', $updated->author_name);
@@ -73,10 +73,10 @@ class CommentServiceTest extends TestCase
         $this->assertSame('Updated content', $updated->content);
 
         $this->assertDatabaseHas('comments', [
-            'id'           => $comment->id,
-            'author_name'  => 'Updated Author',
+            'id' => $comment->id,
+            'author_name' => 'Updated Author',
             'author_email' => 'updated@example.com',
-            'content'      => 'Updated content',
+            'content' => 'Updated content',
         ]);
     }
 

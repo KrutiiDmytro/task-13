@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
 /**
@@ -15,6 +14,7 @@ use Illuminate\Support\Str;
  *     title="Category",
  *     description="Модель категории постов",
  *     required={"id", "name", "slug"},
+ *
  *     @OA\Property(
  *         property="id",
  *         type="integer",
@@ -68,6 +68,7 @@ use Illuminate\Support\Str;
  *         property="posts",
  *         type="array",
  *         description="Посты в категории (загружается по запросу)",
+ *
  *         @OA\Items(ref="#/components/schemas/Post")
  *     )
  * )
@@ -76,7 +77,7 @@ class Category extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','description','slug'];
+    protected $fillable = ['name', 'description', 'slug'];
 
     protected static function booted(): void
     {

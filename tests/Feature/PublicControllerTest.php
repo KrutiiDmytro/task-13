@@ -2,17 +2,18 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use App\Models\Post;
 use App\Models\Category;
+use App\Models\Post;
 use App\Models\Tag;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class PublicControllerTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshDatabase;
+    use WithFaker;
 
     #[Test]
     public function index_displays_published_posts(): void
@@ -30,18 +31,18 @@ class PublicControllerTest extends TestCase
         $response = $this->get('/');
 
         $response->assertStatus(200)
-                 ->assertViewIs('public.index')
-                 ->assertViewHas('posts');
+            ->assertViewIs('public.index')
+            ->assertViewHas('posts');
 
         $viewPosts = $response->viewData('posts');
-        
+
         // Проверяем, что показаны только опубликованные посты
         $this->assertCount(3, $viewPosts->items());
-        
+
         foreach ($publishedPosts as $post) {
             $this->assertContains($post->id, $viewPosts->pluck('id'));
         }
-        
+
         $this->assertNotContains($unpublishedPost->id, $viewPosts->pluck('id'));
     }
 
@@ -63,12 +64,12 @@ class PublicControllerTest extends TestCase
         $response = $this->get('/search?q=Laravel');
 
         $response->assertStatus(200)
-                 ->assertViewIs('public.search')
-                 ->assertViewHas(['posts', 'q']);
+            ->assertViewIs('public.search')
+            ->assertViewHas(['posts', 'q']);
 
         $viewPosts = $response->viewData('posts');
         $this->assertEquals('Laravel', $response->viewData('q'));
-        
+
         // Проверяем, что найден правильный пост
         $this->assertContains($matchingPost->id, $viewPosts->pluck('id'));
         $this->assertNotContains($nonMatchingPost->id, $viewPosts->pluck('id'));
@@ -95,10 +96,10 @@ class PublicControllerTest extends TestCase
         $response = $this->get('/search?q=Article&category=tech');
 
         $response->assertStatus(200)
-                 ->assertViewIs('public.search');
+            ->assertViewIs('public.search');
 
         $viewPosts = $response->viewData('posts');
-        
+
         $this->assertContains($techPost->id, $viewPosts->pluck('id'));
         $this->assertNotContains($newsPost->id, $viewPosts->pluck('id'));
     }
@@ -124,10 +125,10 @@ class PublicControllerTest extends TestCase
         $response = $this->get('/search?q=Tutorial&tag=php');
 
         $response->assertStatus(200)
-                 ->assertViewIs('public.search');
+            ->assertViewIs('public.search');
 
         $viewPosts = $response->viewData('posts');
-        
+
         $this->assertContains($phpPost->id, $viewPosts->pluck('id'));
         $this->assertNotContains($jsPost->id, $viewPosts->pluck('id'));
     }
@@ -151,19 +152,19 @@ class PublicControllerTest extends TestCase
         $response = $this->get("/category/{$category->slug}");
 
         $response->assertStatus(200)
-                 ->assertViewIs('public.category')
-                 ->assertViewHas(['category', 'posts']);
+            ->assertViewIs('public.category')
+            ->assertViewHas(['category', 'posts']);
 
         $viewCategory = $response->viewData('category');
         $viewPosts = $response->viewData('posts');
 
         $this->assertTrue($viewCategory->is($category));
         $this->assertCount(2, $viewPosts->items());
-        
+
         foreach ($categoryPosts as $post) {
             $this->assertContains($post->id, $viewPosts->pluck('id'));
         }
-        
+
         $this->assertNotContains($otherPost->id, $viewPosts->pluck('id'));
     }
 
@@ -196,19 +197,19 @@ class PublicControllerTest extends TestCase
         $response = $this->get("/tag/{$tag->slug}");
 
         $response->assertStatus(200)
-                 ->assertViewIs('public.tag')
-                 ->assertViewHas(['tag', 'posts']);
+            ->assertViewIs('public.tag')
+            ->assertViewHas(['tag', 'posts']);
 
         $viewTag = $response->viewData('tag');
         $viewPosts = $response->viewData('posts');
 
         $this->assertTrue($viewTag->is($tag));
         $this->assertCount(2, $viewPosts->items());
-        
+
         foreach ($taggedPosts as $post) {
             $this->assertContains($post->id, $viewPosts->pluck('id'));
         }
-        
+
         $this->assertNotContains($otherPost->id, $viewPosts->pluck('id'));
     }
 
@@ -231,8 +232,8 @@ class PublicControllerTest extends TestCase
         $response = $this->get("/post/{$post->slug}");
 
         $response->assertStatus(200)
-                 ->assertViewIs('public.post')
-                 ->assertViewHas('post');
+            ->assertViewIs('public.post')
+            ->assertViewHas('post');
 
         $viewPost = $response->viewData('post');
         $this->assertTrue($viewPost->is($post));
@@ -267,8 +268,8 @@ class PublicControllerTest extends TestCase
         $response = $this->get('/search?q=');
 
         $response->assertStatus(200)
-                 ->assertViewIs('public.search')
-                 ->assertViewHas('posts');
+            ->assertViewIs('public.search')
+            ->assertViewHas('posts');
 
         $viewPosts = $response->viewData('posts');
         $this->assertCount(3, $viewPosts->items());
@@ -286,8 +287,8 @@ class PublicControllerTest extends TestCase
         $response = $this->get('/search?q=NonexistentTerm');
 
         $response->assertStatus(200)
-                 ->assertViewIs('public.search')
-                 ->assertViewHas('posts');
+            ->assertViewIs('public.search')
+            ->assertViewHas('posts');
 
         $viewPosts = $response->viewData('posts');
         $this->assertCount(0, $viewPosts->items());
@@ -304,7 +305,7 @@ class PublicControllerTest extends TestCase
 
         $response->assertStatus(200);
         $viewPosts = $response->viewData('posts');
-        
+
         // Проверяем правильный порядок (новые сначала)
         $this->assertEquals($newestPost->id, $viewPosts->items()[0]->id);
         $this->assertEquals($newerPost->id, $viewPosts->items()[1]->id);

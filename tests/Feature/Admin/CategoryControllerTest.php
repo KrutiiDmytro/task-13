@@ -30,7 +30,7 @@ class CategoryControllerTest extends AdminTestCase
     {
         $categoryData = [
             'name' => 'Test Category',
-            'description' => 'Test Description'
+            'description' => 'Test Description',
         ];
 
         $this->actingAsAdmin()
@@ -40,7 +40,7 @@ class CategoryControllerTest extends AdminTestCase
 
         $this->assertDatabaseHas('categories', [
             'name' => 'Test Category',
-            'description' => 'Test Description'
+            'description' => 'Test Description',
         ]);
     }
 
@@ -72,7 +72,7 @@ class CategoryControllerTest extends AdminTestCase
 
         $updateData = [
             'name' => 'Updated Category',
-            'description' => 'Updated Description'
+            'description' => 'Updated Description',
         ];
 
         $this->actingAsAdmin()
@@ -83,7 +83,7 @@ class CategoryControllerTest extends AdminTestCase
         $this->assertDatabaseHas('categories', [
             'id' => $category->id,
             'name' => 'Updated Category',
-            'description' => 'Updated Description'
+            'description' => 'Updated Description',
         ]);
     }
 

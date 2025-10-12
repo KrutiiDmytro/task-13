@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use App\Models\User;
+use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RoleSeeder extends Seeder
 {
@@ -18,11 +17,11 @@ class RoleSeeder extends Seeder
         // Создаём права (только если их нет)
         $permissions = [
             'manage-posts',
-            'manage-categories', 
+            'manage-categories',
             'manage-comments',
             'manage-tags',
             'manage-users',
-            'view-admin-panel'
+            'view-admin-panel',
         ];
 
         foreach ($permissions as $permission) {
@@ -35,11 +34,11 @@ class RoleSeeder extends Seeder
         $userRole = Role::firstOrCreate(['name' => 'user']);
 
         // Назначаем права ролям (только если они ещё не назначены)
-        if (!$adminRole->hasPermissionTo('manage-posts')) {
+        if (! $adminRole->hasPermissionTo('manage-posts')) {
             $adminRole->givePermissionTo(Permission::all()); // Админ получает все права
         }
-        
-        if (!$authorRole->hasPermissionTo('manage-posts')) {
+
+        if (! $authorRole->hasPermissionTo('manage-posts')) {
             $authorRole->givePermissionTo(['manage-posts', 'manage-categories', 'manage-tags']); // Автор может управлять контентом
         }
 
@@ -51,9 +50,9 @@ class RoleSeeder extends Seeder
                 'password' => bcrypt('password123'),
             ]
         );
-        
+
         // Назначаем роль админа, если её нет
-        if (!$admin->hasRole('admin')) {
+        if (! $admin->hasRole('admin')) {
             $admin->assignRole('admin');
         }
 

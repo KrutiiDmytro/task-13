@@ -18,14 +18,14 @@ class CategorySeeder extends Seeder
             ['name' => 'Обучение', 'description' => 'Учебные материалы'],
             ['name' => 'PHP', 'description' => 'Все о PHP'],
             ['name' => 'JavaScript', 'description' => 'Frontend-разработка'],
-            ['name' => 'Базы данных', 'description' => 'Работа с СУБД']
+            ['name' => 'Базы данных', 'description' => 'Работа с СУБД'],
         ];
 
         foreach ($categories as $category) {
             Category::create([
                 'name' => $category['name'],
                 'slug' => Str::slug($category['name']),
-                'description' => $category['description']
+                'description' => $category['description'],
             ]);
         }
     }

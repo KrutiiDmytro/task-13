@@ -11,6 +11,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *     type="object",
  *     title="Category Resource",
  *     description="Ресурс категории для API ответов",
+ *
  *     @OA\Property(property="id", type="integer", example=1),
  *     @OA\Property(property="name", type="string", example="Технологии"),
  *     @OA\Property(property="slug", type="string", example="technologies"),
@@ -41,10 +42,10 @@ class CategoryResource extends JsonResource
             ),
             'created_at' => $this->created_at?->toISOString(),
             'updated_at' => $this->updated_at?->toISOString(),
-            
+
             // Включаем посты только при явном запросе и не для XML
             'posts' => $this->when(
-                $request->get('format') !== 'xml' && $this->relationLoaded('posts'), 
+                $request->get('format') !== 'xml' && $this->relationLoaded('posts'),
                 function () {
                     return $this->posts->map(function ($post) {
                         return [

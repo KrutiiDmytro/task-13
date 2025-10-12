@@ -25,7 +25,7 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-        
+
         // Проверяем наличие сессии перед регенерацией
         if ($request->hasSession()) {
             $request->session()->regenerate();
@@ -34,7 +34,7 @@ class AuthenticatedSessionController extends Controller
         $user = $request->user();
         $isAdmin = method_exists($user, 'hasRole')
             ? $user->hasRole('admin')
-            : (bool)($user->admin ?? false);
+            : (bool) ($user->admin ?? false);
 
         if ($isAdmin) {
             return redirect()->intended(route('admin.dashboard', absolute: false));

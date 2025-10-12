@@ -11,13 +11,13 @@ class AdminMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return redirect()->route('login');
         }
 
         $user = Auth::user();
 
-        if (!(bool) ($user->admin ?? false)) {
+        if (! (bool) ($user->admin ?? false)) {
             abort(403, 'Недостаточно прав для доступа к этому разделу.');
         }
 

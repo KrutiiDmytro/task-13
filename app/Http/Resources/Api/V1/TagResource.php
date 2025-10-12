@@ -11,6 +11,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *     type="object",
  *     title="Tag Resource",
  *     description="Ресурс тега для API ответов",
+ *
  *     @OA\Property(property="id", type="integer", example=1),
  *     @OA\Property(property="name", type="string", example="PHP"),
  *     @OA\Property(property="slug", type="string", example="php"),

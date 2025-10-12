@@ -1,15 +1,17 @@
 <?php
+
 // tests/Feature/PostIndexTest.php
+
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\UploadedFile;
-use Tests\TestCase;
+use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
-use App\Models\Category;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Tests\TestCase;
 
 class PostIndexTest extends TestCase
 {
@@ -40,15 +42,15 @@ class PostIndexTest extends TestCase
         $res = $this->get(route('posts.index'));
         $res->assertOk()
             ->assertSee('Тестовый пост')
-            ->assertSee('#'.$tag1->name)
-            ->assertSee('#'.$tag2->name)
-            ->assertSee('/storage/'.$path); // картинка выводится
+            ->assertSee('#' . $tag1->name)
+            ->assertSee('#' . $tag2->name)
+            ->assertSee('/storage/' . $path); // картинка выводится
     }
 
     public function test_filter_by_tag_and_category_and_search(): void
     {
         $catPhp = Category::create(['name' => 'PHP']);
-        $catJs  = Category::create(['name' => 'JS']);
+        $catJs = Category::create(['name' => 'JS']);
         $tagApi = Tag::create(['name' => 'API']);
 
         $u = User::factory()->create();

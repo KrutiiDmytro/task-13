@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Api;
 
-use App\Models\Tag;
 use App\Models\Post;
+use App\Models\Tag;
 use PHPUnit\Framework\Attributes\Test;
 
 class TagsApiTest extends ApiTestCase
@@ -14,7 +14,7 @@ class TagsApiTest extends ApiTestCase
     {
         return [
             'name' => $this->faker->word,
-            'slug' => $this->faker->slug
+            'slug' => $this->faker->slug,
         ];
     }
 
@@ -28,48 +28,48 @@ class TagsApiTest extends ApiTestCase
         $response->assertOk()
             ->assertJsonStructure([
                 'data' => [
-                    '*' => ['id', 'name', 'slug', 'posts_count', 'created_at', 'updated_at']
+                    '*' => ['id', 'name', 'slug', 'posts_count', 'created_at', 'updated_at'],
                 ],
-                'meta' => ['total', 'count', 'per_page', 'current_page', 'total_pages']
+                'meta' => ['total', 'count', 'per_page', 'current_page', 'total_pages'],
             ]);
     }
 
-#[Test]
-public function index_supports_per_page_parameter(): void
-{
-    Tag::factory()->count(10)->create();
+    #[Test]
+    public function index_supports_per_page_parameter(): void
+    {
+        Tag::factory()->count(10)->create();
 
-    $response = $this->getJson($this->getResourceUrl() . '?per_page=5');
+        $response = $this->getJson($this->getResourceUrl() . '?per_page=5');
 
-    $response->assertOk();
-    
-    $data = $response->json('data');
-    $this->assertCount(5, $data, 'Должно вернуться 5 тегов');
-    
-    // per_page возвращается как массив, берем первый элемент
-    $perPage = $response->json('meta.per_page');
-    if (is_array($perPage)) {
-        $perPage = $perPage[0];
+        $response->assertOk();
+
+        $data = $response->json('data');
+        $this->assertCount(5, $data, 'Должно вернуться 5 тегов');
+
+        // per_page возвращается как массив, берем первый элемент
+        $perPage = $response->json('meta.per_page');
+        if (is_array($perPage)) {
+            $perPage = $perPage[0];
+        }
+        $this->assertEquals(5, (int) $perPage);
     }
-    $this->assertEquals(5, (int)$perPage);
-}
 
-#[Test]
-public function index_limits_per_page_to_maximum(): void
-{
-    Tag::factory()->count(60)->create();
+    #[Test]
+    public function index_limits_per_page_to_maximum(): void
+    {
+        Tag::factory()->count(60)->create();
 
-    $response = $this->getJson($this->getResourceUrl() . '?per_page=100');
+        $response = $this->getJson($this->getResourceUrl() . '?per_page=100');
 
-    $response->assertOk();
-    
-    // per_page возвращается как массив, берем первый элемент
-    $perPage = $response->json('meta.per_page');
-    if (is_array($perPage)) {
-        $perPage = $perPage[0];
+        $response->assertOk();
+
+        // per_page возвращается как массив, берем первый элемент
+        $perPage = $response->json('meta.per_page');
+        if (is_array($perPage)) {
+            $perPage = $perPage[0];
+        }
+        $this->assertEquals(50, (int) $perPage); // Максимум 50
     }
-    $this->assertEquals(50, (int)$perPage); // Максимум 50
-}
 
     #[Test]
     public function index_supports_search_by_name(): void
@@ -105,7 +105,7 @@ public function index_limits_per_page_to_maximum(): void
     {
         $tag = Tag::factory()->create();
         $posts = Post::factory()->count(3)->create();
-        
+
         foreach ($posts as $post) {
             $post->tags()->attach($tag);
         }
@@ -122,7 +122,7 @@ public function index_limits_per_page_to_maximum(): void
     {
         $tag = Tag::factory()->create();
         $posts = Post::factory()->count(3)->create();
-        
+
         foreach ($posts as $post) {
             $post->tags()->attach($tag);
         }
@@ -140,7 +140,7 @@ public function index_limits_per_page_to_maximum(): void
     {
         $tag = Tag::factory()->create();
         $posts = Post::factory()->count(10)->create();
-        
+
         foreach ($posts as $post) {
             $post->tags()->attach($tag);
         }
@@ -190,16 +190,16 @@ public function index_limits_per_page_to_maximum(): void
 
         $response->assertCreated()
             ->assertJsonStructure([
-                'data' => ['id', 'name', 'slug', 'posts_count', 'created_at', 'updated_at']
+                'data' => ['id', 'name', 'slug', 'posts_count', 'created_at', 'updated_at'],
             ])
             ->assertJsonFragment([
                 'name' => $payload['name'],
-                'slug' => $payload['slug']
+                'slug' => $payload['slug'],
             ]);
 
         $this->assertDatabaseHas('tags', [
             'name' => $payload['name'],
-            'slug' => $payload['slug']
+            'slug' => $payload['slug'],
         ]);
     }
 
@@ -213,7 +213,7 @@ public function index_limits_per_page_to_maximum(): void
         $response->assertCreated();
         $this->assertDatabaseHas('tags', [
             'name' => 'Test Tag Name',
-            'slug' => 'test-tag-name'
+            'slug' => 'test-tag-name',
         ]);
     }
 
@@ -223,8 +223,8 @@ public function index_limits_per_page_to_maximum(): void
         $response = $this->postJson($this->getResourceUrl(), []);
 
         $response->assertStatus(422)
-                 ->assertJsonStructure(['message', 'errors'])
-                 ->assertJsonValidationErrors(['name']);
+            ->assertJsonStructure(['message', 'errors'])
+            ->assertJsonValidationErrors(['name']);
     }
 
     #[Test]
@@ -233,11 +233,11 @@ public function index_limits_per_page_to_maximum(): void
         Tag::factory()->create(['name' => 'Existing Tag']);
 
         $response = $this->postJson($this->getResourceUrl(), [
-            'name' => 'Existing Tag'
+            'name' => 'Existing Tag',
         ]);
 
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors(['name']);
+            ->assertJsonValidationErrors(['name']);
     }
 
     #[Test]
@@ -247,11 +247,11 @@ public function index_limits_per_page_to_maximum(): void
 
         $response = $this->postJson($this->getResourceUrl(), [
             'name' => 'New Tag',
-            'slug' => 'existing-slug'
+            'slug' => 'existing-slug',
         ]);
 
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors(['slug']);
+            ->assertJsonValidationErrors(['slug']);
     }
 
     #[Test]
@@ -270,7 +270,7 @@ public function index_limits_per_page_to_maximum(): void
     {
         $tag = Tag::factory()->create();
         $posts = Post::factory()->count(2)->create();
-        
+
         foreach ($posts as $post) {
             $post->tags()->attach($tag);
         }
@@ -279,12 +279,12 @@ public function index_limits_per_page_to_maximum(): void
 
         $response->assertOk()
             ->assertJsonStructure([
-                'data' => ['id', 'name', 'slug', 'posts_count', 'created_at', 'updated_at']
+                'data' => ['id', 'name', 'slug', 'posts_count', 'created_at', 'updated_at'],
             ])
             ->assertJsonFragment([
                 'id' => $tag->id,
                 'name' => $tag->name,
-                'posts_count' => 2
+                'posts_count' => 2,
             ]);
     }
 
@@ -293,7 +293,7 @@ public function index_limits_per_page_to_maximum(): void
     {
         $tag = Tag::factory()->create();
         $posts = Post::factory()->count(2)->create();
-        
+
         foreach ($posts as $post) {
             $post->tags()->attach($tag);
         }
@@ -305,9 +305,9 @@ public function index_limits_per_page_to_maximum(): void
                 'data' => [
                     'id', 'name', 'posts_count',
                     'posts' => [
-                        '*' => ['id', 'title', 'category', 'tags']
-                    ]
-                ]
+                        '*' => ['id', 'title', 'category', 'tags'],
+                    ],
+                ],
             ]);
 
         $responseData = $response->json('data');
@@ -340,21 +340,21 @@ public function index_limits_per_page_to_maximum(): void
         $tag = Tag::factory()->create();
         $updateData = [
             'name' => 'Updated Tag',
-            'slug' => 'updated-tag'
+            'slug' => 'updated-tag',
         ];
 
         $response = $this->putJson($this->getResourceUrl($tag->id), $updateData);
 
         $response->assertOk()
-                 ->assertJsonFragment([
-                     'name' => 'Updated Tag',
-                     'slug' => 'updated-tag'
-                 ]);
+            ->assertJsonFragment([
+                'name' => 'Updated Tag',
+                'slug' => 'updated-tag',
+            ]);
 
         $this->assertDatabaseHas('tags', [
             'id' => $tag->id,
             'name' => 'Updated Tag',
-            'slug' => 'updated-tag'
+            'slug' => 'updated-tag',
         ]);
     }
 
@@ -370,7 +370,7 @@ public function index_limits_per_page_to_maximum(): void
         $this->assertDatabaseHas('tags', [
             'id' => $tag->id,
             'name' => 'New Name',
-            'slug' => 'new-name'
+            'slug' => 'new-name',
         ]);
     }
 
@@ -380,7 +380,7 @@ public function index_limits_per_page_to_maximum(): void
         $tag = Tag::factory()->create(['name' => 'Original Name', 'slug' => 'keep-this-slug']);
         $updateData = [
             'name' => 'New Name',
-            'slug' => 'keep-this-slug'
+            'slug' => 'keep-this-slug',
         ];
 
         $response = $this->putJson($this->getResourceUrl($tag->id), $updateData);
@@ -389,7 +389,7 @@ public function index_limits_per_page_to_maximum(): void
         $this->assertDatabaseHas('tags', [
             'id' => $tag->id,
             'name' => 'New Name',
-            'slug' => 'keep-this-slug'
+            'slug' => 'keep-this-slug',
         ]);
     }
 
@@ -405,7 +405,7 @@ public function index_limits_per_page_to_maximum(): void
         $this->assertDatabaseHas('tags', [
             'id' => $tag->id,
             'name' => 'Original Name', // Не изменилось
-            'slug' => 'new-slug-only'
+            'slug' => 'new-slug-only',
         ]);
     }
 
@@ -415,7 +415,7 @@ public function index_limits_per_page_to_maximum(): void
         $tag = Tag::factory()->create();
         $updateData = [
             'name' => 'Updated XML Tag',
-            'slug' => 'updated-xml-tag'
+            'slug' => 'updated-xml-tag',
         ];
 
         $response = $this->put($this->getResourceUrl($tag->id) . '?format=xml', $updateData, ['Accept' => 'application/xml']);
@@ -432,7 +432,7 @@ public function index_limits_per_page_to_maximum(): void
         $response = $this->putJson($this->getResourceUrl($tag->id), ['name' => '']);
 
         $response->assertStatus(422)
-                 ->assertJsonStructure(['message', 'errors']);
+            ->assertJsonStructure(['message', 'errors']);
     }
 
     #[Test]
@@ -445,7 +445,7 @@ public function index_limits_per_page_to_maximum(): void
         $response = $this->putJson($this->getResourceUrl($tag2->id), ['name' => 'Tag One']);
 
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors(['name']);
+            ->assertJsonValidationErrors(['name']);
     }
 
     #[Test]
@@ -471,7 +471,7 @@ public function index_limits_per_page_to_maximum(): void
     {
         $tag = Tag::factory()->create();
         $posts = Post::factory()->count(2)->create();
-        
+
         // Привязываем посты к тегу
         foreach ($posts as $post) {
             $post->tags()->attach($tag);
@@ -481,12 +481,12 @@ public function index_limits_per_page_to_maximum(): void
 
         $response->assertNoContent();
         $this->assertDatabaseMissing('tags', ['id' => $tag->id]);
-        
+
         // Проверяем, что связи с постами удалены
         foreach ($posts as $post) {
             $this->assertDatabaseMissing('post_tag', [
                 'post_id' => $post->id,
-                'tag_id' => $tag->id
+                'tag_id' => $tag->id,
             ]);
         }
     }
@@ -522,7 +522,7 @@ public function index_limits_per_page_to_maximum(): void
     public function constructor_applies_auth_middleware_correctly(): void
     {
         $controller = new \App\Http\Controllers\Api\V1\TagController();
-        
+
         // Проверим, что контроллер создан корректно
         $this->assertInstanceOf(\App\Http\Controllers\Api\V1\TagController::class, $controller);
     }
@@ -567,13 +567,13 @@ public function index_limits_per_page_to_maximum(): void
         // 2. Получаем тег
         $showResponse = $this->getJson($this->getResourceUrl($tagId));
         $showResponse->assertOk()
-                     ->assertJsonFragment(['name' => 'Integration Test Tag']);
+            ->assertJsonFragment(['name' => 'Integration Test Tag']);
 
         // 3. Обновляем тег
         $updateData = ['name' => 'Updated Integration Tag'];
         $updateResponse = $this->putJson($this->getResourceUrl($tagId), $updateData);
         $updateResponse->assertOk()
-                       ->assertJsonFragment(['name' => 'Updated Integration Tag']);
+            ->assertJsonFragment(['name' => 'Updated Integration Tag']);
 
         // 4. Проверяем в списке
         $indexResponse = $this->getJson($this->getResourceUrl());

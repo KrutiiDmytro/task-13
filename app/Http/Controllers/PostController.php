@@ -2,27 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Schema;
-use App\Models\User;
-use App\Models\Post;
 use App\Models\Category;
+use App\Models\Post;
 use App\Models\Tag;
+use App\Models\User;
 use App\Services\CategoryService;
 use App\Services\PostService;
 use App\Services\TagService;
-use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\DB;
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 
 class PostController extends Controller
 {
     // сервісні залежності контролера
     private CategoryService $categoryService;
-    private TagService    $tagService;
-    private PostService   $postService;
+
+    private TagService $tagService;
+
+    private PostService $postService;
 
     // інʼєкція залежностей через конструктор
     public function __construct(
@@ -31,9 +30,9 @@ class PostController extends Controller
         PostService $postService
     ) {
         $this->categoryService = $categoryService;
-        $this->tagService      = $tagService;
-        $this->postService     = $postService;
-        
+        $this->tagService = $tagService;
+        $this->postService = $postService;
+
         // Применяем middleware auth только к методам, которые изменяют данные
         $this->middleware('auth')->only(['create', 'store', 'edit', 'update', 'destroy']);
     }
@@ -54,7 +53,7 @@ class PostController extends Controller
         // Підтримуємо обидві назви параметра пошуку: q і search
         $termParam = $request->query('q', $request->query('search', ''));
         $term = (string) $termParam;
-        
+
         $categoryId = $request->query('category');
         $tagId = $request->query('tag');
 
@@ -77,6 +76,7 @@ class PostController extends Controller
         $categories = $this->categoryService->getAll();
         $tags = $this->tagService->getAll();
         $users = User::all(); // Для выбора автора
+
         return view('posts.create', compact('categories', 'tags', 'users'));
     }
 
@@ -87,26 +87,26 @@ class PostController extends Controller
     {
         // Для авторизованных пользователей поля author_name и author_email необязательны
         $isAuthenticated = auth()->check();
-        
+
         $rules = [
-            'title'        => 'required|string|max:255',
-            'content'      => 'required|string',
-            'category_id'  => 'required|exists:categories,id',
-            'user_id'      => 'nullable|exists:users,id',
-            'image'        => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'tags'         => 'nullable|array',
-            'tags.*'       => 'string|max:255',
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'category_id' => 'required|exists:categories,id',
+            'user_id' => 'nullable|exists:users,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'tags' => 'nullable|array',
+            'tags.*' => 'string|max:255',
         ];
-        
+
         // Добавляем правила для author_name и author_email только для гостей
-        if (!$isAuthenticated) {
+        if (! $isAuthenticated) {
             $rules['author_name'] = 'required|string|max:255';
             $rules['author_email'] = 'required|email|max:255';
         } else {
             $rules['author_name'] = 'nullable|string|max:255';
             $rules['author_email'] = 'nullable|email|max:255';
         }
-        
+
         $validatedData = $request->validate($rules);
 
         if ($request->hasFile('image')) {
@@ -114,10 +114,10 @@ class PostController extends Controller
         }
 
         // Устанавливаем user_id текущего пользователя, если не указан
-        if (!isset($validatedData['user_id'])) {
+        if (! isset($validatedData['user_id'])) {
             $validatedData['user_id'] = auth()->id();
         }
-        
+
         // Для авторизованных пользователей автоматически заполняем author_name и author_email
         if ($isAuthenticated) {
             $user = auth()->user();
@@ -140,13 +140,14 @@ class PostController extends Controller
     public function edit(Post $post): View
     {
         // Простая проверка прав доступа
-        if (!$this->canManagePost($post)) {
+        if (! $this->canManagePost($post)) {
             abort(403);
         }
 
         $categories = $this->categoryService->getAll();
         $tags = $this->tagService->getAll();
         $users = User::all();
+
         return view('posts.edit', compact('post', 'categories', 'tags', 'users'));
     }
 
@@ -156,32 +157,32 @@ class PostController extends Controller
     public function update(Request $request, Post $post): RedirectResponse
     {
         // Простая проверка прав доступа
-        if (!$this->canManagePost($post)) {
+        if (! $this->canManagePost($post)) {
             abort(403);
         }
 
         // Для авторизованных пользователей поля author_name и author_email необязательны
         $isAuthenticated = auth()->check();
-        
+
         $rules = [
-            'title'        => 'required|string|max:255',
-            'content'      => 'required|string',
-            'category_id'  => 'required|exists:categories,id',
-            'user_id'      => 'nullable|exists:users,id',
-            'image'        => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'tags'         => 'nullable|array',
-            'tags.*'       => 'string|max:255',
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'category_id' => 'required|exists:categories,id',
+            'user_id' => 'nullable|exists:users,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'tags' => 'nullable|array',
+            'tags.*' => 'string|max:255',
         ];
-        
+
         // Добавляем правила для author_name и author_email только для гостей
-        if (!$isAuthenticated) {
+        if (! $isAuthenticated) {
             $rules['author_name'] = 'required|string|max:255';
             $rules['author_email'] = 'required|email|max:255';
         } else {
             $rules['author_name'] = 'nullable|string|max:255';
             $rules['author_email'] = 'nullable|email|max:255';
         }
-        
+
         $validatedData = $request->validate($rules);
 
         if ($request->hasFile('image')) {
@@ -191,7 +192,7 @@ class PostController extends Controller
             }
             $validatedData['image'] = $request->file('image')->store('images/posts', 'public');
         }
-        
+
         // Для авторизованных пользователей автоматически заполняем author_name и author_email
         if ($isAuthenticated) {
             $user = auth()->user();
@@ -214,7 +215,7 @@ class PostController extends Controller
     public function destroy(Post $post): RedirectResponse
     {
         // Простая проверка прав доступа
-        if (!$this->canManagePost($post)) {
+        if (! $this->canManagePost($post)) {
             abort(403);
         }
 
@@ -234,8 +235,8 @@ class PostController extends Controller
     private function canManagePost(Post $post): bool
     {
         $user = auth()->user();
-        
-        if (!$user) {
+
+        if (! $user) {
             return false;
         }
 

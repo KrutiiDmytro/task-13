@@ -2,27 +2,29 @@
 
 namespace Tests\Feature\Admin;
 
-use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+use Tests\TestCase;
 
 abstract class AdminTestCase extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshDatabase;
+    use WithFaker;
 
     protected User $admin;
+
     protected User $regularUser;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Создаем роли для Spatie Permission
         $this->createRoles();
-        
+
         $this->admin = User::factory()->create(['admin' => true]);
         $this->regularUser = User::factory()->create(['admin' => false]);
     }
@@ -33,7 +35,7 @@ abstract class AdminTestCase extends TestCase
         Role::create(['name' => 'admin']);
         Role::create(['name' => 'editor']);
         Role::create(['name' => 'user']);
-        
+
         // Создаем базовые права (если нужно)
         Permission::create(['name' => 'manage posts']);
         Permission::create(['name' => 'manage users']);

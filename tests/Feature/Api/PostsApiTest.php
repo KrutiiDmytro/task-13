@@ -5,8 +5,8 @@ namespace Tests\Feature\Api;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
-use PHPUnit\Framework\Attributes\Test;
 use Mockery\MockInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 class PostsApiTest extends ApiTestCase
 {
@@ -17,11 +17,11 @@ class PostsApiTest extends ApiTestCase
         $category = Category::factory()->create();
 
         return [
-            'title'        => $this->faker->sentence,
-            'content'      => $this->faker->paragraph,
-            'category_id'  => $category->id,
-            'user_id'      => $this->user->id,
-            'author_name'  => $this->user->name,
+            'title' => $this->faker->sentence,
+            'content' => $this->faker->paragraph,
+            'category_id' => $category->id,
+            'user_id' => $this->user->id,
+            'author_name' => $this->user->name,
             'author_email' => $this->user->email,
         ];
     }
@@ -36,7 +36,7 @@ class PostsApiTest extends ApiTestCase
         $response->assertOk()
             ->assertJsonStructure([
                 'data',
-                'meta' => ['total','count','per_page','current_page','total_pages'],
+                'meta' => ['total', 'count', 'per_page', 'current_page', 'total_pages'],
             ]);
     }
 
@@ -80,8 +80,8 @@ class PostsApiTest extends ApiTestCase
             ]);
 
         $this->assertDatabaseHas('posts', [
-            'title'       => $payload['title'],
-            'content'     => $payload['content'],
+            'title' => $payload['title'],
+            'content' => $payload['content'],
             'category_id' => $payload['category_id'],
         ]);
     }
@@ -90,26 +90,26 @@ class PostsApiTest extends ApiTestCase
     public function store_creates_post_with_tags(): void
     {
         $category = Category::factory()->create();
-        
+
         // Используем уникальные имена для тегов
         $uniqueTag1 = 'unique-tag-' . uniqid();
         $uniqueTag2 = 'unique-tag-' . uniqid();
 
         $payload = [
-            'title'        => 'Post with Tags',
-            'content'      => 'Content with tags',
-            'category_id'  => $category->id,
-            'user_id'      => $this->user->id,
-            'author_name'  => $this->user->name,
+            'title' => 'Post with Tags',
+            'content' => 'Content with tags',
+            'category_id' => $category->id,
+            'user_id' => $this->user->id,
+            'author_name' => $this->user->name,
             'author_email' => $this->user->email,
-            'tags'         => [$uniqueTag1, $uniqueTag2],
+            'tags' => [$uniqueTag1, $uniqueTag2],
         ];
 
         $response = $this->postJson($this->getResourceUrl(), $payload);
 
         $response->assertCreated();
         $this->assertDatabaseHas('posts', [
-            'title'   => 'Post with Tags',
+            'title' => 'Post with Tags',
             'content' => 'Content with tags',
         ]);
 
@@ -124,7 +124,7 @@ class PostsApiTest extends ApiTestCase
         $response = $this->postJson($this->getResourceUrl(), []);
 
         $response->assertStatus(422)
-                 ->assertJsonStructure(['message','errors']);
+            ->assertJsonStructure(['message', 'errors']);
     }
 
     #[Test]
@@ -147,7 +147,7 @@ class PostsApiTest extends ApiTestCase
 
         $response->assertOk()
             ->assertJsonStructure([
-                'data' => ['id','title','content','category_id','created_at','updated_at','category','tags','comments'],
+                'data' => ['id', 'title', 'content', 'category_id', 'created_at', 'updated_at', 'category', 'tags', 'comments'],
             ])
             ->assertJsonPath('data.id', $post->id);
     }
@@ -174,26 +174,26 @@ class PostsApiTest extends ApiTestCase
     #[Test]
     public function update_updates_post_and_returns_200_json(): void
     {
-        $post     = Post::factory()->create();
+        $post = Post::factory()->create();
         $category = Category::factory()->create();
 
         $payload = [
-            'title'       => 'Updated Title',
-            'content'     => 'Updated Content',
+            'title' => 'Updated Title',
+            'content' => 'Updated Content',
             'category_id' => $category->id,
-            'user_id'     => $this->user->id,
+            'user_id' => $this->user->id,
         ];
 
         $response = $this->putJson($this->getResourceUrl($post->id), $payload);
 
         $response->assertOk()
-                 ->assertJsonPath('data.title', 'Updated Title')
-                 ->assertJsonPath('data.content', 'Updated Content');
+            ->assertJsonPath('data.title', 'Updated Title')
+            ->assertJsonPath('data.content', 'Updated Content');
 
         $this->assertDatabaseHas('posts', [
-            'id'          => $post->id,
-            'title'       => 'Updated Title',
-            'content'     => 'Updated Content',
+            'id' => $post->id,
+            'title' => 'Updated Title',
+            'content' => 'Updated Content',
             'category_id' => $category->id,
         ]);
     }
@@ -205,8 +205,8 @@ class PostsApiTest extends ApiTestCase
         $category = Category::factory()->create();
 
         $payload = [
-            'title'       => 'Updated XML Title',
-            'content'     => 'Updated XML Content',
+            'title' => 'Updated XML Title',
+            'content' => 'Updated XML Content',
             'category_id' => $category->id,
         ];
 
@@ -224,7 +224,7 @@ class PostsApiTest extends ApiTestCase
         $response = $this->putJson($this->getResourceUrl($post->id), []);
 
         $response->assertStatus(422)
-                 ->assertJsonStructure(['message','errors']);
+            ->assertJsonStructure(['message', 'errors']);
     }
 
     #[Test]
@@ -282,7 +282,7 @@ class PostsApiTest extends ApiTestCase
     {
         $category1 = Category::factory()->create(['name' => 'Tech']);
         $category2 = Category::factory()->create(['name' => 'News']);
-        
+
         Post::factory()->create(['category_id' => $category1->id]);
         Post::factory()->create(['category_id' => $category2->id]);
 
@@ -300,7 +300,7 @@ class PostsApiTest extends ApiTestCase
         $tag = Tag::factory()->create(['name' => 'php']);
         $post = Post::factory()->create();
         $post->tags()->attach($tag->id);
-        
+
         Post::factory()->create(); // post without tags
 
         $response = $this->getJson($this->getResourceUrl() . '?tag_id=' . $tag->id);
@@ -321,27 +321,26 @@ class PostsApiTest extends ApiTestCase
         dump('Full response:', $response->json());
 
         $response->assertOk();
-        
-
     }
+
     #[Test]
     public function store_handles_tags_text_parameter(): void
     {
         $category = Category::factory()->create();
-        
+
         $payload = [
-            'title'        => 'Post with tags text',
-            'content'      => 'Content with tags',
-            'category_id'  => $category->id,
-            'user_id'      => $this->user->id,
-            'tags_text'    => 'php, laravel, testing',
+            'title' => 'Post with tags text',
+            'content' => 'Content with tags',
+            'category_id' => $category->id,
+            'user_id' => $this->user->id,
+            'tags_text' => 'php, laravel, testing',
         ];
 
         $response = $this->postJson($this->getResourceUrl(), $payload);
 
         $response->assertCreated();
         $this->assertDatabaseHas('posts', [
-            'title'   => 'Post with tags text',
+            'title' => 'Post with tags text',
             'content' => 'Content with tags',
         ]);
     }
@@ -352,7 +351,7 @@ class PostsApiTest extends ApiTestCase
         // Мокируем PostService чтобы выбросить исключение
         $this->mock(\App\Services\PostService::class, function ($mock) {
             $mock->shouldReceive('createPost')
-                 ->andThrow(new \Exception('Database connection error'));
+                ->andThrow(new \Exception('Database connection error'));
         });
 
         $payload = $this->createResourceData();
@@ -360,7 +359,7 @@ class PostsApiTest extends ApiTestCase
         $response = $this->postJson($this->getResourceUrl(), $payload);
 
         $response->assertStatus(500)
-                 ->assertJsonStructure(['error', 'file', 'line']);
+            ->assertJsonStructure(['error', 'file', 'line']);
     }
 
     #[Test]
@@ -373,23 +372,23 @@ class PostsApiTest extends ApiTestCase
         $response = $this->getJson($this->getResourceUrl($post->id));
 
         $response->assertOk()
-                 ->assertJsonStructure([
-                     'data' => [
-                         'id', 'title', 'content',
-                         'category', 'tags', 'comments'
-                     ]
-                 ]);
+            ->assertJsonStructure([
+                'data' => [
+                    'id', 'title', 'content',
+                    'category', 'tags', 'comments',
+                ],
+            ]);
     }
 
     #[Test]
     public function update_handles_general_exception(): void
     {
         $post = Post::factory()->create();
-        
+
         // Мокируем PostService чтобы выбросить исключение
         $this->mock(\App\Services\PostService::class, function ($mock) {
             $mock->shouldReceive('updatePost')
-                 ->andThrow(new \Exception('Update failed'));
+                ->andThrow(new \Exception('Update failed'));
         });
 
         $payload = $this->createResourceData();
@@ -405,13 +404,13 @@ class PostsApiTest extends ApiTestCase
         // Мокируем PostService чтобы выбросить исключение
         $this->mock(\App\Services\PostService::class, function ($mock) {
             $mock->shouldReceive('getFilteredPosts')
-                 ->andThrow(new \Exception('Database connection failed'));
+                ->andThrow(new \Exception('Database connection failed'));
         });
 
         $response = $this->getJson($this->getResourceUrl());
 
         $response->assertStatus(500)
-                 ->assertJsonStructure(['error', 'file', 'line']);
+            ->assertJsonStructure(['error', 'file', 'line']);
     }
 
     #[Test]
@@ -470,7 +469,7 @@ class PostsApiTest extends ApiTestCase
         $tag = Tag::factory()->create(['slug' => 'php-tutorial']);
         $post = Post::factory()->create();
         $post->tags()->attach($tag->id);
-        
+
         Post::factory()->create(); // пост без тегов
 
         $response = $this->getJson($this->getResourceUrl() . '?tag=php-tutorial');
@@ -486,7 +485,7 @@ class PostsApiTest extends ApiTestCase
         $category1 = Category::factory()->create();
         $category2 = Category::factory()->create();
         $category3 = Category::factory()->create();
-        
+
         Post::factory()->create(['category_id' => $category1->id]);
         Post::factory()->create(['category_id' => $category2->id]);
         Post::factory()->create(['category_id' => $category3->id]);
@@ -504,13 +503,13 @@ class PostsApiTest extends ApiTestCase
         $tag1 = Tag::factory()->create();
         $tag2 = Tag::factory()->create();
         $tag3 = Tag::factory()->create();
-        
+
         $post1 = Post::factory()->create();
         $post1->tags()->attach($tag1->id);
-        
+
         $post2 = Post::factory()->create();
         $post2->tags()->attach($tag2->id);
-        
+
         $post3 = Post::factory()->create();
         $post3->tags()->attach($tag3->id);
 
@@ -529,16 +528,16 @@ class PostsApiTest extends ApiTestCase
         $category2 = Category::factory()->create();
         $tag1 = Tag::factory()->create();
         $tag2 = Tag::factory()->create();
-        
+
         $post1 = Post::factory()->create([
             'title' => 'Laravel Advanced Tutorial',
-            'category_id' => $category1->id
+            'category_id' => $category1->id,
         ]);
         $post1->tags()->attach([$tag1->id, $tag2->id]);
-        
+
         $post2 = Post::factory()->create([
             'title' => 'PHP Basics',
-            'category_id' => $category2->id
+            'category_id' => $category2->id,
         ]);
         $post2->tags()->attach([$tag1->id]);
 
@@ -551,7 +550,6 @@ class PostsApiTest extends ApiTestCase
         $this->assertEquals($post1->id, $data[0]['id']);
     }
 
-    
     #[Test]
     public function show_handles_exception_in_try_catch(): void
     {
@@ -559,7 +557,7 @@ class PostsApiTest extends ApiTestCase
         $response = $this->getJson($this->getResourceUrl(-1)); // Невалидный ID
 
         $response->assertStatus(404)
-                 ->assertJsonStructure(['message']);
+            ->assertJsonStructure(['message']);
     }
 
     #[Test]
@@ -582,28 +580,28 @@ class PostsApiTest extends ApiTestCase
         $this->assertDatabaseMissing('posts', ['id' => $post->id]);
     }
 
-      #[Test]
+    #[Test]
     public function destroy_handles_exception_in_try_catch(): void
     {
         $post = Post::factory()->create();
-        
+
         // Мокируем метод delete модели Post для исключения
         $mockPost = $this->partialMock(Post::class, function (MockInterface $mock) {
             $mock->shouldReceive('delete')->andThrow(new \Exception('Delete failed'));
         });
 
         $controller = new \App\Http\Controllers\Api\V1\PostController(app(\App\Services\PostService::class));
-        
+
         $request = \Illuminate\Http\Request::create('/api/v1/posts/' . $post->id, 'DELETE');
-        
+
         $response = $controller->destroy($request, $mockPost);
-        
+
         $this->assertEquals(500, $response->getStatusCode());
-        
+
         // Проверяем, что есть содержимое ответа
         $content = $response->getContent();
         $this->assertNotEmpty($content);
-        
+
         // Пытаемся декодировать JSON
         $decodedContent = json_decode($content, true);
         if ($decodedContent !== null) {
@@ -620,23 +618,23 @@ class PostsApiTest extends ApiTestCase
     public function destroy_handles_exception_with_xml_format(): void
     {
         $post = Post::factory()->create();
-        
+
         // Мокируем метод delete модели Post для исключения
         $mockPost = $this->partialMock(Post::class, function (MockInterface $mock) {
             $mock->shouldReceive('delete')->andThrow(new \Exception('Delete failed'));
         });
 
         $controller = new \App\Http\Controllers\Api\V1\PostController(app(\App\Services\PostService::class));
-        
+
         $request = \Illuminate\Http\Request::create('/api/v1/posts/' . $post->id . '?format=xml', 'DELETE');
-        
+
         $response = $controller->destroy($request, $mockPost);
-        
+
         $this->assertEquals(500, $response->getStatusCode());
-        
+
         // Для XML формата тоже должно быть содержимое с ошибкой
         $this->assertNotEmpty($response->getContent());
-        
+
         // Проверяем, что это XML ответ
         $contentType = $response->headers->get('Content-Type');
         if ($contentType) {
@@ -656,21 +654,21 @@ class PostsApiTest extends ApiTestCase
         );
 
         $response->assertNoContent();
-        
+
         // Проверяем XML заголовок (покрывает строки 191-193)
         $contentType = $response->headers->get('Content-Type');
         if ($contentType) {
             $this->assertStringContainsString('application/xml', $contentType);
         }
-        
+
         $this->assertDatabaseMissing('posts', ['id' => $post->id]);
     }
 
-        #[Test]
+    #[Test]
     public function show_handles_exception_with_direct_controller_test(): void
     {
         $post = Post::factory()->create();
-        
+
         // Мокируем Post для исключения при load
         $mockPost = $this->partialMock(Post::class, function (MockInterface $mock) {
             $mock->shouldReceive('load')->andThrow(new \Exception('Database error'));
@@ -678,15 +676,15 @@ class PostsApiTest extends ApiTestCase
 
         $controller = new \App\Http\Controllers\Api\V1\PostController(app(\App\Services\PostService::class));
         $request = \Illuminate\Http\Request::create('/api/v1/posts/' . $post->id, 'GET');
-        
+
         $response = $controller->show($request, $mockPost);
-        
+
         $this->assertEquals(404, $response->getStatusCode());
-        
+
         // Проверяем содержимое ответа
         $content = $response->getContent();
         $this->assertNotEmpty($content);
-        
+
         // Декодируем JSON и проверяем структуру
         $decodedContent = json_decode($content, true);
         if ($decodedContent !== null && is_array($decodedContent)) {

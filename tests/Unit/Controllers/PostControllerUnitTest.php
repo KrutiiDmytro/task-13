@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\Controllers;
 
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Post;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class PostControllerUnitTest extends TestCase
 {
@@ -15,13 +15,13 @@ class PostControllerUnitTest extends TestCase
     {
         // Коментар (укр.): простий юніт‑приклад — модель створюється з мінімальними полями
         $post = Post::factory()->create([
-            'title'   => 'Unit Post',
+            'title' => 'Unit Post',
             'content' => 'Unit content',
         ]);
 
         $this->assertDatabaseHas('posts', [
-            'id'      => $post->id,
-            'title'   => 'Unit Post',
+            'id' => $post->id,
+            'title' => 'Unit Post',
             'content' => 'Unit content',
         ]);
     }

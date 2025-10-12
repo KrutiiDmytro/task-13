@@ -2,28 +2,29 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
+use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
-use App\Models\Category;
-use App\Models\Tag;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class PostControllerTest extends TestCase
 {
     use RefreshDatabase;
 
     protected $user;
+
     protected $admin;
+
     protected $category;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Создаем тестовые данные
         $this->user = User::factory()->create(['admin' => false]);
         $this->admin = User::factory()->create(['admin' => true]);
@@ -38,8 +39,8 @@ class PostControllerTest extends TestCase
         $response = $this->get(route('posts.index'));
 
         $response->assertStatus(200)
-                 ->assertViewIs('posts.index')
-                 ->assertViewHas(['posts', 'categories', 'tags']);
+            ->assertViewIs('posts.index')
+            ->assertViewHas(['posts', 'categories', 'tags']);
     }
 
     #[Test]
@@ -50,8 +51,8 @@ class PostControllerTest extends TestCase
         $response = $this->get(route('posts.show', $post));
 
         $response->assertStatus(200)
-                 ->assertViewIs('posts.show')
-                 ->assertViewHas('post', $post);
+            ->assertViewIs('posts.show')
+            ->assertViewHas('post', $post);
     }
 
     #[Test]
@@ -60,8 +61,8 @@ class PostControllerTest extends TestCase
         $response = $this->actingAs($this->user)->get(route('posts.create'));
 
         $response->assertStatus(200)
-                 ->assertViewIs('posts.create')
-                 ->assertViewHas(['categories', 'tags', 'users']);
+            ->assertViewIs('posts.create')
+            ->assertViewHas(['categories', 'tags', 'users']);
     }
 
     #[Test]
@@ -86,7 +87,7 @@ class PostControllerTest extends TestCase
         ]);
 
         $response->assertRedirect(route('posts.index'))
-                 ->assertSessionHas('success');
+            ->assertSessionHas('success');
 
         $this->assertDatabaseHas('posts', [
             'title' => 'Test Post Title',
@@ -116,7 +117,7 @@ class PostControllerTest extends TestCase
             'category_id' => $this->category->id,
             'author_name' => 'Test Author',
             'author_email' => 'test@example.com',
-            'tags' => ['Laravel', 'PHP', 'Testing']
+            'tags' => ['Laravel', 'PHP', 'Testing'],
         ]);
 
         $response->assertRedirect(route('posts.index'));
@@ -133,11 +134,10 @@ class PostControllerTest extends TestCase
         $response = $this->actingAs($this->user)->get(route('posts.edit', $post));
 
         $response->assertStatus(200)
-                 ->assertViewIs('posts.edit')
-                 ->assertViewHas(['post', 'categories', 'tags', 'users']);
+            ->assertViewIs('posts.edit')
+            ->assertViewHas(['post', 'categories', 'tags', 'users']);
     }
 
-    
     #[Test]
     public function edit_forbids_non_owner_regular_user(): void
     {
@@ -157,7 +157,7 @@ class PostControllerTest extends TestCase
         $response = $this->actingAs($this->admin)->get(route('posts.edit', $post));
 
         $response->assertStatus(200)
-                 ->assertViewIs('posts.edit');
+            ->assertViewIs('posts.edit');
     }
 
     #[Test]
@@ -174,7 +174,7 @@ class PostControllerTest extends TestCase
         ]);
 
         $response->assertRedirect(route('posts.index'))
-                 ->assertSessionHas('success');
+            ->assertSessionHas('success');
 
         $this->assertDatabaseHas('posts', [
             'id' => $post->id,
@@ -219,7 +219,7 @@ class PostControllerTest extends TestCase
         $response = $this->actingAs($this->user)->delete(route('posts.destroy', $post));
 
         $response->assertRedirect(route('posts.index'))
-                 ->assertSessionHas('success');
+            ->assertSessionHas('success');
 
         $this->assertDatabaseMissing('posts', ['id' => $post->id]);
     }
@@ -228,13 +228,13 @@ class PostControllerTest extends TestCase
     public function destroy_deletes_associated_image(): void
     {
         Storage::fake('public');
-        
+
         $file = UploadedFile::fake()->image('test.jpg');
         $path = $file->store('images/posts', 'public');
-        
+
         $post = Post::factory()->create([
             'user_id' => $this->user->id,
-            'image' => $path
+            'image' => $path,
         ]);
 
         Storage::disk('public')->assertExists($path);
@@ -293,12 +293,12 @@ class PostControllerTest extends TestCase
         $deleteResponse = $this->actingAs($this->admin)->delete(route('posts.destroy', $post));
         $deleteResponse->assertRedirect(route('posts.index'));
     }
-        
+
     #[Test]
     public function store_sets_user_id_from_auth_when_not_provided(): void
     {
         Storage::fake('public');
-        
+
         $postData = [
             'title' => 'Test Post without user_id',
             'content' => 'Test content',
@@ -311,7 +311,7 @@ class PostControllerTest extends TestCase
         $response = $this->actingAs($this->user)->post(route('posts.store'), $postData);
 
         $response->assertRedirect(route('posts.index'));
-        
+
         // Проверяем, что user_id установлен из auth()->id()
         $this->assertDatabaseHas('posts', [
             'title' => 'Test Post without user_id',
@@ -323,22 +323,22 @@ class PostControllerTest extends TestCase
     public function can_manage_post_returns_false_for_guest(): void
     {
         $post = Post::factory()->create(['user_id' => $this->user->id]);
-        
+
         // Создаем контроллер для прямого тестирования приватного метода
         $controller = new \App\Http\Controllers\PostController(
             app(\App\Services\CategoryService::class),
             app(\App\Services\TagService::class),
             app(\App\Services\PostService::class)
         );
-        
+
         // Используем рефлексию для доступа к приватному методу
         $reflection = new \ReflectionClass($controller);
         $method = $reflection->getMethod('canManagePost');
         $method->setAccessible(true);
-        
+
         // Тестируем без аутентификации (гость)
         $result = $method->invoke($controller, $post);
-        
+
         $this->assertFalse($result);
     }
 
@@ -347,21 +347,21 @@ class PostControllerTest extends TestCase
     {
         $otherUser = User::factory()->create(['admin' => false]);
         $post = Post::factory()->create(['user_id' => $otherUser->id]);
-        
+
         $controller = new \App\Http\Controllers\PostController(
             app(\App\Services\CategoryService::class),
             app(\App\Services\TagService::class),
             app(\App\Services\PostService::class)
         );
-        
+
         $reflection = new \ReflectionClass($controller);
         $method = $reflection->getMethod('canManagePost');
         $method->setAccessible(true);
-        
+
         // Тестируем как админ
         $this->actingAs($this->admin);
         $result = $method->invoke($controller, $post);
-        
+
         $this->assertTrue($result);
     }
 
@@ -369,21 +369,21 @@ class PostControllerTest extends TestCase
     public function can_manage_post_returns_true_for_post_owner(): void
     {
         $post = Post::factory()->create(['user_id' => $this->user->id]);
-        
+
         $controller = new \App\Http\Controllers\PostController(
             app(\App\Services\CategoryService::class),
             app(\App\Services\TagService::class),
             app(\App\Services\PostService::class)
         );
-        
+
         $reflection = new \ReflectionClass($controller);
         $method = $reflection->getMethod('canManagePost');
         $method->setAccessible(true);
-        
+
         // Тестируем как владелец поста
         $this->actingAs($this->user);
         $result = $method->invoke($controller, $post);
-        
+
         $this->assertTrue($result);
     }
 
@@ -395,15 +395,15 @@ class PostControllerTest extends TestCase
             app(\App\Services\TagService::class),
             app(\App\Services\PostService::class)
         );
-        
+
         $reflection = new \ReflectionClass($controller);
         $method = $reflection->getMethod('isAdmin');
         $method->setAccessible(true);
-        
+
         // Тестируем как админ
         $this->actingAs($this->admin);
         $result = $method->invoke($controller);
-        
+
         $this->assertTrue($result);
     }
 
@@ -415,15 +415,15 @@ class PostControllerTest extends TestCase
             app(\App\Services\TagService::class),
             app(\App\Services\PostService::class)
         );
-        
+
         $reflection = new \ReflectionClass($controller);
         $method = $reflection->getMethod('isAdmin');
         $method->setAccessible(true);
-        
+
         // Тестируем как обычный пользователь
         $this->actingAs($this->user);
         $result = $method->invoke($controller);
-        
+
         $this->assertFalse($result);
     }
 
@@ -435,46 +435,46 @@ class PostControllerTest extends TestCase
             app(\App\Services\TagService::class),
             app(\App\Services\PostService::class)
         );
-        
+
         $reflection = new \ReflectionClass($controller);
         $method = $reflection->getMethod('isAdmin');
         $method->setAccessible(true);
-        
+
         // Тестируем без аутентификации
         $result = $method->invoke($controller);
-        
+
         $this->assertFalse($result);
     }
 
-        #[Test]
+    #[Test]
     public function store_creates_post_with_image_upload(): void
     {
         Storage::fake('public');
-        
+
         $image = UploadedFile::fake()->image('test-post.jpg');
-        
+
         $postData = [
             'title' => 'Test Post with Image',
             'content' => 'Test content with image',
             'category_id' => $this->category->id,
             'author_name' => 'Test Author',
             'author_email' => 'author@example.com',
-            'image' => $image // Покрывает строки 100-102 в методе store
+            'image' => $image, // Покрывает строки 100-102 в методе store
         ];
 
         $response = $this->actingAs($this->user)->post(route('posts.store'), $postData);
 
         $response->assertRedirect(route('posts.index'))
-                 ->assertSessionHas('success');
+            ->assertSessionHas('success');
 
         // Проверяем, что пост создан
         $post = Post::where('title', 'Test Post with Image')->first();
         $this->assertNotNull($post);
-        
+
         // Проверяем, что изображение загружено (покрывает строку 101)
         $this->assertNotNull($post->image);
         $this->assertStringContainsString('images/posts/', $post->image);
-        
+
         // Проверяем, что файл действительно сохранен
         Storage::disk('public')->assertExists($post->image);
     }
@@ -483,7 +483,7 @@ class PostControllerTest extends TestCase
     public function store_auto_fills_author_data_for_authenticated_users(): void
     {
         $category = Category::factory()->create();
-        
+
         $response = $this->actingAs($this->user)->post(route('posts.store'), [
             'title' => 'Test Post',
             'content' => 'Test Content',
@@ -491,7 +491,7 @@ class PostControllerTest extends TestCase
         ]);
 
         $response->assertRedirect(route('posts.index'));
-        
+
         $post = Post::where('title', 'Test Post')->first();
         $this->assertEquals($this->user->name, $post->author_name);
         $this->assertEquals($this->user->email, $post->author_email);

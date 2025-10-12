@@ -1,16 +1,16 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\CommentController as AdminCommentController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
-use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
-use App\Http\Controllers\TagController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicController;
+use App\Http\Controllers\TagController;
+use Illuminate\Support\Facades\Route;
 
 // Публичные роуты через PublicController
 Route::get('/', [PublicController::class, 'index'])->name('home');
@@ -23,7 +23,7 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 // Admin routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -51,7 +51,7 @@ Route::get('/api/documentation', function () {
         'documentation' => 'default',
         'documentationTitle' => 'Blog API Documentation',
         'urlsToDocs' => [
-            'Blog API' => url('/api/docs.json')
+            'Blog API' => url('/api/docs.json'),
         ],
         'useAbsolutePath' => true,
         'operationsSorter' => config('l5-swagger.defaults.ui.operationsSorter', null),
@@ -70,6 +70,7 @@ Route::get('/api/docs.json', function () {
             'Content-Type' => 'application/json',
         ]);
     }
+
     return response()->json(['error' => 'Documentation not found'], 404);
 })->name('l5-swagger.default.api');
 
@@ -98,6 +99,6 @@ Route::get('/api-info', function () {
             'categories' => url('/api/v1/categories'),
             'comments' => url('/api/v1/comments'),
             'tags' => url('/api/v1/tags'),
-        ]
+        ],
     ]);
 })->name('api.info');

@@ -8,6 +8,7 @@ namespace App\Http\Resources\Api;
  *     type="object",
  *     title="API Response",
  *     description="Стандартный формат ответа API",
+ *
  *     @OA\Property(
  *         property="data",
  *         description="Данные ответа"
@@ -32,12 +33,13 @@ namespace App\Http\Resources\Api;
  *         @OA\Property(property="next", type="string", example="http://localhost:8000/api/v1/posts?page=2")
  *     )
  * )
- * 
+ *
  * @OA\Schema(
  *     schema="ErrorResponse",
  *     type="object",
  *     title="Error Response",
  *     description="Формат ответа при ошибке",
+ *
  *     @OA\Property(
  *         property="message",
  *         type="string",
@@ -51,21 +53,25 @@ namespace App\Http\Resources\Api;
  *         @OA\Property(
  *             property="title",
  *             type="array",
+ *
  *             @OA\Items(type="string", example="The title field is required.")
  *         ),
+ *
  *         @OA\Property(
  *             property="email",
  *             type="array",
+ *
  *             @OA\Items(type="string", example="The email must be a valid email address.")
  *         )
  *     )
  * )
- * 
+ *
  * @OA\Schema(
  *     schema="SuccessResponse",
  *     type="object",
  *     title="Success Response",
  *     description="Формат успешного ответа",
+ *
  *     @OA\Property(
  *         property="message",
  *         type="string",
@@ -77,39 +83,42 @@ namespace App\Http\Resources\Api;
  *         description="Данные ответа"
  *     )
  * )
- * 
+ *
  * @OA\Parameter(
  *     parameter="FormatParameter",
  *     name="format",
  *     in="query",
  *     description="Формат ответа",
  *     required=false,
+ *
  *     @OA\Schema(
  *         type="string",
  *         enum={"json", "xml"},
  *         default="json"
  *     )
  * )
- * 
+ *
  * @OA\Parameter(
  *     parameter="PageParameter",
  *     name="page",
  *     in="query",
  *     description="Номер страницы",
  *     required=false,
+ *
  *     @OA\Schema(
  *         type="integer",
  *         minimum=1,
  *         default=1
  *     )
  * )
- * 
+ *
  * @OA\Parameter(
  *     parameter="PerPageParameter",
  *     name="per_page",
  *     in="query",
  *     description="Количество элементов на странице",
  *     required=false,
+ *
  *     @OA\Schema(
  *         type="integer",
  *         minimum=1,
@@ -117,13 +126,14 @@ namespace App\Http\Resources\Api;
  *         default=10
  *     )
  * )
- * 
+ *
  * @OA\Parameter(
  *     parameter="SearchParameter",
  *     name="search",
  *     in="query",
  *     description="Поисковый запрос",
  *     required=false,
+ *
  *     @OA\Schema(type="string")
  * )
  */

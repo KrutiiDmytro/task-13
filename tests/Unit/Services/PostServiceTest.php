@@ -2,14 +2,14 @@
 
 namespace Tests\Unit\Services;
 
-use Tests\TestCase;
-use App\Services\PostService;
-use App\Models\Post;
 use App\Models\Category;
+use App\Models\Post;
 use App\Models\Tag;
 use App\Models\User;
+use App\Services\PostService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
+use Tests\TestCase;
 
 class PostServiceTest extends TestCase
 {
@@ -44,7 +44,7 @@ class PostServiceTest extends TestCase
         // Создаем посты с разными заголовками
         Post::factory()->create(['title' => 'Laravel Tutorial']);
         Post::factory()->create(['title' => 'PHP Guide']);
-        
+
         $request = new Request(['search' => 'Laravel']);
 
         $result = $this->postService->getFilteredPosts($request);
@@ -59,7 +59,7 @@ class PostServiceTest extends TestCase
         // Тестируем альтернативный параметр search_title
         Post::factory()->create(['title' => 'Vue.js Tutorial']);
         Post::factory()->create(['title' => 'React Guide']);
-        
+
         $request = new Request(['search_title' => 'Vue']);
 
         $result = $this->postService->getFilteredPosts($request);
@@ -73,10 +73,10 @@ class PostServiceTest extends TestCase
         // Создаем категории и посты
         $category1 = Category::factory()->create();
         $category2 = Category::factory()->create();
-        
+
         Post::factory()->create(['category_id' => $category1->id]);
         Post::factory()->create(['category_id' => $category2->id]);
-        
+
         $request = new Request(['category' => $category1->id]);
 
         $result = $this->postService->getFilteredPosts($request);
@@ -90,10 +90,10 @@ class PostServiceTest extends TestCase
     {
         // Тестируем альтернативный параметр category_id
         $category = Category::factory()->create();
-        
+
         Post::factory()->create(['category_id' => $category->id]);
         Post::factory()->create(); // без категории
-        
+
         $request = new Request(['category_id' => $category->id]);
 
         $result = $this->postService->getFilteredPosts($request);
@@ -108,11 +108,11 @@ class PostServiceTest extends TestCase
         $category1 = Category::factory()->create();
         $category2 = Category::factory()->create();
         $category3 = Category::factory()->create();
-        
+
         Post::factory()->create(['category_id' => $category1->id]);
         Post::factory()->create(['category_id' => $category2->id]);
         Post::factory()->create(['category_id' => $category3->id]);
-        
+
         $request = new Request(['category_ids' => [$category1->id, $category2->id]]);
 
         $result = $this->postService->getFilteredPosts($request);
@@ -129,13 +129,13 @@ class PostServiceTest extends TestCase
         // Создаем теги и посты
         $tag1 = Tag::factory()->create();
         $tag2 = Tag::factory()->create();
-        
+
         $post1 = Post::factory()->create();
         $post2 = Post::factory()->create();
-        
+
         $post1->tags()->attach($tag1);
         $post2->tags()->attach($tag2);
-        
+
         $request = new Request(['tag' => $tag1->id]);
 
         $result = $this->postService->getFilteredPosts($request);
@@ -149,12 +149,12 @@ class PostServiceTest extends TestCase
     {
         // Тестируем альтернативный параметр tag_id
         $tag = Tag::factory()->create();
-        
+
         $post1 = Post::factory()->create();
         $post2 = Post::factory()->create();
-        
+
         $post1->tags()->attach($tag);
-        
+
         $request = new Request(['tag_id' => $tag->id]);
 
         $result = $this->postService->getFilteredPosts($request);
@@ -169,15 +169,15 @@ class PostServiceTest extends TestCase
         $tag1 = Tag::factory()->create();
         $tag2 = Tag::factory()->create();
         $tag3 = Tag::factory()->create();
-        
+
         $post1 = Post::factory()->create();
         $post2 = Post::factory()->create();
         $post3 = Post::factory()->create();
-        
+
         $post1->tags()->attach($tag1);
         $post2->tags()->attach($tag2);
         $post3->tags()->attach($tag3);
-        
+
         $request = new Request(['tag_ids' => [$tag1->id, $tag2->id]]);
 
         $result = $this->postService->getFilteredPosts($request);
@@ -194,24 +194,24 @@ class PostServiceTest extends TestCase
         // Тестируем комбинацию всех фильтров
         $category = Category::factory()->create();
         $tag = Tag::factory()->create();
-        
+
         $matchingPost = Post::factory()->create([
             'title' => 'Laravel Advanced Guide',
-            'category_id' => $category->id
+            'category_id' => $category->id,
         ]);
         $matchingPost->tags()->attach($tag);
-        
+
         // Создаем посты, которые не должны попасть в результат
         Post::factory()->create(['title' => 'PHP Guide']); // неправильный заголовок
         $wrongCategoryPost = Post::factory()->create([
             'title' => 'Laravel Basics',
-            'category_id' => Category::factory()->create()->id
+            'category_id' => Category::factory()->create()->id,
         ]); // неправильная категория
-        
+
         $request = new Request([
             'search' => 'Laravel',
             'category' => $category->id,
-            'tag' => $tag->id
+            'tag' => $tag->id,
         ]);
 
         $result = $this->postService->getFilteredPosts($request);
@@ -232,7 +232,7 @@ class PostServiceTest extends TestCase
             'content' => 'Test Content',
             'user_id' => $user->id,
             'category_id' => $category->id,
-            'tags' => [$tag1->id, $tag2->id]
+            'tags' => [$tag1->id, $tag2->id],
         ];
 
         $post = $this->postService->createPost($postData);
@@ -246,7 +246,7 @@ class PostServiceTest extends TestCase
         $this->assertTrue($post->tags->contains($tag2));
         $this->assertDatabaseHas('posts', [
             'id' => $post->id,
-            'title' => 'Test Post'
+            'title' => 'Test Post',
         ]);
     }
 
@@ -259,7 +259,7 @@ class PostServiceTest extends TestCase
             'title' => 'Test Post Without Tags',
             'content' => 'Test Content',
             'user_id' => $user->id,
-            'category_id' => $category->id
+            'category_id' => $category->id,
         ];
 
         $post = $this->postService->createPost($postData);
@@ -275,13 +275,13 @@ class PostServiceTest extends TestCase
         $post = Post::factory()->create();
         $oldTag = Tag::factory()->create();
         $newTag = Tag::factory()->create();
-        
+
         $post->tags()->attach($oldTag);
 
         $updateData = [
             'title' => 'Updated Post',
             'content' => 'Updated Content',
-            'tags' => [$newTag->id]
+            'tags' => [$newTag->id],
         ];
 
         $updatedPost = $this->postService->updatePost($post, $updateData);
@@ -297,13 +297,13 @@ class PostServiceTest extends TestCase
     {
         $post = Post::factory()->create();
         $tag = Tag::factory()->create();
-        
+
         $post->tags()->attach($tag);
 
         $updateData = [
             'title' => 'Updated Post',
             'content' => 'Updated Content',
-            'tags' => [] // пустой массив тегов
+            'tags' => [], // пустой массив тегов
         ];
 
         $updatedPost = $this->postService->updatePost($post, $updateData);
@@ -320,13 +320,13 @@ class PostServiceTest extends TestCase
 
         $post = Post::factory()->create([
             'user_id' => $user->id,
-            'category_id' => $category->id
+            'category_id' => $category->id,
         ]);
         $post->tags()->attach($tag);
 
         $updateData = [
             'title' => 'Updated Post',
-            'content' => 'Updated Content'
+            'content' => 'Updated Content',
             // нет параметра 'tags'
         ];
 
@@ -338,19 +338,18 @@ class PostServiceTest extends TestCase
         $this->assertTrue($updatedPost->tags->contains($tag));
     }
 
-
     public function test_get_filtered_posts_searches_in_content(): void
     {
         // Тестируем поиск по содержимому поста
         Post::factory()->create([
             'title' => 'Simple Title',
-            'content' => 'This content contains Laravel framework information'
+            'content' => 'This content contains Laravel framework information',
         ]);
         Post::factory()->create([
-            'title' => 'Another Title', 
-            'content' => 'This is about PHP programming'
+            'title' => 'Another Title',
+            'content' => 'This is about PHP programming',
         ]);
-        
+
         $request = new Request(['search' => 'Laravel']);
 
         $result = $this->postService->getFilteredPosts($request);
@@ -364,7 +363,7 @@ class PostServiceTest extends TestCase
         // Тестируем параметр 'q' для поиска
         Post::factory()->create(['title' => 'Vue.js Tutorial']);
         Post::factory()->create(['title' => 'React Guide']);
-        
+
         $request = new Request(['q' => 'Vue']);
 
         $result = $this->postService->getFilteredPosts($request);
@@ -377,10 +376,10 @@ class PostServiceTest extends TestCase
     {
         // Тестируем фильтрацию по slug категории
         $category = Category::factory()->create(['slug' => 'technology']);
-        
+
         Post::factory()->create(['category_id' => $category->id]);
         Post::factory()->create(); // без категории
-        
+
         $request = new Request(['category' => 'technology']);
 
         $result = $this->postService->getFilteredPosts($request);
@@ -400,7 +399,7 @@ class PostServiceTest extends TestCase
             'content' => 'Test Content',
             'user_id' => $user->id,
             'category_id' => $category->id,
-            'tags' => ['New Tag', 'Another Tag'] // строки вместо ID
+            'tags' => ['New Tag', 'Another Tag'], // строки вместо ID
         ];
 
         $post = $this->postService->createPost($postData);
@@ -409,7 +408,7 @@ class PostServiceTest extends TestCase
         $this->assertEquals(2, $post->tags->count());
         $this->assertTrue($post->tags->contains('name', 'New Tag'));
         $this->assertTrue($post->tags->contains('name', 'Another Tag'));
-        
+
         // Проверяем, что теги созданы в БД
         $this->assertDatabaseHas('tags', ['name' => 'New Tag']);
         $this->assertDatabaseHas('tags', ['name' => 'Another Tag']);
@@ -427,7 +426,7 @@ class PostServiceTest extends TestCase
             'content' => 'Test Content',
             'user_id' => $user->id,
             'category_id' => $category->id,
-            'tags' => [$existingTag->id, 'Brand New Tag'] // смешанные типы
+            'tags' => [$existingTag->id, 'Brand New Tag'], // смешанные типы
         ];
 
         $post = $this->postService->createPost($postData);
@@ -446,7 +445,7 @@ class PostServiceTest extends TestCase
         $updateData = [
             'title' => 'Updated Post',
             'content' => 'Updated Content',
-            'tags' => ['Updated Tag', 'Another Updated Tag']
+            'tags' => ['Updated Tag', 'Another Updated Tag'],
         ];
 
         $updatedPost = $this->postService->updatePost($post, $updateData);
@@ -457,17 +456,16 @@ class PostServiceTest extends TestCase
         $this->assertTrue($updatedPost->tags->contains('name', 'Another Updated Tag'));
     }
 
-
     public function test_get_filtered_posts_filters_by_tag_slug(): void
     {
         // Тестируем фильтрацию по slug тега
         $tag = Tag::factory()->create(['slug' => 'laravel-framework']);
-        
+
         $post1 = Post::factory()->create();
         $post2 = Post::factory()->create();
-        
+
         $post1->tags()->attach($tag);
-        
+
         $request = new Request(['tag' => 'laravel-framework']); // передаем slug, а не ID
 
         $result = $this->postService->getFilteredPosts($request);
@@ -477,7 +475,6 @@ class PostServiceTest extends TestCase
         $this->assertEquals($post1->id, $result->first()->id);
     }
 
-        
     public function test_update_post_handles_tags_text_parameter(): void
     {
         // Тестируем обработку параметра tags_text
@@ -486,7 +483,7 @@ class PostServiceTest extends TestCase
         $updateData = [
             'title' => 'Updated Post with Tags Text',
             'content' => 'Updated Content',
-            'tags_text' => 'php, laravel, testing, web development'
+            'tags_text' => 'php, laravel, testing, web development',
         ];
 
         $updatedPost = $this->postService->updatePost($post, $updateData);
@@ -497,7 +494,7 @@ class PostServiceTest extends TestCase
         $this->assertTrue($updatedPost->tags->contains('name', 'laravel'));
         $this->assertTrue($updatedPost->tags->contains('name', 'testing'));
         $this->assertTrue($updatedPost->tags->contains('name', 'web development'));
-        
+
         // Проверяем, что теги созданы в БД
         $this->assertDatabaseHas('tags', ['name' => 'php']);
         $this->assertDatabaseHas('tags', ['name' => 'laravel']);
@@ -513,7 +510,7 @@ class PostServiceTest extends TestCase
         $updateData = [
             'title' => 'Updated Post',
             'content' => 'Updated Content',
-            'tags_text' => 'php, , laravel, , testing' // с пустыми значениями
+            'tags_text' => 'php, , laravel, , testing', // с пустыми значениями
         ];
 
         $updatedPost = $this->postService->updatePost($post, $updateData);
@@ -534,7 +531,7 @@ class PostServiceTest extends TestCase
         $updateData = [
             'title' => 'Updated Post with Mixed Tags',
             'content' => 'Updated Content',
-            'tags' => [$existingTag->id, 'New String Tag']
+            'tags' => [$existingTag->id, 'New String Tag'],
         ];
 
         $updatedPost = $this->postService->updatePost($post, $updateData);
@@ -554,7 +551,7 @@ class PostServiceTest extends TestCase
         $updateData = [
             'title' => 'Updated Post',
             'content' => 'Updated Content',
-            'tags' => [(string)$existingTag->id] // ID как строка
+            'tags' => [(string) $existingTag->id], // ID как строка
         ];
 
         $updatedPost = $this->postService->updatePost($post, $updateData);
@@ -574,7 +571,7 @@ class PostServiceTest extends TestCase
             'title' => 'Updated Post with Both',
             'content' => 'Updated Content',
             'tags' => [$existingTag->id],
-            'tags_text' => 'text-tag-1, text-tag-2'
+            'tags_text' => 'text-tag-1, text-tag-2',
         ];
 
         $updatedPost = $this->postService->updatePost($post, $updateData);
@@ -596,7 +593,7 @@ class PostServiceTest extends TestCase
         $updateData = [
             'title' => 'Updated Post',
             'content' => 'Updated Content',
-            'tags' => [$tag1->id, $tag2->id, $tag1->id, 'Tag 2'] // дубликаты
+            'tags' => [$tag1->id, $tag2->id, $tag1->id, 'Tag 2'], // дубликаты
         ];
 
         $updatedPost = $this->postService->updatePost($post, $updateData);
@@ -607,20 +604,19 @@ class PostServiceTest extends TestCase
         $this->assertTrue($updatedPost->tags->contains($tag2));
     }
 
-        
     public function test_update_post_handles_non_existent_tag_ids(): void
     {
         // Тестируем обработку несуществующих ID тегов
         $post = Post::factory()->create();
         $existingTag = Tag::factory()->create(['name' => 'Existing Tag']);
-        
+
         // Найдем ID, который точно не существует
         $nonExistentId = Tag::max('id') + 1000;
 
         $updateData = [
             'title' => 'Updated Post',
             'content' => 'Updated Content',
-            'tags' => [$existingTag->id, $nonExistentId] // существующий + несуществующий ID
+            'tags' => [$existingTag->id, $nonExistentId], // существующий + несуществующий ID
         ];
 
         // Ожидаем исключение или игнорирование несуществующего ID

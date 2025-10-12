@@ -2,30 +2,32 @@
 
 namespace Tests\Feature\Api;
 
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 abstract class ApiTestCase extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshDatabase;
+    use WithFaker;
 
     protected $baseUrl = '/api/v1';
+
     protected $resource = 'posts'; // Переопределяется в дочерних классах
+
     protected $user;
 
     protected function setUp(): void
-{
-    parent::setUp();
-    $this->user = \App\Models\User::factory()->create();
-    $this->actingAs($this->user, 'sanctum');
-}
+    {
+        parent::setUp();
+        $this->user = \App\Models\User::factory()->create();
+        $this->actingAs($this->user, 'sanctum');
+    }
 
     protected function getResourceUrl($id = null)
     {
-        return $id 
-            ? "{$this->baseUrl}/{$this->resource}/{$id}" 
+        return $id
+            ? "{$this->baseUrl}/{$this->resource}/{$id}"
             : "{$this->baseUrl}/{$this->resource}";
     }
 
@@ -41,8 +43,8 @@ abstract class ApiTestCase extends TestCase
             'data' => [
                 'id',
                 'created_at',
-                'updated_at'
-            ]
+                'updated_at',
+            ],
         ]);
     }
 }

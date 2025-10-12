@@ -2,38 +2,35 @@
 
 namespace Tests\Feature\Auth;
 
-use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use PHPUnit\Framework\Attributes\Test;
+use Spatie\Permission\Models\Role;
+use Tests\TestCase;
 
 class AuthenticatedSessionControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-        protected function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Создаем роли если они не существуют
-        if (!Role::where('name', 'admin')->exists()) {
+        if (! Role::where('name', 'admin')->exists()) {
             Role::create(['name' => 'admin']);
         }
     }
 
-    
-
     #[Test]
-        public function create_displays_login_view(): void
-        {
-            $response = $this->get('/login');
+    public function create_displays_login_view(): void
+    {
+        $response = $this->get('/login');
 
-            $response->assertStatus(200);
-            $response->assertViewIs('auth.login');
-        }
+        $response->assertStatus(200);
+        $response->assertViewIs('auth.login');
+    }
 
     #[Test]
     public function store_authenticates_regular_user_and_redirects_to_dashboard(): void
@@ -86,7 +83,7 @@ class AuthenticatedSessionControllerTest extends TestCase
     public function store_redirects_to_intended_url_for_admin_user(): void
     {
         $admin = User::factory()->create(['admin' => true]);
-        
+
         // Устанавливаем intended URL
         session(['url.intended' => '/admin/posts']);
 
@@ -102,7 +99,7 @@ class AuthenticatedSessionControllerTest extends TestCase
     public function store_regenerates_session(): void
     {
         $user = User::factory()->create();
-        
+
         // Получаем ID сессии до логина
         $this->get('/login'); // Инициализируем сессию
         $oldSessionId = session()->getId();
@@ -153,10 +150,10 @@ class AuthenticatedSessionControllerTest extends TestCase
     public function destroy_invalidates_session(): void
     {
         $user = User::factory()->create();
-        
+
         $this->actingAs($user);
         $oldSessionId = session()->getId();
-        
+
         // Добавляем данные в сессию
         session(['test_data' => 'some_value']);
         $this->assertEquals('some_value', session('test_data'));
@@ -172,7 +169,7 @@ class AuthenticatedSessionControllerTest extends TestCase
     public function destroy_regenerates_csrf_token(): void
     {
         $user = User::factory()->create();
-        
+
         $this->actingAs($user);
         $oldToken = csrf_token();
 
@@ -186,12 +183,12 @@ class AuthenticatedSessionControllerTest extends TestCase
     public function controller_uses_correct_guard(): void
     {
         $user = User::factory()->create();
-        
+
         $this->actingAs($user);
         $this->assertTrue(Auth::guard('web')->check());
 
         $this->post('/logout');
-        
+
         $this->assertFalse(Auth::guard('web')->check());
     }
 
@@ -208,7 +205,7 @@ class AuthenticatedSessionControllerTest extends TestCase
 
         $this->assertAuthenticated();
         $response->assertRedirect(route('dashboard', absolute: false));
-        
+
         // Проверяем, что remember cookie установлен
         $response->assertCookie(Auth::getRecallerName());
     }
@@ -218,7 +215,7 @@ class AuthenticatedSessionControllerTest extends TestCase
     {
         // Создаем роль админа
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
-        
+
         // Тест 1: admin = true + роль admin
         $admin1 = User::factory()->create(['admin' => true]);
         $admin1->assignRole($adminRole);
@@ -243,13 +240,13 @@ class AuthenticatedSessionControllerTest extends TestCase
         $response->assertRedirect(route('dashboard', absolute: false));
     }
 
-    #[Test] 
+    #[Test]
     public function controller_can_be_instantiated(): void
     {
         $controller = new \App\Http\Controllers\Auth\AuthenticatedSessionController();
-        
+
         $this->assertInstanceOf(
-            \App\Http\Controllers\Auth\AuthenticatedSessionController::class, 
+            \App\Http\Controllers\Auth\AuthenticatedSessionController::class,
             $controller
         );
     }
@@ -258,20 +255,18 @@ class AuthenticatedSessionControllerTest extends TestCase
     public function all_methods_return_correct_types(): void
     {
         $controller = new \App\Http\Controllers\Auth\AuthenticatedSessionController();
-        
+
         // Тест create метода
         $createResponse = $controller->create();
         $this->assertInstanceOf(\Illuminate\View\View::class, $createResponse);
-        
+
         // Тест destroy метода
         $request = \Illuminate\Http\Request::create('/logout', 'POST');
         $destroyResponse = $controller->destroy($request);
         $this->assertInstanceOf(\Illuminate\Http\RedirectResponse::class, $destroyResponse);
     }
 
-
-
-    #[Test] 
+    #[Test]
     public function store_handles_user_without_spatie_roles(): void
     {
         // Создаем пользователя без назначения ролей Spatie
@@ -288,7 +283,6 @@ class AuthenticatedSessionControllerTest extends TestCase
         $this->assertAuthenticated();
         $response->assertRedirect(route('dashboard', absolute: false));
     }
-
 
     #[Test]
     public function test_store_covers_admin_detection_edge_case(): void
@@ -307,29 +301,28 @@ class AuthenticatedSessionControllerTest extends TestCase
         $response->assertRedirect(route('dashboard', absolute: false));
     }
 
-
     #[Test]
     public function test_store_admin_detection_with_property(): void
     {
         // Создаем пользователя с admin = true в базе данных
         $admin = User::factory()->create(['admin' => true]);
-        
+
         // Проверяем, что у пользователя действительно admin = true
         $this->assertTrue($admin->admin);
-        
+
         // Проверяем, есть ли у пользователя метод hasRole
         $this->assertTrue(method_exists($admin, 'hasRole'));
-        
+
         // Проверяем, есть ли у пользователя роль admin
         $hasAdminRole = $admin->hasRole('admin');
-        
+
         $response = $this->post('/login', [
             'email' => $admin->email,
             'password' => 'password',
         ]);
 
         $this->assertAuthenticated();
-        
+
         // Если hasRole('admin') вернул true, то должен быть редирект на admin dashboard
         // Если hasRole('admin') вернул false, то используется fallback $admin->admin = true
         if ($hasAdminRole) {
@@ -348,10 +341,10 @@ class AuthenticatedSessionControllerTest extends TestCase
     {
         // Создаем пользователя с admin = true, но без роли admin
         $user = User::factory()->create(['admin' => true]);
-        
+
         // Убеждаемся, что у пользователя НЕТ роли admin в Spatie
         $this->assertFalse($user->hasRole('admin'));
-        
+
         $response = $this->post('/login', [
             'email' => $user->email,
             'password' => 'password',
@@ -359,12 +352,12 @@ class AuthenticatedSessionControllerTest extends TestCase
 
         // Этот случай должен покрывать:
         // - строку 35: method_exists($user, 'hasRole') = true
-        // - строку 36: $user->hasRole('admin') = false  
+        // - строку 36: $user->hasRole('admin') = false
         // - строку 37: (bool)($user->admin ?? false) = true
         // - строку 39: if ($isAdmin) = true, поэтому должен быть admin dashboard
-        
+
         $this->assertAuthenticated();
-        
+
         // Если логика работает правильно, должен быть редирект на admin dashboard
         // Но тест показывает, что идет на обычный dashboard
         // Значит, есть проблема в логике или тест не покрывает нужную ветку

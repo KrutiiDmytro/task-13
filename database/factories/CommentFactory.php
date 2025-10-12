@@ -13,7 +13,7 @@ class CommentFactory extends Factory
             'content' => fake()->paragraph(),
             'author_name' => fake()->name(),
             'author_email' => fake()->email(),
-            'post_id' => Post::factory()
+            'post_id' => Post::factory(),
         ];
     }
 }

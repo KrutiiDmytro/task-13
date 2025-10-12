@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
-use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -15,7 +15,7 @@ class PostFactory extends Factory
     public function definition()
     {
         $title = $this->faker->sentence();
-        
+
         return [
             'title' => $title,
             'slug' => Str::slug($title) . '-' . $this->faker->unique()->randomNumber(4),

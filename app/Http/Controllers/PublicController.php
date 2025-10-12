@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
 use App\Models\Category;
+use App\Models\Post;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 
@@ -56,7 +56,7 @@ class PublicController extends Controller
 
         return view('public.search', [
             'posts' => $posts,
-            'q'     => $term, 
+            'q' => $term,
         ]);
     }
 
@@ -106,7 +106,7 @@ class PublicController extends Controller
             ->with(['category', 'tags'])
             ->where(function ($query) use ($slugOrId) {
                 $query->where('slug', $slugOrId)
-                      ->orWhere('id', $slugOrId);
+                    ->orWhere('id', $slugOrId);
             })
             ->published()
             ->firstOrFail();

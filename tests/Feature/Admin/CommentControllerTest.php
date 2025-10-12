@@ -54,7 +54,7 @@ class CommentControllerTest extends AdminTestCase
         $post = Post::factory()->create();
 
         $payload = [
-            'author'  => 'Admin Author',
+            'author' => 'Admin Author',
             'content' => 'Admin comment content',
             'post_id' => $post->id,
         ];
@@ -62,12 +62,12 @@ class CommentControllerTest extends AdminTestCase
         $response = $this->actingAsAdmin()->post('/admin/comments', $payload);
 
         $response->assertRedirect(route('admin.comments.index'))
-                 ->assertSessionHas('success');
+            ->assertSessionHas('success');
 
         $this->assertDatabaseHas('comments', [
             'author_name' => 'Admin Author',
-            'content'     => 'Admin comment content',
-            'post_id'     => $post->id,
+            'content' => 'Admin comment content',
+            'post_id' => $post->id,
         ]);
     }
 
@@ -106,13 +106,13 @@ class CommentControllerTest extends AdminTestCase
     #[Test]
     public function admin_can_update_comment(): void
     {
-        $post    = Post::factory()->create();
+        $post = Post::factory()->create();
         $comment = Comment::factory()->create(['post_id' => $post->id]);
 
         $newPost = Post::factory()->create();
 
         $payload = [
-            'author'  => 'Updated Admin',
+            'author' => 'Updated Admin',
             'content' => 'Updated content',
             'post_id' => $newPost->id,
         ];
@@ -120,13 +120,13 @@ class CommentControllerTest extends AdminTestCase
         $response = $this->actingAsAdmin()->put("/admin/comments/{$comment->id}", $payload);
 
         $response->assertRedirect(route('admin.comments.index'))
-                 ->assertSessionHas('success');
+            ->assertSessionHas('success');
 
         $this->assertDatabaseHas('comments', [
-            'id'          => $comment->id,
+            'id' => $comment->id,
             'author_name' => 'Updated Admin',
-            'content'     => 'Updated content',
-            'post_id'     => $newPost->id,
+            'content' => 'Updated content',
+            'post_id' => $newPost->id,
         ]);
     }
 
@@ -148,7 +148,7 @@ class CommentControllerTest extends AdminTestCase
         $response = $this->actingAsAdmin()->delete("/admin/comments/{$comment->id}");
 
         $response->assertRedirect(route('admin.comments.index'))
-                 ->assertSessionHas('success');
+            ->assertSessionHas('success');
 
         $this->assertDatabaseMissing('comments', ['id' => $comment->id]);
     }
@@ -156,18 +156,18 @@ class CommentControllerTest extends AdminTestCase
     #[Test]
     public function regular_user_forbidden_on_mutations(): void
     {
-        $post    = Post::factory()->create();
+        $post = Post::factory()->create();
         $comment = Comment::factory()->create(['post_id' => $post->id]);
 
         $this->actingAsRegularUser()->post('/admin/comments', [
-            'author'  => 'X',
+            'author' => 'X',
             'content' => 'Y',
             'post_id' => $post->id,
         ])->assertStatus(403);
 
         $this->actingAsRegularUser()
             ->put("/admin/comments/{$comment->id}", [
-                'author'  => 'X2',
+                'author' => 'X2',
                 'content' => 'Y2',
                 'post_id' => $post->id,
             ])->assertStatus(403);

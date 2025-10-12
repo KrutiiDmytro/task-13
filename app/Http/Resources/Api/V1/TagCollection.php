@@ -11,11 +11,14 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
  *     type="object",
  *     title="Tag Collection",
  *     description="Коллекция тегов с пагинацией",
+ *
  *     @OA\Property(
  *         property="data",
  *         type="array",
+ *
  *         @OA\Items(ref="#/components/schemas/TagResource")
  *     ),
+ *
  *     @OA\Property(
  *         property="links",
  *         type="object",

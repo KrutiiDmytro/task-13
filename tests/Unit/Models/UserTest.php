@@ -2,12 +2,12 @@
 
 namespace Tests\Unit\Models;
 
-use Tests\TestCase;
-use App\Models\User;
-use App\Models\Post;
 use App\Models\Comment;
+use App\Models\Post;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class UserTest extends TestCase
 {
@@ -29,13 +29,13 @@ class UserTest extends TestCase
     }
 
     #[Test]
-    public function posts_relationship_method_returns_hasMany(): void
+    public function posts_relationship_method_returns_has_many(): void
     {
         $user = User::factory()->create();
-        
+
         // ЯВНО вызываем метод posts() для покрытия
         $postsRelation = $user->posts();
-        
+
         $this->assertInstanceOf(\Illuminate\Database\Eloquent\Relations\HasMany::class, $postsRelation);
         $this->assertEquals('App\Models\Post', $postsRelation->getRelated()::class);
     }
@@ -58,13 +58,13 @@ class UserTest extends TestCase
     }
 
     #[Test]
-    public function comments_relationship_method_returns_hasMany(): void
+    public function comments_relationship_method_returns_has_many(): void
     {
         $user = User::factory()->create();
-        
+
         // ЯВНО вызываем метод comments() для покрытия
         $commentsRelation = $user->comments();
-        
+
         $this->assertInstanceOf(\Illuminate\Database\Eloquent\Relations\HasMany::class, $commentsRelation);
         $this->assertEquals('App\Models\Comment', $commentsRelation->getRelated()::class);
     }
@@ -86,10 +86,10 @@ class UserTest extends TestCase
     public function casts_method_returns_correct_array(): void
     {
         $user = new User();
-        
+
         // ЯВНО вызываем метод casts() для покрытия
         $casts = $user->getCasts();
-        
+
         $this->assertEquals('datetime', $casts['email_verified_at']);
         $this->assertEquals('hashed', $casts['password']);
         $this->assertEquals('boolean', $casts['admin']);
@@ -99,7 +99,7 @@ class UserTest extends TestCase
     public function it_has_correct_fillable_attributes(): void
     {
         $user = new User();
-        
+
         $this->assertEquals(['name', 'email', 'password', 'admin'], $user->getFillable());
     }
 
@@ -107,7 +107,7 @@ class UserTest extends TestCase
     public function it_has_correct_hidden_attributes(): void
     {
         $user = new User();
-        
+
         $this->assertEquals(['password', 'remember_token'], $user->getHidden());
     }
 
@@ -115,7 +115,7 @@ class UserTest extends TestCase
     public function password_is_hashed_automatically(): void
     {
         $user = User::factory()->create(['password' => 'plain-password']);
-        
+
         $this->assertNotEquals('plain-password', $user->password);
         $this->assertTrue(\Hash::check('plain-password', $user->password));
     }
@@ -124,10 +124,10 @@ class UserTest extends TestCase
     public function admin_is_cast_to_boolean(): void
     {
         $user = User::factory()->create(['admin' => 1]);
-        
+
         $this->assertIsBool($user->admin);
         $this->assertTrue($user->admin);
-        
+
         $user2 = User::factory()->create(['admin' => 0]);
         $this->assertIsBool($user2->admin);
         $this->assertFalse($user2->admin);

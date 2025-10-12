@@ -1,14 +1,16 @@
 <?php
+
 // tests/Feature/PostUpdateImageTest.php
+
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\UploadedFile;
-use Tests\TestCase;
+use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
-use App\Models\Category;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Tests\TestCase;
 
 class PostUpdateImageTest extends TestCase
 {

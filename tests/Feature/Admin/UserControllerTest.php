@@ -2,9 +2,8 @@
 
 namespace Tests\Feature\Admin;
 
-use App\Models\User;
 use App\Models\Post;
-use Spatie\Permission\Models\Role;
+use App\Models\User;
 
 class UserControllerTest extends AdminTestCase
 {
@@ -35,7 +34,7 @@ class UserControllerTest extends AdminTestCase
             'email' => 'test@example.com',
             'password' => 'password123',
             'password_confirmation' => 'password123',
-            'roles' => ['user']
+            'roles' => ['user'],
         ];
 
         $this->actingAsAdmin()
@@ -45,7 +44,7 @@ class UserControllerTest extends AdminTestCase
 
         $this->assertDatabaseHas('users', [
             'name' => 'Test User',
-            'email' => 'test@example.com'
+            'email' => 'test@example.com',
         ]);
 
         $user = User::where('email', 'test@example.com')->first();
@@ -81,7 +80,7 @@ class UserControllerTest extends AdminTestCase
         $updateData = [
             'name' => 'Updated Name',
             'email' => 'updated@example.com',
-            'roles' => ['editor']
+            'roles' => ['editor'],
         ];
 
         $this->actingAsAdmin()
@@ -92,7 +91,7 @@ class UserControllerTest extends AdminTestCase
         $this->assertDatabaseHas('users', [
             'id' => $user->id,
             'name' => 'Updated Name',
-            'email' => 'updated@example.com'
+            'email' => 'updated@example.com',
         ]);
 
         $user->refresh();
@@ -148,7 +147,7 @@ class UserControllerTest extends AdminTestCase
             ->assertStatus(403);
     }
 
-        public function test_admin_can_update_user_with_password()
+    public function test_admin_can_update_user_with_password()
     {
         $user = User::factory()->create();
         $originalPasswordHash = $user->password;
@@ -158,7 +157,7 @@ class UserControllerTest extends AdminTestCase
             'email' => 'updated-with-password@example.com',
             'password' => 'newpassword123',
             'password_confirmation' => 'newpassword123',
-            'roles' => ['user']
+            'roles' => ['user'],
         ];
 
         $this->actingAsAdmin()
@@ -167,11 +166,11 @@ class UserControllerTest extends AdminTestCase
             ->assertSessionHas('success');
 
         $user->refresh();
-        
+
         // Проверяем, что пароль изменился (покрывает строки 82-84)
         $this->assertNotEquals($originalPasswordHash, $user->password);
         $this->assertTrue(\Hash::check('newpassword123', $user->password));
-        
+
         // Проверяем остальные данные
         $this->assertEquals('Updated Name with Password', $user->name);
         $this->assertEquals('updated-with-password@example.com', $user->email);
@@ -186,7 +185,7 @@ class UserControllerTest extends AdminTestCase
             'name' => 'Updated Name without Password',
             'email' => 'updated-without-password@example.com',
             // Не передаем password
-            'roles' => ['editor']
+            'roles' => ['editor'],
         ];
 
         $this->actingAsAdmin()
@@ -195,10 +194,10 @@ class UserControllerTest extends AdminTestCase
             ->assertSessionHas('success');
 
         $user->refresh();
-        
+
         // Проверяем, что пароль НЕ изменился (условие на строке 82 = false)
         $this->assertEquals($originalPasswordHash, $user->password);
-        
+
         // Проверяем, что остальные данные обновились
         $this->assertEquals('Updated Name without Password', $user->name);
         $this->assertEquals('updated-without-password@example.com', $user->email);
@@ -212,7 +211,7 @@ class UserControllerTest extends AdminTestCase
 
         $updateData = [
             'name' => 'Updated Name without Roles',
-            'email' => 'updated-no-roles@example.com'
+            'email' => 'updated-no-roles@example.com',
             // Не передаем roles вообще
         ];
 
@@ -222,10 +221,10 @@ class UserControllerTest extends AdminTestCase
             ->assertSessionHas('success');
 
         $user->refresh();
-        
+
         // Проверяем, что все роли удалены (покрывает строки 89-91)
         $this->assertFalse($user->hasAnyRole(['user', 'editor', 'admin']));
-        
+
         // Проверяем, что остальные данные обновились
         $this->assertEquals('Updated Name without Roles', $user->name);
         $this->assertEquals('updated-no-roles@example.com', $user->email);
@@ -239,7 +238,7 @@ class UserControllerTest extends AdminTestCase
         $updateData = [
             'name' => 'Updated Name with Empty Roles',
             'email' => 'updated-empty-roles@example.com',
-            'roles' => [] // Передаем пустой массив ролей
+            'roles' => [], // Передаем пустой массив ролей
         ];
 
         $this->actingAsAdmin()
@@ -248,10 +247,10 @@ class UserControllerTest extends AdminTestCase
             ->assertSessionHas('success');
 
         $user->refresh();
-        
+
         // Проверяем, что все роли удалены (покрывает строку 88)
         $this->assertFalse($user->hasAnyRole(['user', 'editor', 'admin']));
-        
+
         // Проверяем, что остальные данные обновились
         $this->assertEquals('Updated Name with Empty Roles', $user->name);
         $this->assertEquals('updated-empty-roles@example.com', $user->email);

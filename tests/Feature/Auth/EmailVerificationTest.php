@@ -38,7 +38,7 @@ class EmailVerificationTest extends TestCase
 
         Event::assertDispatched(Verified::class);
         $this->assertTrue($user->fresh()->hasVerifiedEmail());
-        $response->assertRedirect(route('dashboard', absolute: false).'?verified=1');
+        $response->assertRedirect(route('dashboard', absolute: false) . '?verified=1');
     }
 
     public function test_email_is_not_verified_with_invalid_hash(): void
@@ -56,12 +56,11 @@ class EmailVerificationTest extends TestCase
         $this->assertFalse($user->fresh()->hasVerifiedEmail());
     }
 
-        
     public function test_verified_user_is_redirected_to_dashboard(): void
     {
         // Создаем верифицированного пользователя
         $user = User::factory()->create([
-            'email_verified_at' => now()
+            'email_verified_at' => now(),
         ]);
 
         $response = $this->actingAs($user)->get('/verify-email');
@@ -73,7 +72,7 @@ class EmailVerificationTest extends TestCase
 
     public function test_unverified_user_sees_verification_prompt(): void
     {
-        // Создаем неверифицированного пользователя  
+        // Создаем неверифицированного пользователя
         $user = User::factory()->unverified()->create();
 
         $response = $this->actingAs($user)->get('/verify-email');
@@ -81,15 +80,14 @@ class EmailVerificationTest extends TestCase
         // Неверифицированный пользователь должен видеть страницу верификации
         // Покрывает строку 19 в EmailVerificationPromptController
         $response->assertStatus(200)
-                 ->assertViewIs('auth.verify-email');
+            ->assertViewIs('auth.verify-email');
     }
 
-        
     public function test_already_verified_user_is_redirected_without_event(): void
     {
         // Создаем уже верифицированного пользователя
         $user = User::factory()->create([
-            'email_verified_at' => now()
+            'email_verified_at' => now(),
         ]);
 
         Event::fake();
@@ -104,11 +102,11 @@ class EmailVerificationTest extends TestCase
 
         // Пользователь уже верифицирован, поэтому должен быть перенаправлен сразу
         // Покрывает строку 18 в VerifyEmailController
-        $response->assertRedirect(route('dashboard', absolute: false).'?verified=1');
-        
+        $response->assertRedirect(route('dashboard', absolute: false) . '?verified=1');
+
         // Событие Verified не должно быть отправлено, так как пользователь уже верифицирован
         Event::assertNotDispatched(Verified::class);
-        
+
         // Пользователь остается верифицированным
         $this->assertTrue($user->fresh()->hasVerifiedEmail());
     }

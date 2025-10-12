@@ -4,16 +4,19 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles, HasApiTokens;
+    use HasApiTokens;
+    use HasFactory;
+    use HasRoles;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -44,10 +47,10 @@ class User extends Authenticatable
      */
     protected function casts(): array
     {
-         return [
+        return [
             'email_verified_at' => 'datetime',
-            'password'          => 'hashed',
-            'admin'          => 'boolean', 
+            'password' => 'hashed',
+            'admin' => 'boolean',
         ];
     }
 

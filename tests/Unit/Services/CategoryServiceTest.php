@@ -2,11 +2,11 @@
 
 namespace Tests\Unit\Services;
 
-use Tests\TestCase;
-use App\Services\CategoryService;
 use App\Models\Category;
+use App\Services\CategoryService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
+use Tests\TestCase;
 
 class CategoryServiceTest extends TestCase
 {
@@ -46,9 +46,9 @@ class CategoryServiceTest extends TestCase
     public function test_get_all_includes_category_details()
     {
         $category = Category::factory()->create([
-            'name' => 'Test Category', 
+            'name' => 'Test Category',
             'slug' => 'test-category',
-            'description' => 'Test Description'
+            'description' => 'Test Description',
         ]);
 
         $categories = $this->categoryService->getAll();

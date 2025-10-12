@@ -2,9 +2,6 @@
 
 namespace Tests\Feature\Api;
 
-use Tests\Feature\Api\ApiTestCase;
-use App\Models\Category;
-use App\Models\Tag;
 use PHPUnit\Framework\Attributes\Test;
 
 class ApiWorkflowTest extends ApiTestCase
@@ -15,7 +12,7 @@ class ApiWorkflowTest extends ApiTestCase
         // 1. Создаем категорию
         $categoryResponse = $this->postJson('/api/v1/categories', [
             'name' => 'Tech News',
-            'description' => 'Technology related posts'
+            'description' => 'Technology related posts',
         ]);
         $categoryResponse->assertCreated();
         $categoryId = $categoryResponse->json('data.id');
@@ -34,7 +31,7 @@ class ApiWorkflowTest extends ApiTestCase
             'user_id' => $this->user->id,
             'author_name' => $this->user->name,
             'author_email' => $this->user->email,
-            'tags' => ['PHP', 'Laravel']
+            'tags' => ['PHP', 'Laravel'],
         ]);
         $postResponse->assertCreated();
         $postId = $postResponse->json('data.id');
@@ -44,7 +41,7 @@ class ApiWorkflowTest extends ApiTestCase
             'author_name' => 'John Commenter',
             'author_email' => 'john@example.com',
             'content' => 'Great post!',
-            'post_id' => $postId
+            'post_id' => $postId,
         ]);
         $commentResponse->assertCreated();
 
@@ -56,8 +53,8 @@ class ApiWorkflowTest extends ApiTestCase
                     'id', 'title', 'content',
                     'category' => ['id', 'name'],
                     'tags' => [['id', 'name']],
-                    'comments' => [['id', 'content']]
-                ]
+                    'comments' => [['id', 'content']],
+                ],
             ]);
     }
 
@@ -69,13 +66,13 @@ class ApiWorkflowTest extends ApiTestCase
             ['POST', '/api/v1/posts', []],
             ['POST', '/api/v1/categories', []],
             ['POST', '/api/v1/comments', []],
-            ['POST', '/api/v1/tags', []]
+            ['POST', '/api/v1/tags', []],
         ];
 
         foreach ($endpoints as [$method, $url, $data]) {
             $response = $this->json($method, $url, $data);
             $response->assertStatus(422)
-                     ->assertJsonStructure(['message', 'errors']);
+                ->assertJsonStructure(['message', 'errors']);
         }
     }
 }

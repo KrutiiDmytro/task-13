@@ -7,8 +7,8 @@ use App\Models\Comment;
 use App\Models\Post;
 use App\Models\Tag;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class ModelRelationshipsTest extends TestCase
 {

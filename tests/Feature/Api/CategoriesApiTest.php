@@ -5,9 +5,9 @@ namespace Tests\Feature\Api;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
-use PHPUnit\Framework\Attributes\Test;
 use App\Services\CategoryService;
 use Mockery\MockInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 class CategoriesApiTest extends ApiTestCase
 {
@@ -18,7 +18,7 @@ class CategoriesApiTest extends ApiTestCase
         return [
             'name' => $this->faker->word,
             'description' => $this->faker->sentence,
-            'slug' => $this->faker->slug
+            'slug' => $this->faker->slug,
         ];
     }
 
@@ -28,13 +28,13 @@ class CategoriesApiTest extends ApiTestCase
         Category::factory()->count(5)->create();
 
         $response = $this->getJson($this->getResourceUrl());
-        
+
         $response->assertOk()
             ->assertJsonStructure([
                 'data' => [
-                    '*' => ['id', 'name', 'slug', 'description', 'posts_count', 'created_at', 'updated_at']
+                    '*' => ['id', 'name', 'slug', 'description', 'posts_count', 'created_at', 'updated_at'],
                 ],
-                'meta' => ['total', 'count', 'per_page', 'current_page', 'total_pages']
+                'meta' => ['total', 'count', 'per_page', 'current_page', 'total_pages'],
             ]);
     }
 
@@ -118,7 +118,7 @@ class CategoriesApiTest extends ApiTestCase
         $response = $this->getJson($this->getResourceUrl());
 
         $response->assertStatus(500)
-                 ->assertJsonStructure(['message', 'status']);
+            ->assertJsonStructure(['message', 'status']);
     }
 
     #[Test]
@@ -130,16 +130,16 @@ class CategoriesApiTest extends ApiTestCase
 
         $response->assertCreated()
             ->assertJsonStructure([
-                'data' => ['id', 'name', 'slug', 'description', 'posts_count', 'created_at', 'updated_at']
+                'data' => ['id', 'name', 'slug', 'description', 'posts_count', 'created_at', 'updated_at'],
             ])
             ->assertJsonFragment([
                 'name' => $payload['name'],
-                'slug' => $payload['slug']
+                'slug' => $payload['slug'],
             ]);
 
         $this->assertDatabaseHas('categories', [
             'name' => $payload['name'],
-            'slug' => $payload['slug']
+            'slug' => $payload['slug'],
         ]);
     }
 
@@ -148,7 +148,7 @@ class CategoriesApiTest extends ApiTestCase
     {
         $payload = [
             'name' => 'Test Category Name',
-            'description' => 'Test Description'
+            'description' => 'Test Description',
         ];
 
         $response = $this->postJson($this->getResourceUrl(), $payload);
@@ -156,7 +156,7 @@ class CategoriesApiTest extends ApiTestCase
         $response->assertCreated();
         $this->assertDatabaseHas('categories', [
             'name' => 'Test Category Name',
-            'slug' => 'test-category-name'
+            'slug' => 'test-category-name',
         ]);
     }
 
@@ -166,8 +166,8 @@ class CategoriesApiTest extends ApiTestCase
         $response = $this->postJson($this->getResourceUrl(), []);
 
         $response->assertStatus(422)
-                 ->assertJsonStructure(['message', 'errors'])
-                 ->assertJsonValidationErrors(['name']);
+            ->assertJsonStructure(['message', 'errors'])
+            ->assertJsonValidationErrors(['name']);
     }
 
     #[Test]
@@ -176,11 +176,11 @@ class CategoriesApiTest extends ApiTestCase
         Category::factory()->create(['name' => 'Existing Category']);
 
         $response = $this->postJson($this->getResourceUrl(), [
-            'name' => 'Existing Category'
+            'name' => 'Existing Category',
         ]);
 
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors(['name']);
+            ->assertJsonValidationErrors(['name']);
     }
 
     #[Test]
@@ -190,11 +190,11 @@ class CategoriesApiTest extends ApiTestCase
 
         $response = $this->postJson($this->getResourceUrl(), [
             'name' => 'New Category',
-            'slug' => 'existing-slug'
+            'slug' => 'existing-slug',
         ]);
 
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors(['slug']);
+            ->assertJsonValidationErrors(['slug']);
     }
 
     #[Test]
@@ -221,7 +221,7 @@ class CategoriesApiTest extends ApiTestCase
         $response = $this->postJson($this->getResourceUrl(), $payload);
 
         $response->assertStatus(500)
-                 ->assertJsonStructure(['message', 'status']);
+            ->assertJsonStructure(['message', 'status']);
     }
 
     #[Test]
@@ -234,12 +234,12 @@ class CategoriesApiTest extends ApiTestCase
 
         $response->assertOk()
             ->assertJsonStructure([
-                'data' => ['id', 'name', 'slug', 'description', 'posts_count', 'created_at', 'updated_at']
+                'data' => ['id', 'name', 'slug', 'description', 'posts_count', 'created_at', 'updated_at'],
             ])
             ->assertJsonFragment([
                 'id' => $category->id,
                 'name' => $category->name,
-                'posts_count' => 2
+                'posts_count' => 2,
             ]);
     }
 
@@ -256,9 +256,9 @@ class CategoriesApiTest extends ApiTestCase
                 'data' => [
                     'id', 'name', 'posts_count',
                     'posts' => [
-                        '*' => ['id', 'title', 'tags']
-                    ]
-                ]
+                        '*' => ['id', 'title', 'tags'],
+                    ],
+                ],
             ]);
 
         $responseData = $response->json('data');
@@ -292,7 +292,7 @@ class CategoriesApiTest extends ApiTestCase
         $response = $this->getJson($this->getResourceUrl(99999));
 
         $response->assertStatus(404)
-                 ->assertJsonStructure(['message']);
+            ->assertJsonStructure(['message']);
     }
 
     #[Test]
@@ -304,15 +304,15 @@ class CategoriesApiTest extends ApiTestCase
         $response = $this->getJson($this->getResourceUrl($category->id) . '?include_posts=true');
 
         $response->assertOk()
-                 ->assertJsonStructure([
-                     'data' => [
-                         'id', 'name', 'description', 'slug', 'posts_count',
-                         'posts' => [
-                             '*' => ['id', 'title', 'tags']
-                         ]
-                     ]
-                 ]);
-        
+            ->assertJsonStructure([
+                'data' => [
+                    'id', 'name', 'description', 'slug', 'posts_count',
+                    'posts' => [
+                        '*' => ['id', 'title', 'tags'],
+                    ],
+                ],
+            ]);
+
         // Проверяем, что посты действительно включены
         $responseData = $response->json('data');
         $this->assertArrayHasKey('posts', $responseData);
@@ -337,21 +337,21 @@ class CategoriesApiTest extends ApiTestCase
         $updateData = [
             'name' => 'Updated Category',
             'description' => 'Updated Description',
-            'slug' => 'updated-category'
+            'slug' => 'updated-category',
         ];
 
         $response = $this->putJson($this->getResourceUrl($category->id), $updateData);
 
         $response->assertOk()
-                 ->assertJsonFragment([
-                     'name' => 'Updated Category',
-                     'slug' => 'updated-category'
-                 ]);
+            ->assertJsonFragment([
+                'name' => 'Updated Category',
+                'slug' => 'updated-category',
+            ]);
 
         $this->assertDatabaseHas('categories', [
             'id' => $category->id,
             'name' => 'Updated Category',
-            'slug' => 'updated-category'
+            'slug' => 'updated-category',
         ]);
     }
 
@@ -361,7 +361,7 @@ class CategoriesApiTest extends ApiTestCase
         $category = Category::factory()->create();
         $updateData = [
             'name' => 'New Updated Name',
-            'description' => 'Updated Description'
+            'description' => 'Updated Description',
         ];
 
         $response = $this->putJson($this->getResourceUrl($category->id), $updateData);
@@ -370,7 +370,7 @@ class CategoriesApiTest extends ApiTestCase
         $this->assertDatabaseHas('categories', [
             'id' => $category->id,
             'name' => 'New Updated Name',
-            'slug' => 'new-updated-name'
+            'slug' => 'new-updated-name',
         ]);
     }
 
@@ -380,7 +380,7 @@ class CategoriesApiTest extends ApiTestCase
         $category = Category::factory()->create();
         $updateData = [
             'name' => 'Updated XML Category',
-            'description' => 'Updated XML Description'
+            'description' => 'Updated XML Description',
         ];
 
         $response = $this->put($this->getResourceUrl($category->id) . '?format=xml', $updateData, ['Accept' => 'application/xml']);
@@ -397,7 +397,7 @@ class CategoriesApiTest extends ApiTestCase
         $response = $this->putJson($this->getResourceUrl($category->id), ['name' => '']);
 
         $response->assertStatus(422)
-                 ->assertJsonStructure(['message', 'errors']);
+            ->assertJsonStructure(['message', 'errors']);
     }
 
     #[Test]
@@ -416,13 +416,13 @@ class CategoriesApiTest extends ApiTestCase
 
         $updateData = [
             'name' => 'Existing Category', // Дублирующее имя
-            'description' => 'Updated Description'
+            'description' => 'Updated Description',
         ];
 
         $response = $this->putJson($this->getResourceUrl($category2->id), $updateData);
 
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors(['name']);
+            ->assertJsonValidationErrors(['name']);
     }
 
     #[Test]
@@ -460,7 +460,7 @@ class CategoriesApiTest extends ApiTestCase
         $response = $this->deleteJson($this->getResourceUrl($category->id));
 
         $response->assertStatus(409)
-                 ->assertJsonStructure(['message', 'status']);
+            ->assertJsonStructure(['message', 'status']);
 
         // Категория не должна быть удалена
         $this->assertDatabaseHas('categories', ['id' => $category->id]);
@@ -529,14 +529,14 @@ class CategoriesApiTest extends ApiTestCase
         $response = $this->deleteJson($this->getResourceUrl($category->id));
 
         $response->assertStatus(500)
-                ->assertJsonStructure(['message']);
+            ->assertJsonStructure(['message']);
     }
 
     #[Test]
     public function constructor_applies_auth_middleware_correctly(): void
     {
         $controller = new \App\Http\Controllers\Api\V1\CategoryController();
-        
+
         // Проверим, что контроллер создан корректно
         $this->assertInstanceOf(\App\Http\Controllers\Api\V1\CategoryController::class, $controller);
     }
@@ -547,7 +547,7 @@ class CategoriesApiTest extends ApiTestCase
         // 1. Создаем категорию
         $createData = [
             'name' => 'Integration Test Category',
-            'description' => 'Test category for integration testing'
+            'description' => 'Test category for integration testing',
         ];
 
         $createResponse = $this->postJson($this->getResourceUrl(), $createData);
@@ -557,13 +557,13 @@ class CategoriesApiTest extends ApiTestCase
         // 2. Получаем категорию
         $showResponse = $this->getJson($this->getResourceUrl($categoryId));
         $showResponse->assertOk()
-                     ->assertJsonFragment(['name' => 'Integration Test Category']);
+            ->assertJsonFragment(['name' => 'Integration Test Category']);
 
         // 3. Обновляем категорию
         $updateData = ['name' => 'Updated Integration Category'];
         $updateResponse = $this->putJson($this->getResourceUrl($categoryId), $updateData);
         $updateResponse->assertOk()
-                       ->assertJsonFragment(['name' => 'Updated Integration Category']);
+            ->assertJsonFragment(['name' => 'Updated Integration Category']);
 
         // 4. Проверяем в списке
         $indexResponse = $this->getJson($this->getResourceUrl());
@@ -577,21 +577,21 @@ class CategoriesApiTest extends ApiTestCase
         $this->assertDatabaseMissing('categories', ['id' => $categoryId]);
     }
 
-        #[Test]
+    #[Test]
     public function show_handles_general_exception_in_try_catch(): void
     {
         // Создаем категорию с невалидным ID для вызова исключения
         $response = $this->getJson($this->getResourceUrl(-1)); // Невалидный ID
 
         $response->assertStatus(404)
-                 ->assertJsonStructure(['message']);
+            ->assertJsonStructure(['message']);
     }
 
     #[Test]
     public function update_handles_general_exception_in_try_catch(): void
     {
         $category = Category::factory()->create();
-        
+
         // Мокируем Eloquent модель для исключения при update
         $this->partialMock(Category::class, function (MockInterface $mock) {
             $mock->shouldReceive('update')->andThrow(new \Exception('Database error'));
@@ -599,24 +599,24 @@ class CategoriesApiTest extends ApiTestCase
 
         $updateData = [
             'name' => 'Updated Name',
-            'description' => 'Updated Description'
+            'description' => 'Updated Description',
         ];
 
         $response = $this->putJson($this->getResourceUrl($category->id), $updateData);
 
         $response->assertStatus(500)
-                 ->assertJsonStructure(['message']);
+            ->assertJsonStructure(['message']);
     }
 
     #[Test]
     public function update_handles_slug_generation_logic(): void
     {
         $category = Category::factory()->create(['name' => 'Original Name', 'slug' => 'original-slug']);
-        
+
         // Тест 1: Если передаем name, slug будет регенерирован (даже если тот же)
         $updateData1 = [
             'name' => 'Original Name', // То же имя
-            'description' => 'New Description'
+            'description' => 'New Description',
             // slug не передаем - будет автогенерирован
         ];
 
@@ -627,7 +627,7 @@ class CategoriesApiTest extends ApiTestCase
             'id' => $category->id,
             'name' => 'Original Name',
             'slug' => 'original-name', // Будет регенерирован из имени
-            'description' => 'New Description'
+            'description' => 'New Description',
         ]);
     }
 
@@ -635,12 +635,12 @@ class CategoriesApiTest extends ApiTestCase
     public function update_handles_empty_slug_with_name_change(): void
     {
         $category = Category::factory()->create();
-        
+
         // Передаем пустой slug с новым именем
         $updateData = [
             'name' => 'New Category Name',
             'slug' => '', // Пустой slug должен быть автогенерирован
-            'description' => 'Updated Description'
+            'description' => 'Updated Description',
         ];
 
         $response = $this->putJson($this->getResourceUrl($category->id), $updateData);
@@ -650,7 +650,7 @@ class CategoriesApiTest extends ApiTestCase
             'id' => $category->id,
             'name' => 'New Category Name',
             'slug' => 'new-category-name', // Автогенерированный slug
-            'description' => 'Updated Description'
+            'description' => 'Updated Description',
         ]);
     }
 
@@ -661,7 +661,7 @@ class CategoriesApiTest extends ApiTestCase
         $response = $this->getJson($this->getResourceUrl(99999));
 
         $response->assertStatus(404)
-                 ->assertJsonStructure(['message']);
+            ->assertJsonStructure(['message']);
     }
 
     #[Test]
@@ -669,26 +669,26 @@ class CategoriesApiTest extends ApiTestCase
     {
         $category = Category::factory()->create([
             'name' => 'Test Category',
-            'slug' => 'custom-slug'
+            'slug' => 'custom-slug',
         ]);
-        
+
         // Обновляем с явным указанием slug
         $updateData = [
             'name' => 'Test Category Updated',
             'slug' => 'custom-slug', // Явно передаем существующий slug
-            'description' => 'Updated description'
+            'description' => 'Updated description',
         ];
 
         $response = $this->putJson($this->getResourceUrl($category->id), $updateData);
 
         $response->assertOk();
-        
+
         // Проверяем, что slug остался как указано
         $this->assertDatabaseHas('categories', [
             'id' => $category->id,
             'name' => 'Test Category Updated',
             'slug' => 'custom-slug', // Остался как указан явно
-            'description' => 'Updated description'
+            'description' => 'Updated description',
         ]);
     }
 
@@ -696,29 +696,29 @@ class CategoriesApiTest extends ApiTestCase
     public function update_handles_slug_generation_condition_coverage(): void
     {
         $category = Category::factory()->create(['name' => 'Original', 'slug' => 'original']);
-        
+
         // Тестируем условие: empty($validated['slug']) && isset($validated['name'])
         // Случай 1: slug пустой И name передан - должен регенерироваться
         $updateData = [
             'name' => 'New Name',
             'slug' => null, // Пустой slug
-            'description' => 'Test'
+            'description' => 'Test',
         ];
 
         $response = $this->putJson($this->getResourceUrl($category->id), $updateData);
-        
+
         $response->assertOk();
         $this->assertDatabaseHas('categories', [
             'id' => $category->id,
-            'slug' => 'new-name' // Автогенерирован
+            'slug' => 'new-name', // Автогенерирован
         ]);
     }
 
-        #[Test]
+    #[Test]
     public function show_handles_exception_with_direct_controller_test(): void
     {
         $category = Category::factory()->create();
-        
+
         // Мокируем Category для исключения при loadCount
         $mockCategory = $this->partialMock(Category::class, function (MockInterface $mock) {
             $mock->shouldReceive('loadCount')->andThrow(new \Exception('Database error'));
@@ -726,11 +726,11 @@ class CategoriesApiTest extends ApiTestCase
 
         $controller = new \App\Http\Controllers\Api\V1\CategoryController();
         $request = \Illuminate\Http\Request::create('/api/v1/categories/' . $category->id, 'GET');
-        
+
         $response = $controller->show($request, $mockCategory);
-        
+
         $this->assertEquals(404, $response->getStatusCode());
-        
+
         // Проверяем содержимое ответа
         $content = $response->getContent();
         $this->assertNotEmpty($content);
@@ -740,7 +740,7 @@ class CategoriesApiTest extends ApiTestCase
     public function update_handles_general_exception_with_direct_controller_test(): void
     {
         $category = Category::factory()->create();
-        
+
         // Мокируем Category для исключения при update
         $mockCategory = $this->partialMock(Category::class, function (MockInterface $mock) use ($category) {
             $mock->shouldReceive('getAttribute')->with('id')->andReturn($category->id);
@@ -751,13 +751,13 @@ class CategoriesApiTest extends ApiTestCase
         $request = \Illuminate\Http\Request::create('/api/v1/categories/' . $category->id, 'PUT');
         $request->merge([
             'name' => 'Updated Name',
-            'description' => 'Updated Description'
+            'description' => 'Updated Description',
         ]);
-        
+
         $response = $controller->update($request, $mockCategory);
-        
+
         $this->assertEquals(500, $response->getStatusCode());
-        
+
         // Проверяем содержимое ответа
         $content = $response->getContent();
         $this->assertNotEmpty($content);
@@ -775,26 +775,26 @@ class CategoriesApiTest extends ApiTestCase
         $response = $this->getJson($this->getResourceUrl($category->id) . '?include_posts=true');
 
         $response->assertOk()
-                 ->assertJsonStructure([
-                     'data' => [
-                         'id', 'name', 'posts_count',
-                         'posts' => [
-                             '*' => ['id', 'title', 'tags']
-                         ]
-                     ]
-                 ]);
+            ->assertJsonStructure([
+                'data' => [
+                    'id', 'name', 'posts_count',
+                    'posts' => [
+                        '*' => ['id', 'title', 'tags'],
+                    ],
+                ],
+            ]);
     }
 
-    #[Test] 
+    #[Test]
     public function update_covers_slug_generation_edge_case(): void
     {
         $category = Category::factory()->create(['name' => 'Test', 'slug' => 'test']);
-        
+
         // Тестируем случай когда slug не пустой, но name изменился
         $updateData = [
             'name' => 'Updated Name',
             'slug' => 'custom-slug', // Не пустой slug
-            'description' => 'Updated'
+            'description' => 'Updated',
         ];
 
         $response = $this->putJson($this->getResourceUrl($category->id), $updateData);
@@ -804,7 +804,7 @@ class CategoriesApiTest extends ApiTestCase
             'id' => $category->id,
             'name' => 'Updated Name',
             'slug' => 'custom-slug', // Должен остаться как передан
-            'description' => 'Updated'
+            'description' => 'Updated',
         ]);
     }
 }

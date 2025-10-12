@@ -13,12 +13,12 @@ class CommentsApiTest extends ApiTestCase
     protected function createResourceData(): array
     {
         $post = Post::factory()->create();
-        
+
         return [
             'content' => $this->faker->paragraph,
             'author_name' => $this->faker->name,
             'author_email' => $this->faker->safeEmail,
-            'post_id' => $post->id
+            'post_id' => $post->id,
         ];
     }
 
@@ -32,9 +32,9 @@ class CommentsApiTest extends ApiTestCase
         $response->assertOk()
             ->assertJsonStructure([
                 'data' => [
-                    '*' => ['id', 'content', 'author_name', 'author_email', 'post_id', 'created_at', 'updated_at', 'post']
+                    '*' => ['id', 'content', 'author_name', 'author_email', 'post_id', 'created_at', 'updated_at', 'post'],
                 ],
-                'meta' => ['total', 'count', 'per_page', 'current_page', 'total_pages']
+                'meta' => ['total', 'count', 'per_page', 'current_page', 'total_pages'],
             ]);
     }
 
@@ -46,10 +46,10 @@ class CommentsApiTest extends ApiTestCase
         $response = $this->getJson($this->getResourceUrl() . '?per_page=5');
 
         $response->assertOk();
-        
+
         $data = $response->json('data');
         $this->assertCount(5, $data);
-        $this->assertEquals(5, (int)$response->json('meta.per_page'));
+        $this->assertEquals(5, (int) $response->json('meta.per_page'));
     }
 
     #[Test]
@@ -60,7 +60,7 @@ class CommentsApiTest extends ApiTestCase
         $response = $this->getJson($this->getResourceUrl() . '?per_page=100');
 
         $response->assertOk();
-        $this->assertEquals(50, (int)$response->json('meta.per_page')); 
+        $this->assertEquals(50, (int) $response->json('meta.per_page'));
     }
 
     #[Test]
@@ -68,7 +68,7 @@ class CommentsApiTest extends ApiTestCase
     {
         $post1 = Post::factory()->create();
         $post2 = Post::factory()->create();
-        
+
         Comment::factory()->count(3)->create(['post_id' => $post1->id]);
         Comment::factory()->count(2)->create(['post_id' => $post2->id]);
 
@@ -77,7 +77,7 @@ class CommentsApiTest extends ApiTestCase
         $response->assertOk();
         $data = $response->json('data');
         $this->assertCount(3, $data);
-        
+
         foreach ($data as $comment) {
             $this->assertEquals($post1->id, $comment['post_id']);
         }
@@ -94,7 +94,7 @@ class CommentsApiTest extends ApiTestCase
 
         $response->assertOk();
         $data = $response->json('data');
-        
+
         // Проверяем правильный порядок (новые сначала)
         $this->assertEquals($newestComment->id, $data[0]['id']);
         $this->assertEquals($newerComment->id, $data[1]['id']);
@@ -136,20 +136,20 @@ class CommentsApiTest extends ApiTestCase
 
         $response->assertCreated()
             ->assertJsonStructure([
-                'data' => ['id', 'content', 'author_name', 'author_email', 'post_id', 'created_at', 'updated_at', 'post']
+                'data' => ['id', 'content', 'author_name', 'author_email', 'post_id', 'created_at', 'updated_at', 'post'],
             ])
             ->assertJsonFragment([
                 'content' => $payload['content'],
                 'author_name' => $payload['author_name'],
                 'author_email' => $payload['author_email'],
-                'post_id' => $payload['post_id']
+                'post_id' => $payload['post_id'],
             ]);
 
         $this->assertDatabaseHas('comments', [
             'content' => $payload['content'],
             'author_name' => $payload['author_name'],
             'author_email' => $payload['author_email'],
-            'post_id' => $payload['post_id']
+            'post_id' => $payload['post_id'],
         ]);
     }
 
@@ -159,7 +159,7 @@ class CommentsApiTest extends ApiTestCase
         $post = Post::factory()->create();
         $payload = [
             'content' => 'Minimal comment content',
-            'post_id' => $post->id
+            'post_id' => $post->id,
         ];
 
         $response = $this->postJson($this->getResourceUrl(), $payload);
@@ -169,7 +169,7 @@ class CommentsApiTest extends ApiTestCase
             'content' => 'Minimal comment content',
             'post_id' => $post->id,
             'author_name' => null,
-            'author_email' => null
+            'author_email' => null,
         ]);
     }
 
@@ -179,8 +179,8 @@ class CommentsApiTest extends ApiTestCase
         $response = $this->postJson($this->getResourceUrl(), []);
 
         $response->assertStatus(422)
-                 ->assertJsonStructure(['message', 'errors'])
-                 ->assertJsonValidationErrors(['content', 'post_id']);
+            ->assertJsonStructure(['message', 'errors'])
+            ->assertJsonValidationErrors(['content', 'post_id']);
     }
 
     #[Test]
@@ -188,11 +188,11 @@ class CommentsApiTest extends ApiTestCase
     {
         $response = $this->postJson($this->getResourceUrl(), [
             'content' => 'Test content',
-            'post_id' => 99999 // Несуществующий post
+            'post_id' => 99999, // Несуществующий post
         ]);
 
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors(['post_id']);
+            ->assertJsonValidationErrors(['post_id']);
     }
 
     #[Test]
@@ -203,11 +203,11 @@ class CommentsApiTest extends ApiTestCase
 
         $response = $this->postJson($this->getResourceUrl(), [
             'content' => $longContent,
-            'post_id' => $post->id
+            'post_id' => $post->id,
         ]);
 
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors(['content']);
+            ->assertJsonValidationErrors(['content']);
     }
 
     #[Test]
@@ -218,11 +218,11 @@ class CommentsApiTest extends ApiTestCase
         $response = $this->postJson($this->getResourceUrl(), [
             'content' => 'Test content',
             'post_id' => $post->id,
-            'author_email' => 'invalid-email'
+            'author_email' => 'invalid-email',
         ]);
 
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors(['author_email']);
+            ->assertJsonValidationErrors(['author_email']);
     }
 
     #[Test]
@@ -245,11 +245,11 @@ class CommentsApiTest extends ApiTestCase
 
         $response->assertOk()
             ->assertJsonStructure([
-                'data' => ['id', 'content', 'author_name', 'author_email', 'post_id', 'created_at', 'updated_at', 'post']
+                'data' => ['id', 'content', 'author_name', 'author_email', 'post_id', 'created_at', 'updated_at', 'post'],
             ])
             ->assertJsonFragment([
                 'id' => $comment->id,
-                'content' => $comment->content
+                'content' => $comment->content,
             ]);
     }
 
@@ -293,23 +293,23 @@ class CommentsApiTest extends ApiTestCase
         $updateData = [
             'content' => 'Updated comment content',
             'author_name' => 'Updated Author',
-            'author_email' => 'updated@example.com'
+            'author_email' => 'updated@example.com',
         ];
 
         $response = $this->putJson($this->getResourceUrl($comment->id), $updateData);
 
         $response->assertOk()
-                 ->assertJsonFragment([
-                     'content' => 'Updated comment content',
-                     'author_name' => 'Updated Author',
-                     'author_email' => 'updated@example.com'
-                 ]);
+            ->assertJsonFragment([
+                'content' => 'Updated comment content',
+                'author_name' => 'Updated Author',
+                'author_email' => 'updated@example.com',
+            ]);
 
         $this->assertDatabaseHas('comments', [
             'id' => $comment->id,
             'content' => 'Updated comment content',
             'author_name' => 'Updated Author',
-            'author_email' => 'updated@example.com'
+            'author_email' => 'updated@example.com',
         ]);
     }
 
@@ -319,12 +319,12 @@ class CommentsApiTest extends ApiTestCase
         $comment = Comment::factory()->create([
             'content' => 'Original content',
             'author_name' => 'Original Author',
-            'author_email' => 'original@example.com'
+            'author_email' => 'original@example.com',
         ]);
 
         // Обновляем только content
         $response = $this->putJson($this->getResourceUrl($comment->id), [
-            'content' => 'Only content updated'
+            'content' => 'Only content updated',
         ]);
 
         $response->assertOk();
@@ -332,7 +332,7 @@ class CommentsApiTest extends ApiTestCase
             'id' => $comment->id,
             'content' => 'Only content updated',
             'author_name' => 'Original Author', // Не изменилось
-            'author_email' => 'original@example.com' // Не изменилось
+            'author_email' => 'original@example.com', // Не изменилось
         ]);
     }
 
@@ -341,19 +341,19 @@ class CommentsApiTest extends ApiTestCase
     {
         $comment = Comment::factory()->create([
             'author_name' => 'Original Author',
-            'author_email' => 'original@example.com'
+            'author_email' => 'original@example.com',
         ]);
 
         $response = $this->putJson($this->getResourceUrl($comment->id), [
             'author_name' => null,
-            'author_email' => null
+            'author_email' => null,
         ]);
 
         $response->assertOk();
         $this->assertDatabaseHas('comments', [
             'id' => $comment->id,
             'author_name' => null,
-            'author_email' => null
+            'author_email' => null,
         ]);
     }
 
@@ -363,7 +363,7 @@ class CommentsApiTest extends ApiTestCase
         $comment = Comment::factory()->create();
         $updateData = [
             'content' => 'Updated XML comment',
-            'author_name' => 'XML Author'
+            'author_name' => 'XML Author',
         ];
 
         $response = $this->put($this->getResourceUrl($comment->id) . '?format=xml', $updateData, ['Accept' => 'application/xml']);
@@ -379,12 +379,12 @@ class CommentsApiTest extends ApiTestCase
         $longContent = str_repeat('a', 1001); // Превышает максимум
 
         $response = $this->putJson($this->getResourceUrl($comment->id), [
-            'content' => $longContent
+            'content' => $longContent,
         ]);
 
         $response->assertStatus(422)
-                 ->assertJsonStructure(['message', 'errors'])
-                 ->assertJsonValidationErrors(['content']);
+            ->assertJsonStructure(['message', 'errors'])
+            ->assertJsonValidationErrors(['content']);
     }
 
     #[Test]
@@ -393,18 +393,18 @@ class CommentsApiTest extends ApiTestCase
         $comment = Comment::factory()->create();
 
         $response = $this->putJson($this->getResourceUrl($comment->id), [
-            'author_email' => 'invalid-email-format'
+            'author_email' => 'invalid-email-format',
         ]);
 
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors(['author_email']);
+            ->assertJsonValidationErrors(['author_email']);
     }
 
     #[Test]
     public function update_returns_404_for_nonexistent_comment(): void
     {
         $response = $this->putJson($this->getResourceUrl(99999), [
-            'content' => 'Updated content'
+            'content' => 'Updated content',
         ]);
 
         $response->assertNotFound();
@@ -448,7 +448,7 @@ class CommentsApiTest extends ApiTestCase
     public function constructor_applies_auth_middleware_correctly(): void
     {
         $controller = new \App\Http\Controllers\Api\V1\CommentController();
-        
+
         // Проверим, что контроллер создан корректно
         $this->assertInstanceOf(\App\Http\Controllers\Api\V1\CommentController::class, $controller);
     }
@@ -471,7 +471,7 @@ class CommentsApiTest extends ApiTestCase
     {
         $post1 = Post::factory()->create();
         $post2 = Post::factory()->create();
-        
+
         Comment::factory()->count(3)->create(['post_id' => $post1->id]);
 
         $response = $this->getJson($this->getResourceUrl() . "?post_id={$post2->id}");
@@ -491,7 +491,7 @@ class CommentsApiTest extends ApiTestCase
             'content' => 'Integration test comment',
             'author_name' => 'Test Author',
             'author_email' => 'test@example.com',
-            'post_id' => $post->id
+            'post_id' => $post->id,
         ];
 
         $createResponse = $this->postJson($this->getResourceUrl(), $createData);
@@ -501,13 +501,13 @@ class CommentsApiTest extends ApiTestCase
         // 2. Получаем комментарий
         $showResponse = $this->getJson($this->getResourceUrl($commentId));
         $showResponse->assertOk()
-                     ->assertJsonFragment(['content' => 'Integration test comment']);
+            ->assertJsonFragment(['content' => 'Integration test comment']);
 
         // 3. Обновляем комментарий
         $updateData = ['content' => 'Updated integration comment'];
         $updateResponse = $this->putJson($this->getResourceUrl($commentId), $updateData);
         $updateResponse->assertOk()
-                       ->assertJsonFragment(['content' => 'Updated integration comment']);
+            ->assertJsonFragment(['content' => 'Updated integration comment']);
 
         // 4. Проверяем в списке
         $indexResponse = $this->getJson($this->getResourceUrl());

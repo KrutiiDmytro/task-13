@@ -16,7 +16,7 @@ class CommentSeeder extends Seeder
             ['post_title' => 'Создание REST API с Laravel', 'author_name' => 'Петр', 'author_email' => 'petr@example.com', 'content' => 'Отличный пример!'],
             ['post_title' => 'Основы JavaScript ES6+', 'author_name' => 'Анна', 'author_email' => 'anna@example.com', 'content' => 'Полезная информация.'],
         ];
-        
+
         foreach ($comments as $commentData) {
             $post = Post::where('title', $commentData['post_title'])->first();
 

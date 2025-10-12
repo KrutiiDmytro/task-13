@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tag;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 
 class TagController extends Controller
 {
@@ -55,22 +55,22 @@ class TagController extends Controller
                     'id' => $tag->id,
                     'name' => $tag->name,
                     'slug' => $tag->slug,
-                ]
+                ],
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'The given data was invalid.',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], 422);
         }
     }
 
-/**
+    /**
      * Показати пости за конкретним тегом (slug).
      *  Видаємо список постів, прикріплених до цього тегу, з пагінацією.
      */
-        public function show(string $slug): View
+    public function show(string $slug): View
     {
         $tag = Tag::where('slug', $slug)->firstOrFail();
 
@@ -82,8 +82,6 @@ class TagController extends Controller
 
         return view('tags.show', compact('tag', 'posts'));
     }
-
-
 
     /**
      * Показывает форму редактирования тега.
@@ -116,11 +114,12 @@ class TagController extends Controller
     public function destroy(Tag $tag): RedirectResponse
     {
         $tag->delete();
+
         return redirect()->route('tags.index')
             ->with('success', 'Тег успешно удален!');
     }
 
-        /**
+    /**
      * Сохраняет новый тег через AJAX запрос.
      */
     public function storeAjax(Request $request): \Illuminate\Http\JsonResponse
@@ -136,7 +135,7 @@ class TagController extends Controller
             'tag' => [
                 'id' => $tag->id,
                 'name' => $tag->name,
-            ]
+            ],
         ]);
     }
 }

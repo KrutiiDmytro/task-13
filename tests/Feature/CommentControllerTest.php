@@ -2,16 +2,17 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class CommentControllerTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshDatabase;
+    use WithFaker;
 
     #[Test]
     public function index_displays_comments(): void
@@ -21,8 +22,8 @@ class CommentControllerTest extends TestCase
         $response = $this->get(route('comments.index'));
 
         $response->assertStatus(200)
-                 ->assertViewIs('comments.index')
-                 ->assertViewHas('comments');
+            ->assertViewIs('comments.index')
+            ->assertViewHas('comments');
 
         $viewComments = $response->viewData('comments');
         $this->assertCount(3, $viewComments->items());
@@ -36,8 +37,8 @@ class CommentControllerTest extends TestCase
         $response = $this->get(route('comments.create'));
 
         $response->assertStatus(200)
-                 ->assertViewIs('comments.create')
-                 ->assertViewHas('posts');
+            ->assertViewIs('comments.create')
+            ->assertViewHas('posts');
 
         $viewPosts = $response->viewData('posts');
         $this->assertCount(2, $viewPosts);
@@ -95,8 +96,8 @@ class CommentControllerTest extends TestCase
         $response = $this->get(route('comments.show', $comment));
 
         $response->assertStatus(200)
-                 ->assertViewIs('comments.show')
-                 ->assertViewHas('comment');
+            ->assertViewIs('comments.show')
+            ->assertViewHas('comment');
 
         $viewComment = $response->viewData('comment');
         $this->assertTrue($viewComment->is($comment));
@@ -112,8 +113,8 @@ class CommentControllerTest extends TestCase
         $response = $this->get(route('comments.edit', $comment));
 
         $response->assertStatus(200)
-                 ->assertViewIs('comments.edit')
-                 ->assertViewHasAll(['comment', 'posts']);
+            ->assertViewIs('comments.edit')
+            ->assertViewHasAll(['comment', 'posts']);
 
         $viewComment = $response->viewData('comment');
         $this->assertTrue($viewComment->is($comment));

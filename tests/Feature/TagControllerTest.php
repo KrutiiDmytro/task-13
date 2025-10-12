@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use App\Models\Tag;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class TagControllerTest extends TestCase
 {
@@ -19,8 +19,8 @@ class TagControllerTest extends TestCase
         $response = $this->get(route('tags.index'));
 
         $response->assertStatus(200)
-                 ->assertViewIs('tags.index')
-                 ->assertViewHas('tags');
+            ->assertViewIs('tags.index')
+            ->assertViewHas('tags');
     }
 
     #[Test]
@@ -31,8 +31,8 @@ class TagControllerTest extends TestCase
         $response = $this->get(route('tags.show', $tag->slug));
 
         $response->assertStatus(200)
-                 ->assertViewIs('tags.show')
-                 ->assertViewHas('tag', $tag);
+            ->assertViewIs('tags.show')
+            ->assertViewHas('tag', $tag);
     }
 
     #[Test]
@@ -41,7 +41,7 @@ class TagControllerTest extends TestCase
         $response = $this->get(route('tags.create'));
 
         $response->assertStatus(200)
-                 ->assertViewIs('tags.create');
+            ->assertViewIs('tags.create');
     }
 
     #[Test]
@@ -54,7 +54,7 @@ class TagControllerTest extends TestCase
         $response = $this->post(route('tags.store'), $tagData);
 
         $response->assertStatus(200) // JSON ответ
-                 ->assertJson(['success' => true]);
+            ->assertJson(['success' => true]);
 
         $this->assertDatabaseHas('tags', [
             'name' => $tagData['name'],
@@ -67,7 +67,7 @@ class TagControllerTest extends TestCase
         $response = $this->post(route('tags.store'), []);
 
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors(['name']);
+            ->assertJsonValidationErrors(['name']);
     }
 
     #[Test]
@@ -76,11 +76,11 @@ class TagControllerTest extends TestCase
         $existingTag = Tag::factory()->create(['name' => 'Existing Tag']);
 
         $response = $this->post(route('tags.store'), [
-            'name' => 'Existing Tag'
+            'name' => 'Existing Tag',
         ]);
 
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors(['name']);
+            ->assertJsonValidationErrors(['name']);
     }
 
     #[Test]
@@ -91,8 +91,8 @@ class TagControllerTest extends TestCase
         $response = $this->get(route('tags.edit', $tag));
 
         $response->assertStatus(200)
-                 ->assertViewIs('tags.edit')
-                 ->assertViewHas('tag', $tag);
+            ->assertViewIs('tags.edit')
+            ->assertViewHas('tag', $tag);
     }
 
     #[Test]
@@ -106,7 +106,7 @@ class TagControllerTest extends TestCase
         ]);
 
         $response->assertRedirect(route('tags.index'))
-                 ->assertSessionHas('success');
+            ->assertSessionHas('success');
 
         $this->assertDatabaseHas('tags', [
             'id' => $tag->id,
@@ -134,7 +134,7 @@ class TagControllerTest extends TestCase
         $response = $this->delete(route('tags.destroy', $tag));
 
         $response->assertRedirect(route('tags.index'))
-                 ->assertSessionHas('success');
+            ->assertSessionHas('success');
 
         $this->assertDatabaseMissing('tags', ['id' => $tag->id]);
     }
@@ -147,11 +147,11 @@ class TagControllerTest extends TestCase
         ];
 
         $response = $this->post(route('tags.store'), $tagData, [
-            'X-Requested-With' => 'XMLHttpRequest'
+            'X-Requested-With' => 'XMLHttpRequest',
         ]);
 
         $response->assertStatus(200)
-                 ->assertJson(['success' => true]);
+            ->assertJson(['success' => true]);
 
         $this->assertDatabaseHas('tags', [
             'name' => $tagData['name'],
@@ -185,8 +185,8 @@ class TagControllerTest extends TestCase
         $response = $this->get(route('tags.index', ['q' => 'Searchable']));
 
         $response->assertStatus(200)
-                 ->assertViewIs('tags.index')
-                 ->assertViewHas('tags');
+            ->assertViewIs('tags.index')
+            ->assertViewHas('tags');
     }
 
     #[Test]
@@ -194,13 +194,13 @@ class TagControllerTest extends TestCase
     {
         $tag = Tag::factory()->create([
             'name' => 'Test Tag for Slug',
-            'slug' => 'test-tag-for-slug'
+            'slug' => 'test-tag-for-slug',
         ]);
 
-        $response = $this->get("/tags/test-tag-for-slug");
+        $response = $this->get('/tags/test-tag-for-slug');
 
         $response->assertStatus(200)
-                 ->assertViewIs('tags.show')
-                 ->assertViewHas('tag');
+            ->assertViewIs('tags.show')
+            ->assertViewHas('tag');
     }
 }

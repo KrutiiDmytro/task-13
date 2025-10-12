@@ -298,71 +298,71 @@ return [
     |
     */
 
-'menu' => [
-    // Navbar items:
-    [
-        'type' => 'navbar-search',
-        'text' => 'Поиск',
-        'topnav_right' => true,
-    ],
-    [
-        'type' => 'fullscreen-widget',
-        'topnav_right' => true,
-    ],
+    'menu' => [
+        // Navbar items:
+        [
+            'type' => 'navbar-search',
+            'text' => 'Поиск',
+            'topnav_right' => true,
+        ],
+        [
+            'type' => 'fullscreen-widget',
+            'topnav_right' => true,
+        ],
 
-    // Sidebar items:
-    [
-        'type' => 'sidebar-menu-search',
-        'text' => 'Поиск в меню',
+        // Sidebar items:
+        [
+            'type' => 'sidebar-menu-search',
+            'text' => 'Поиск в меню',
+        ],
+
+        ['header' => 'ПАНЕЛЬ УПРАВЛЕНИЯ'],
+        [
+            'text' => 'Дашборд',
+            'route' => 'admin.dashboard',
+            'icon' => 'fas fa-tachometer-alt',
+            'can' => 'view-admin-panel',
+        ],
+
+        ['header' => 'КОНТЕНТ'],
+        [
+            'text' => 'Посты',
+            'route' => 'admin.posts.index',
+            'icon' => 'fas fa-newspaper',
+            'can' => 'manage-posts',
+        ],
+        [
+            'text' => 'Категории',
+            'route' => 'admin.categories.index',
+            'icon' => 'fas fa-list',
+            'can' => 'manage-categories',
+        ],
+        [
+            'text' => 'Комментарии',
+            'route' => 'admin.comments.index',
+            'icon' => 'fas fa-comments',
+            'can' => 'manage-comments',
+        ],
+        [
+            'text' => 'Пользователи',
+            'route' => 'admin.users.index',
+            'icon' => 'fas fa-users',
+            'can' => 'manage-users',
+        ],
+
+        ['header' => 'СИСТЕМА'],
+        [
+            'text' => 'Публичный сайт',
+            'route' => 'home',
+            'icon' => 'fas fa-external-link-alt',
+            'target' => '_blank',
+        ],
+        [
+            'text' => 'Профиль',
+            'route' => 'profile.edit',
+            'icon' => 'fas fa-user-cog',
+        ],
     ],
-    
-    ['header' => 'ПАНЕЛЬ УПРАВЛЕНИЯ'],
-    [
-        'text' => 'Дашборд',
-        'route' => 'admin.dashboard',
-        'icon' => 'fas fa-tachometer-alt',
-        'can' => 'view-admin-panel'
-    ],
-    
-    ['header' => 'КОНТЕНТ'],
-    [
-        'text' => 'Посты',
-        'route' => 'admin.posts.index',
-        'icon' => 'fas fa-newspaper',
-        'can' => 'manage-posts'
-    ],
-    [
-        'text' => 'Категории',
-        'route' => 'admin.categories.index',
-        'icon' => 'fas fa-list',
-        'can' => 'manage-categories'
-    ],
-    [
-        'text' => 'Комментарии',
-        'route' => 'admin.comments.index',
-        'icon' => 'fas fa-comments',
-        'can' => 'manage-comments'
-    ],
-    [
-    'text' => 'Пользователи',
-    'route' => 'admin.users.index',
-    'icon' => 'fas fa-users',
-    'can' => 'manage-users'
-    ],
-    
-    ['header' => 'СИСТЕМА'],
-    [
-        'text' => 'Публичный сайт',
-        'route' => 'home',
-        'icon' => 'fas fa-external-link-alt',
-        'target' => '_blank'
-    ],
-    [
-        'text' => 'Профиль',
-        'route' => 'profile.edit',
-        'icon' => 'fas fa-user-cog'
-    ],
-],
 
     /*
     |--------------------------------------------------------------------------
@@ -518,4 +518,3 @@ return [
 
     'livewire' => false,
 ];
-

@@ -2,11 +2,11 @@
 
 namespace Tests\Unit\Models;
 
-use Tests\TestCase;
-use App\Models\Tag;
 use App\Models\Post;
+use App\Models\Tag;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class TagTest extends TestCase
 {
@@ -63,13 +63,13 @@ class TagTest extends TestCase
     }
 
     #[Test]
-    public function posts_relationship_method_returns_belongsToMany(): void
+    public function posts_relationship_method_returns_belongs_to_many(): void
     {
         $tag = Tag::factory()->create();
-        
+
         // ЯВНО вызываем метод posts() для покрытия
         $postsRelation = $tag->posts();
-        
+
         $this->assertInstanceOf(\Illuminate\Database\Eloquent\Relations\BelongsToMany::class, $postsRelation);
         $this->assertEquals('App\Models\Post', $postsRelation->getRelated()::class);
     }
@@ -113,7 +113,7 @@ class TagTest extends TestCase
     public function it_has_correct_fillable_attributes(): void
     {
         $tag = new Tag();
-        
+
         $this->assertEquals(['name', 'slug'], $tag->getFillable());
     }
 

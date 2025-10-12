@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -24,12 +24,14 @@ class UserController extends Controller
     public function show(User $user): View
     {
         $user->load(['roles', 'posts']);
+
         return view('admin.users.show', compact('user'));
     }
 
     public function create(): View
     {
         $roles = Role::all();
+
         return view('admin.users.create', compact('roles'));
     }
 
@@ -49,7 +51,7 @@ class UserController extends Controller
             'password' => bcrypt($data['password']),
         ]);
 
-        if (!empty($data['roles'])) {
+        if (! empty($data['roles'])) {
             $user->assignRole($data['roles']);
         }
 
@@ -61,6 +63,7 @@ class UserController extends Controller
     public function edit(User $user): View
     {
         $roles = Role::all();
+
         return view('admin.users.edit', compact('user', 'roles'));
     }
 
@@ -79,7 +82,7 @@ class UserController extends Controller
             'email' => $data['email'],
         ]);
 
-        if (!empty($data['password'])) {
+        if (! empty($data['password'])) {
             $user->update(['password' => bcrypt($data['password'])]);
         }
 

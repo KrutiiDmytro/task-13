@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Post;
 use App\Models\Category;
 use App\Models\Comment;
-use App\Models\User;
+use App\Models\Post;
 use App\Models\Tag;
+use App\Models\User;
 
 class DashboardController extends Controller
 {

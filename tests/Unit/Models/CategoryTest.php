@@ -2,11 +2,11 @@
 
 namespace Tests\Unit\Models;
 
-use Tests\TestCase;
 use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class CategoryTest extends TestCase
 {
@@ -17,7 +17,7 @@ class CategoryTest extends TestCase
     {
         $category = Category::create([
             'name' => 'Test Category',
-            'description' => 'Test Description'
+            'description' => 'Test Description',
         ]);
 
         $this->assertInstanceOf(Category::class, $category);
@@ -32,7 +32,7 @@ class CategoryTest extends TestCase
         $category = Category::create([
             'name' => 'Custom Category',
             'slug' => 'custom-slug',
-            'description' => 'Custom Description'
+            'description' => 'Custom Description',
         ]);
 
         $this->assertEquals('Custom Category', $category->name);
@@ -45,7 +45,7 @@ class CategoryTest extends TestCase
     {
         $category = Category::create([
             'name' => 'Original Name',
-            'slug' => 'original-slug'
+            'slug' => 'original-slug',
         ]);
 
         // Обновляем имя, но оставляем slug - slug не должен измениться
@@ -58,13 +58,13 @@ class CategoryTest extends TestCase
     }
 
     #[Test]
-    public function posts_relationship_method_returns_hasMany(): void
+    public function posts_relationship_method_returns_has_many(): void
     {
         $category = Category::factory()->create();
-        
+
         // ЯВНО вызываем метод posts() для покрытия
         $postsRelation = $category->posts();
-        
+
         $this->assertInstanceOf(\Illuminate\Database\Eloquent\Relations\HasMany::class, $postsRelation);
         $this->assertEquals('App\Models\Post', $postsRelation->getRelated()::class);
     }
@@ -101,7 +101,7 @@ class CategoryTest extends TestCase
     {
         $category = Category::create([
             'name' => 'Original',
-            'slug' => 'original'
+            'slug' => 'original',
         ]);
 
         // Изменяем имя, но slug не пустой - не должен измениться
@@ -117,7 +117,7 @@ class CategoryTest extends TestCase
     public function it_has_correct_fillable_attributes(): void
     {
         $category = new Category();
-        
+
         $this->assertEquals(['name', 'description', 'slug'], $category->getFillable());
     }
 
@@ -127,10 +127,10 @@ class CategoryTest extends TestCase
         // Дополнительный тест для явного вызова booted() логики
         $category1 = Category::create(['name' => 'Test 1']);
         $this->assertEquals('test-1', $category1->slug);
-        
+
         $category2 = Category::create(['name' => 'Test 2', 'slug' => 'custom']);
         $this->assertEquals('custom', $category2->slug);
-        
+
         // Тестируем updating event
         $category1->name = 'Updated Test';
         $category1->slug = null; // Очищаем slug
@@ -144,11 +144,11 @@ class CategoryTest extends TestCase
         $category = Category::factory()->create(['name' => 'Test Category']);
         Post::factory()->count(3)->create(['category_id' => $category->id]);
         Post::factory()->count(2)->create(); // Посты в других категориях
-        
+
         // Используем отношение posts() в запросе
         $categoryPosts = $category->posts()->get();
         $this->assertCount(3, $categoryPosts);
-        
+
         // Проверяем, что отношение работает
         $this->assertEquals(3, $category->posts()->count());
         $this->assertEquals(3, $category->posts->count());

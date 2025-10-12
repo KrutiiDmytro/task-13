@@ -2,14 +2,14 @@
 
 namespace Tests\Unit\Providers;
 
-use Tests\TestCase;
-use App\Providers\AppServiceProvider;
-use App\Services\PostService;
-use App\Services\CategoryService;
-use App\Services\TagService;
 use App\Http\Middleware\AdminMiddleware;
+use App\Providers\AppServiceProvider;
+use App\Services\CategoryService;
+use App\Services\PostService;
+use App\Services\TagService;
 use Illuminate\Support\Facades\Route;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class AppServiceProviderTest extends TestCase
 {
@@ -47,7 +47,7 @@ class AppServiceProviderTest extends TestCase
     public function it_registers_admin_middleware_alias(): void
     {
         $middlewareGroups = Route::getMiddleware();
-        
+
         $this->assertArrayHasKey('admin', $middlewareGroups);
         $this->assertEquals(AdminMiddleware::class, $middlewareGroups['admin']);
     }
@@ -59,12 +59,12 @@ class AppServiceProviderTest extends TestCase
         // Это сложно протестировать напрямую, но мы можем проверить,
         // что провайдер загружается без ошибок
         $provider = new AppServiceProvider(app());
-        
+
         $this->assertInstanceOf(AppServiceProvider::class, $provider);
-        
+
         // Вызываем boot метод
         $provider->boot();
-        
+
         // Если дошли до этого момента без исключений, значит всё работает
         $this->assertTrue(true);
     }
@@ -74,10 +74,10 @@ class AppServiceProviderTest extends TestCase
     {
         // Тестируем, что метод register() правильно регистрирует сервисы
         $provider = new AppServiceProvider(app());
-        
+
         // Явно вызываем register для покрытия
         $provider->register();
-        
+
         // Проверяем, что сервисы зарегистрированы
         $this->assertTrue(app()->bound(PostService::class));
         $this->assertTrue(app()->bound(CategoryService::class));
@@ -89,10 +89,10 @@ class AppServiceProviderTest extends TestCase
     {
         // Тестируем, что метод boot() правильно настраивает приложение
         $provider = new AppServiceProvider(app());
-        
+
         // Явно вызываем boot для покрытия
         $provider->boot();
-        
+
         // Проверяем, что middleware зарегистрирован
         $middlewareGroups = Route::getMiddleware();
         $this->assertArrayHasKey('admin', $middlewareGroups);

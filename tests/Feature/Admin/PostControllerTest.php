@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Admin;
 
-use App\Models\Post;
 use App\Models\Category;
+use App\Models\Post;
 use App\Models\Tag;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -39,7 +39,7 @@ class PostControllerTest extends AdminTestCase
             'title' => 'Test Post',
             'content' => 'Test Content',
             'category_id' => $category->id,
-            'tags' => [$tag->name]
+            'tags' => [$tag->name],
         ];
 
         $this->actingAsAdmin()
@@ -51,14 +51,14 @@ class PostControllerTest extends AdminTestCase
             'title' => 'Test Post',
             'content' => 'Test Content',
             'category_id' => $category->id,
-            'user_id' => $this->admin->id
+            'user_id' => $this->admin->id,
         ]);
     }
 
     public function test_admin_can_create_post_with_image()
     {
         Storage::fake('public');
-        
+
         $category = Category::factory()->create();
         $image = UploadedFile::fake()->image('test.jpg');
 
@@ -66,7 +66,7 @@ class PostControllerTest extends AdminTestCase
             'title' => 'Test Post with Image',
             'content' => 'Test Content',
             'category_id' => $category->id,
-            'image' => $image
+            'image' => $image,
         ];
 
         $this->actingAsAdmin()
@@ -108,7 +108,7 @@ class PostControllerTest extends AdminTestCase
         $updateData = [
             'title' => 'Updated Post Title',
             'content' => 'Updated Content',
-            'category_id' => $category->id
+            'category_id' => $category->id,
         ];
 
         $this->actingAsAdmin()
@@ -120,7 +120,7 @@ class PostControllerTest extends AdminTestCase
             'id' => $post->id,
             'title' => 'Updated Post Title',
             'content' => 'Updated Content',
-            'category_id' => $category->id
+            'category_id' => $category->id,
         ]);
     }
 
@@ -149,22 +149,22 @@ class PostControllerTest extends AdminTestCase
             ->get(route('admin.posts.index'))
             ->assertStatus(403);
     }
-    
-        public function test_admin_can_update_post_with_new_image()
+
+    public function test_admin_can_update_post_with_new_image()
     {
         Storage::fake('public');
-        
+
         $post = Post::factory()->create(['image' => 'posts/old-image.jpg']);
-        
+
         // Создаем фейковое старое изображение
         Storage::disk('public')->put('posts/old-image.jpg', 'fake old image content');
-        
+
         $newImage = UploadedFile::fake()->image('new-image.jpg');
-        
+
         $updateData = [
             'title' => 'Updated Post with Image',
             'content' => 'Updated Content',
-            'image' => $newImage
+            'image' => $newImage,
         ];
 
         $this->actingAsAdmin()
@@ -173,10 +173,10 @@ class PostControllerTest extends AdminTestCase
             ->assertSessionHas('success');
 
         $post->refresh();
-        
+
         // Проверяем, что старое изображение удалено
         Storage::disk('public')->assertMissing('posts/old-image.jpg');
-        
+
         // Проверяем, что новое изображение сохранено
         $this->assertNotNull($post->image);
         $this->assertStringContainsString('posts/', $post->image);
@@ -186,15 +186,15 @@ class PostControllerTest extends AdminTestCase
     public function test_admin_can_update_post_with_image_when_no_previous_image()
     {
         Storage::fake('public');
-        
+
         $post = Post::factory()->create(['image' => null]);
-        
+
         $newImage = UploadedFile::fake()->image('first-image.jpg');
-        
+
         $updateData = [
             'title' => 'Updated Post with First Image',
             'content' => 'Updated Content',
-            'image' => $newImage
+            'image' => $newImage,
         ];
 
         $this->actingAsAdmin()
@@ -203,7 +203,7 @@ class PostControllerTest extends AdminTestCase
             ->assertSessionHas('success');
 
         $post->refresh();
-        
+
         // Проверяем, что изображение сохранено
         $this->assertNotNull($post->image);
         $this->assertStringContainsString('posts/', $post->image);
@@ -213,15 +213,15 @@ class PostControllerTest extends AdminTestCase
     public function test_admin_can_update_post_without_changing_image()
     {
         Storage::fake('public');
-        
+
         $post = Post::factory()->create(['image' => 'posts/existing-image.jpg']);
-        
+
         // Создаем фейковое существующее изображение
         Storage::disk('public')->put('posts/existing-image.jpg', 'fake existing image content');
-        
+
         $updateData = [
             'title' => 'Updated Post without Image Change',
-            'content' => 'Updated Content'
+            'content' => 'Updated Content',
             // Не передаем image
         ];
 
@@ -231,7 +231,7 @@ class PostControllerTest extends AdminTestCase
             ->assertSessionHas('success');
 
         $post->refresh();
-        
+
         // Проверяем, что старое изображение осталось
         $this->assertEquals('posts/existing-image.jpg', $post->image);
         Storage::disk('public')->assertExists('posts/existing-image.jpg');
@@ -240,18 +240,18 @@ class PostControllerTest extends AdminTestCase
     public function test_admin_can_update_post_image_replacement()
     {
         Storage::fake('public');
-        
+
         $post = Post::factory()->create(['image' => 'posts/old-image.jpg']);
-        
+
         // Создаем фейковое старое изображение
         Storage::disk('public')->put('posts/old-image.jpg', 'fake old image content');
-        
+
         $newImage = UploadedFile::fake()->image('replacement.jpg');
-        
+
         $updateData = [
             'title' => $post->title, // Оставляем прежний заголовок
             'content' => $post->content, // Оставляем прежний контент
-            'image' => $newImage
+            'image' => $newImage,
         ];
 
         $this->actingAsAdmin()
@@ -260,10 +260,10 @@ class PostControllerTest extends AdminTestCase
             ->assertSessionHas('success');
 
         $post->refresh();
-        
+
         // Проверяем, что старое изображение удалено (покрывает строки 101-103)
         Storage::disk('public')->assertMissing('posts/old-image.jpg');
-        
+
         // Проверяем, что новое изображение сохранено (покрывает строки 104-106)
         $this->assertNotNull($post->image);
         $this->assertNotEquals('posts/old-image.jpg', $post->image);

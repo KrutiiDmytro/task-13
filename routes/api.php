@@ -1,13 +1,13 @@
 <?php
 
-use App\Http\Controllers\Api\V1\PostController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CommentController;
+use App\Http\Controllers\Api\V1\PostController;
 use App\Http\Controllers\Api\V1\TagController;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,7 +40,7 @@ Route::get('/', function () {
             'v1' => url('/api/v1'),
         ],
         'supported_formats' => ['json', 'xml'],
-        'authentication' => 'Laravel Sanctum'
+        'authentication' => 'Laravel Sanctum',
     ]);
 });
 
@@ -52,7 +52,7 @@ Route::post('/login', function (Request $request) {
 
     $user = User::where('email', $request->email)->first();
 
-    if (!$user || !Hash::check($request->password, $user->password)) {
+    if (! $user || ! Hash::check($request->password, $user->password)) {
         return response()->json(['message' => 'Invalid credentials'], 401);
     }
 
@@ -60,7 +60,7 @@ Route::post('/login', function (Request $request) {
 
     return response()->json([
         'token' => $token,
-        'user' => $user
+        'user' => $user,
     ]);
 });
 
@@ -79,7 +79,7 @@ Route::post('/login', function (Request $request) {
 */
 
 Route::prefix('v1')->name('api.v1.')->group(function () {
-    
+
     // Информация о версии API V1
     Route::get('/', function () {
         return response()->json([
@@ -93,29 +93,29 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
                     'show' => 'GET /api/v1/posts/{id}',
                     'create' => 'POST /api/v1/posts (auth required)',
                     'update' => 'PUT /api/v1/posts/{id} (auth required)',
-                    'delete' => 'DELETE /api/v1/posts/{id} (auth required)'
+                    'delete' => 'DELETE /api/v1/posts/{id} (auth required)',
                 ],
                 'categories' => [
                     'list' => 'GET /api/v1/categories',
                     'show' => 'GET /api/v1/categories/{id}',
                     'create' => 'POST /api/v1/categories (auth required)',
                     'update' => 'PUT /api/v1/categories/{id} (auth required)',
-                    'delete' => 'DELETE /api/v1/categories/{id} (auth required)'
+                    'delete' => 'DELETE /api/v1/categories/{id} (auth required)',
                 ],
                 'tags' => [
                     'list' => 'GET /api/v1/tags',
                     'show' => 'GET /api/v1/tags/{id}',
                     'create' => 'POST /api/v1/tags (auth required)',
                     'update' => 'PUT /api/v1/tags/{id} (auth required)',
-                    'delete' => 'DELETE /api/v1/tags/{id} (auth required)'
+                    'delete' => 'DELETE /api/v1/tags/{id} (auth required)',
                 ],
                 'comments' => [
                     'list' => 'GET /api/v1/comments',
                     'show' => 'GET /api/v1/comments/{id}',
                     'create' => 'POST /api/v1/comments (auth required)',
                     'update' => 'PUT /api/v1/comments/{id} (auth required)',
-                    'delete' => 'DELETE /api/v1/comments/{id} (auth required)'
-                ]
+                    'delete' => 'DELETE /api/v1/comments/{id} (auth required)',
+                ],
             ],
             'supported_formats' => ['json', 'xml'],
             'authentication' => 'Laravel Sanctum',
@@ -124,30 +124,30 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
                 'get_posts_xml' => url('/api/v1/posts?format=xml'),
                 'search_posts' => url('/api/v1/posts?search=laravel'),
                 'filter_by_category' => url('/api/v1/posts?category_id=1'),
-                'paginated_posts' => url('/api/v1/posts?page=1&per_page=5')
-            ]
+                'paginated_posts' => url('/api/v1/posts?page=1&per_page=5'),
+            ],
         ]);
     });
-    
+
     /*
     |--------------------------------------------------------------------------
     | Posts API Resource Routes
     |--------------------------------------------------------------------------
-    | 
+    |
     | Примеры использования:
     | GET /api/v1/posts?format=json          - список постов в JSON
     | GET /api/v1/posts?format=xml           - список постов в XML
     | GET /api/v1/posts/1?format=xml         - конкретный пост в XML
-    | 
+    |
     | Или через Accept заголовок:
     | GET /api/v1/posts (Accept: application/xml) - список постов в XML
     |
     */
     Route::apiResource('posts', PostController::class);
-    
+
     /*
     |--------------------------------------------------------------------------
-    | Categories API Resource Routes  
+    | Categories API Resource Routes
     |--------------------------------------------------------------------------
     |
     | Примеры использования:
@@ -157,7 +157,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     |
     */
     Route::apiResource('categories', CategoryController::class);
-    
+
     /*
     |--------------------------------------------------------------------------
     | Comments API Resource Routes
@@ -173,7 +173,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     |
     */
     Route::apiResource('comments', CommentController::class);
-    
+
     /*
     |--------------------------------------------------------------------------
     | Tags API Resource Routes
@@ -190,14 +190,14 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     |
     */
     Route::apiResource('tags', TagController::class);
-    
+
     /*
     |--------------------------------------------------------------------------
     | Future API Resources
     |--------------------------------------------------------------------------
     | Здесь можно добавить дополнительные ресурсы:
     */
-    
+
     // Route::apiResource('users', UserController::class);
 });
 

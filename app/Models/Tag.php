@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 /**
@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
  *     title="Tag",
  *     description="Модель тега",
  *     required={"id", "name", "slug"},
+ *
  *     @OA\Property(
  *         property="id",
  *         type="integer",
@@ -54,7 +55,7 @@ class Tag extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','slug'];
+    protected $fillable = ['name', 'slug'];
 
     protected static function booted(): void
     {

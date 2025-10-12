@@ -23,9 +23,9 @@ return new class extends Migration
             // constrained('table_name') создает внешний ключ на id указанной таблицы
             // onDelete('set null') указывает действие при удалении связанной категории
             $table->foreignId('category_id')
-                  ->nullable() // Разрешает NULL, так как в SQL-схеме category_id может быть NULL
-                  ->constrained('categories') // Ссылка на таблицу 'categories', столбец 'id'
-                  ->onDelete('set null'); // ON DELETE SET NULL
+                ->nullable() // Разрешает NULL, так как в SQL-схеме category_id может быть NULL
+                ->constrained('categories') // Ссылка на таблицу 'categories', столбец 'id'
+                ->onDelete('set null'); // ON DELETE SET NULL
 
             $table->timestamps(); // created_at и updated_at
 

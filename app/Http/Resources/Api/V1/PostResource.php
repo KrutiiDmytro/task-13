@@ -11,6 +11,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *     type="object",
  *     title="Post Resource",
  *     description="Ресурс поста для API ответов",
+ *
  *     @OA\Property(property="id", type="integer", example=1),
  *     @OA\Property(property="title", type="string", example="Заголовок поста"),
  *     @OA\Property(property="content", type="string", example="Содержание поста"),

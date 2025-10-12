@@ -2,12 +2,12 @@
 
 namespace Tests\Unit\Models;
 
-use Tests\TestCase;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class CommentTest extends TestCase
 {
@@ -36,14 +36,14 @@ class CommentTest extends TestCase
     }
 
     #[Test]
-    public function post_relationship_method_returns_belongsTo(): void
+    public function post_relationship_method_returns_belongs_to(): void
     {
         $post = Post::factory()->create();
         $comment = Comment::factory()->create(['post_id' => $post->id]);
 
         // ЯВНО вызываем метод post() для покрытия
         $postRelation = $comment->post();
-        
+
         $this->assertInstanceOf(\Illuminate\Database\Eloquent\Relations\BelongsTo::class, $postRelation);
         $this->assertEquals('App\Models\Post', $postRelation->getRelated()::class);
     }
@@ -59,14 +59,14 @@ class CommentTest extends TestCase
     }
 
     #[Test]
-    public function user_relationship_method_returns_belongsTo(): void
+    public function user_relationship_method_returns_belongs_to(): void
     {
         $user = User::factory()->create();
         $comment = Comment::factory()->create(['user_id' => $user->id]);
 
         // ЯВНО вызываем метод user() для покрытия
         $userRelation = $comment->user();
-        
+
         $this->assertInstanceOf(\Illuminate\Database\Eloquent\Relations\BelongsTo::class, $userRelation);
         $this->assertEquals('App\Models\User', $userRelation->getRelated()::class);
     }
@@ -102,11 +102,11 @@ class CommentTest extends TestCase
     public function it_has_correct_fillable_attributes(): void
     {
         $comment = new Comment();
-        
+
         $expectedFillable = [
-            'content', 'author_name', 'author_email', 'post_id', 'user_id'
+            'content', 'author_name', 'author_email', 'post_id', 'user_id',
         ];
-        
+
         $this->assertEquals($expectedFillable, $comment->getFillable());
     }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
 
 /**
@@ -15,6 +15,7 @@ use Illuminate\Support\Str;
  *     title="Post",
  *     description="Модель поста блога",
  *     required={"id", "title", "content", "category_id"},
+ *
  *     @OA\Property(
  *         property="id",
  *         type="integer",
@@ -103,12 +104,15 @@ use Illuminate\Support\Str;
  *         property="tags",
  *         type="array",
  *         description="Теги поста",
+ *
  *         @OA\Items(ref="#/components/schemas/Tag")
  *     ),
+ *
  *     @OA\Property(
  *         property="comments",
  *         type="array",
  *         description="Комментарии к посту",
+ *
  *         @OA\Items(ref="#/components/schemas/Comment")
  *     )
  * )
@@ -116,7 +120,7 @@ use Illuminate\Support\Str;
 class Post extends Model
 {
     use HasFactory;
-    
+
     //  Дозволені для масового присвоєння поля
     protected $fillable = [
         'title',
@@ -128,12 +132,12 @@ class Post extends Model
         'author_name',
         'author_email',
         'slug',
-        'published_at',          
+        'published_at',
     ];
 
     protected $casts = [
         'date' => 'date',
-        'published_at' => 'datetime', 
+        'published_at' => 'datetime',
     ];
 
     // Автоматическая генерация slug
@@ -142,7 +146,7 @@ class Post extends Model
         static::creating(function ($post) {
             if (empty($post->slug)) {
                 $post->slug = Str::slug($post->title);
-                
+
                 // Проверяем уникальность slug
                 $originalSlug = $post->slug;
                 $count = 1;
@@ -156,7 +160,7 @@ class Post extends Model
         static::updating(function ($post) {
             if ($post->isDirty('title') && empty($post->slug)) {
                 $post->slug = Str::slug($post->title);
-                
+
                 // Проверяем уникальность slug
                 $originalSlug = $post->slug;
                 $count = 1;
@@ -183,7 +187,7 @@ class Post extends Model
 
         return $query->where(function ($q) use ($term) {
             $q->where('title', 'like', "%{$term}%")
-              ->orWhere('content', 'like', "%{$term}%");
+                ->orWhere('content', 'like', "%{$term}%");
         });
     }
 

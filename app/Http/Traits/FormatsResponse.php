@@ -3,11 +3,9 @@
 namespace App\Http\Traits;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use SimpleXMLElement;
-use DOMDocument;
 
 trait FormatsResponse
 {
@@ -17,7 +15,7 @@ trait FormatsResponse
     protected function formatResponse($data, Request $request, int $statusCode = 200)
     {
         $format = $this->getResponseFormat($request);
-        
+
         switch ($format) {
             case 'xml':
                 return $this->xmlResponse($data, $statusCode, $request);
@@ -34,15 +32,15 @@ trait FormatsResponse
     {
         // Проверяем параметр format
         $format = strtolower(trim((string) $request->get('format', 'json')));
-        
+
         // Проверяем Accept заголовок
-        if (!$request->has('format')) {
+        if (! $request->has('format')) {
             $acceptHeader = $request->header('Accept', '');
             if (str_contains($acceptHeader, 'application/xml') || str_contains($acceptHeader, 'text/xml')) {
                 $format = 'xml';
             }
         }
-        
+
         return in_array($format, ['json', 'xml']) ? $format : 'json';
     }
 
@@ -54,14 +52,14 @@ trait FormatsResponse
         if ($data instanceof JsonResource || $data instanceof ResourceCollection) {
             return $data->response()->setStatusCode($statusCode);
         }
-        
+
         return response()->json($data, $statusCode);
     }
 
     /**
      * Возвращает XML ответ
      */
-    protected function xmlResponse($data, int $statusCode = 200, Request $request = null)
+    protected function xmlResponse($data, int $statusCode = 200, ?Request $request = null)
     {
         $request = $request ?: request();
         if ($data instanceof JsonResource || $data instanceof ResourceCollection) {
@@ -71,41 +69,44 @@ trait FormatsResponse
             $data = ['message' => 'No data'];
         }
         $xml = $this->arrayToXml($data, 'response', $request);
+
         return response($xml, $statusCode)->header('Content-Type', 'application/xml');
     }
 
     /**
      * Конвертирует массив в XML
      */
-    protected function arrayToXml($data, string $rootElement = 'response', Request $request = null): string
+    protected function arrayToXml($data, string $rootElement = 'response', ?Request $request = null): string
     {
         $request = $request ?: request();
         $xml = new SimpleXMLElement("<?xml version=\"1.0\" encoding=\"UTF-8\"?><{$rootElement}></{$rootElement}>");
-        
+
         if (is_array($data) || is_object($data)) {
             $this->arrayToXmlRecursive($data, $xml, $request);
         } else {
             $xml[0] = htmlspecialchars((string) $data);
         }
-        
+
         return $xml->asXML();
     }
 
     /**
      * Рекурсивно конвертирует массив в XML
      */
-    protected function arrayToXmlRecursive($data, SimpleXMLElement $xml, Request $request = null): void
+    protected function arrayToXmlRecursive($data, SimpleXMLElement $xml, ?Request $request = null): void
     {
         $request = $request ?: request();
 
         if ($data === null) {
             return;
         }
-        
+
         // Если это объект, конвертируем в массив
         if (is_object($data)) {
-            if ($data instanceof \Illuminate\Http\Resources\Json\JsonResource
-                || $data instanceof \Illuminate\Http\Resources\Json\ResourceCollection) {
+            if (
+                $data instanceof \Illuminate\Http\Resources\Json\JsonResource
+                || $data instanceof \Illuminate\Http\Resources\Json\ResourceCollection
+            ) {
                 $data = $data->toArray($request);
             } elseif (method_exists($data, 'toArray')) {
                 $data = $data->toArray();
@@ -113,9 +114,10 @@ trait FormatsResponse
                 $data = (array) $data;
             }
         }
-        
-        if (!is_array($data)) {
+
+        if (! is_array($data)) {
             $xml[0] = htmlspecialchars((string) $data);
+
             return;
         }
 
@@ -124,13 +126,14 @@ trait FormatsResponse
                 if (is_numeric($key)) {
                     $key = 'item';
                 }
-                
+
                 if ($this->isSequentialArray($value)) {
                     $collection = $xml->addChild($key . '_collection');
                     if (empty($value)) {
                         // Добавляем пустой текстовый узел, чтобы создать парные теги
                         $dom = dom_import_simplexml($collection);
                         $dom->appendChild($dom->ownerDocument->createTextNode(''));
+
                         continue;
                     }
                     foreach ($value as $item) {
@@ -151,8 +154,10 @@ trait FormatsResponse
                 } elseif (is_object($value)) {
                     if (method_exists($value, 'toArray')) {
                         $child = $xml->addChild($key);
-                        if ($value instanceof \Illuminate\Http\Resources\Json\JsonResource
-                            || $value instanceof \Illuminate\Http\Resources\Json\ResourceCollection) {
+                        if (
+                            $value instanceof \Illuminate\Http\Resources\Json\JsonResource
+                            || $value instanceof \Illuminate\Http\Resources\Json\ResourceCollection
+                        ) {
                             $this->arrayToXmlRecursive($value->toArray($request), $child, $request);
                         } else {
                             $this->arrayToXmlRecursive($value->toArray(), $child, $request);
@@ -177,6 +182,7 @@ trait FormatsResponse
         if (empty($array)) {
             return true;
         }
+
         return array_keys($array) === range(0, count($array) - 1);
     }
 
@@ -187,9 +193,9 @@ trait FormatsResponse
     {
         $data = [
             'message' => 'Validation failed',
-            'errors' => $errors
+            'errors' => $errors,
         ];
-        
+
         return $this->formatResponse($data, $request, $statusCode);
     }
 
@@ -200,9 +206,9 @@ trait FormatsResponse
     {
         $data = array_merge([
             'message' => $message,
-            'status' => $statusCode
+            'status' => $statusCode,
         ], $additionalData);
-        
+
         return $this->formatResponse($data, $request, $statusCode);
     }
 
@@ -213,9 +219,9 @@ trait FormatsResponse
     {
         $data = array_merge([
             'message' => $message,
-            'status' => $statusCode
+            'status' => $statusCode,
         ], $additionalData);
-        
+
         return $this->formatResponse($data, $request, $statusCode);
     }
 }

@@ -2,15 +2,15 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\ServiceProvider;
-use App\Services\PostService;
-use App\Services\CategoryService;
-use App\Services\TagService;
-use App\Services\CommentService;
-use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AdminMiddleware;
+use App\Services\CategoryService;
+use App\Services\CommentService;
+use App\Services\PostService;
+use App\Services\TagService;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
             return new TagService();
         });
 
-         $this->app->singleton(CommentService::class, function ($app) {
+        $this->app->singleton(CommentService::class, function ($app) {
             return new CommentService();
         });
     }
@@ -44,7 +44,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
-         // реєстрація кастомного middleware під псевдонімом 'admin'
+        // реєстрація кастомного middleware під псевдонімом 'admin'
         Route::aliasMiddleware('admin', AdminMiddleware::class);
 
         Paginator::useBootstrapFive();

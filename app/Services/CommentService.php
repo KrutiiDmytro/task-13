@@ -17,9 +17,9 @@ class CommentService
     {
         return Comment::create([
             'author_name' => $data['author'] ?? $data['author_name'] ?? null,
-            'author_email'=> $data['author_email'] ?? null,
-            'content'     => $data['content'],
-            'post_id'     => $data['post_id'],
+            'author_email' => $data['author_email'] ?? null,
+            'content' => $data['content'],
+            'post_id' => $data['post_id'],
         ]);
     }
 
@@ -27,10 +27,11 @@ class CommentService
     {
         $comment->update([
             'author_name' => $data['author'] ?? $data['author_name'] ?? $comment->author_name,
-            'author_email'=> $data['author_email'] ?? $comment->author_email,
-            'content'     => $data['content'] ?? $comment->content,
-            'post_id'     => $data['post_id'] ?? $comment->post_id,
+            'author_email' => $data['author_email'] ?? $comment->author_email,
+            'content' => $data['content'] ?? $comment->content,
+            'post_id' => $data['post_id'] ?? $comment->post_id,
         ]);
+
         return $comment;
     }
 

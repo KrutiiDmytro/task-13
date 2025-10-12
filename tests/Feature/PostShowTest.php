@@ -1,13 +1,15 @@
 <?php
+
 // tests/Feature/PostShowTest.php
+
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\UploadedFile;
 use App\Models\Post;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Tests\TestCase;
 
 class PostShowTest extends TestCase
 {
@@ -29,6 +31,6 @@ class PostShowTest extends TestCase
         ]);
 
         $res = $this->get(route('posts.show', $post));
-        $res->assertOk()->assertSee('/storage/'.$path)->assertSee('Просмотр');
+        $res->assertOk()->assertSee('/storage/' . $path)->assertSee('Просмотр');
     }
 }

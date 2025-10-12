@@ -32,38 +32,49 @@ class CategoryController extends Controller
      *     summary="Получить список категорий",
      *     description="Возвращает список всех категорий с количеством постов",
      *     tags={"Categories"},
+     *
      *     @OA\Parameter(
      *         name="page",
      *         in="query",
      *         description="Номер страницы",
      *         required=false,
+     *
      *         @OA\Schema(type="integer", example=1)
      *     ),
+     *
      *     @OA\Parameter(
      *         name="per_page",
      *         in="query",
      *         description="Количество категорий на странице",
      *         required=false,
+     *
      *         @OA\Schema(type="integer", example=10)
      *     ),
+     *
      *     @OA\Parameter(
      *         name="search",
      *         in="query",
      *         description="Поиск по названию категории",
      *         required=false,
+     *
      *         @OA\Schema(type="string", example="Технологии")
      *     ),
+     *
      *     @OA\Parameter(
      *         name="format",
      *         in="query",
      *         description="Формат ответа (json или xml)",
      *         required=false,
+     *
      *         @OA\Schema(type="string", enum={"json", "xml"}, example="json")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Успешный ответ",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/Category")),
      *             @OA\Property(property="links", type="object"),
      *             @OA\Property(property="meta", type="object")
@@ -92,7 +103,7 @@ class CategoryController extends Controller
                 foreach ($categories->getCollection() as $category) {
                     $categoriesData[] = (new \App\Http\Resources\Api\V1\CategoryResource($category))->toArray($request);
                 }
-                
+
                 $data = [
                     'data' => $categoriesData,
                     'meta' => [
@@ -103,6 +114,7 @@ class CategoryController extends Controller
                         'total_pages' => (int) $categories->lastPage(),
                     ],
                 ];
+
                 return $this->formatResponse($data, $request);
             }
 
@@ -119,27 +131,35 @@ class CategoryController extends Controller
      *     description="Создает новую категорию",
      *     tags={"Categories"},
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Parameter(
      *         name="format",
      *         in="query",
      *         description="Формат ответа (json или xml)",
      *         required=false,
+     *
      *         @OA\Schema(type="string", enum={"json", "xml"}, example="json")
      *     ),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"name"},
+     *
      *             @OA\Property(property="name", type="string", example="Технологии"),
      *             @OA\Property(property="description", type="string", nullable=true, example="Описание категории"),
      *             @OA\Property(property="slug", type="string", nullable=true, example="technologies")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=201,
      *         description="Категория успешно создана",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Category")
      *     ),
+     *
      *     @OA\Response(
      *         response=422,
      *         description="Ошибка валидации"
@@ -163,8 +183,8 @@ class CategoryController extends Controller
             $category = app(\App\Models\Category::class)->create($validated);
 
             return $this->formatResponse(
-                new CategoryResource($category->loadCount('posts')), 
-                $request, 
+                new CategoryResource($category->loadCount('posts')),
+                $request,
                 201
             );
         } catch (ValidationException $e) {
@@ -180,32 +200,41 @@ class CategoryController extends Controller
      *     summary="Получить категорию по ID",
      *     description="Возвращает конкретную категорию с количеством постов",
      *     tags={"Categories"},
+     *
      *     @OA\Parameter(
      *         name="category",
      *         in="path",
      *         description="ID категории",
      *         required=true,
+     *
      *         @OA\Schema(type="integer", example=1)
      *     ),
+     *
      *     @OA\Parameter(
      *         name="include_posts",
      *         in="query",
      *         description="Включить список постов категории",
      *         required=false,
+     *
      *         @OA\Schema(type="boolean", example=false)
      *     ),
+     *
      *     @OA\Parameter(
      *         name="format",
      *         in="query",
      *         description="Формат ответа (json или xml)",
      *         required=false,
+     *
      *         @OA\Schema(type="string", enum={"json", "xml"}, example="json")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Успешный ответ",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Category")
      *     ),
+     *
      *     @OA\Response(
      *         response=404,
      *         description="Категория не найдена"
@@ -237,34 +266,44 @@ class CategoryController extends Controller
      *     description="Обновляет существующую категорию",
      *     tags={"Categories"},
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Parameter(
      *         name="category",
      *         in="path",
      *         description="ID категории",
      *         required=true,
+     *
      *         @OA\Schema(type="integer", example=1)
      *     ),
+     *
      *     @OA\Parameter(
      *         name="format",
      *         in="query",
      *         description="Формат ответа (json или xml)",
      *         required=false,
+     *
      *         @OA\Schema(type="string", enum={"json", "xml"}, example="json")
      *     ),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"name"},
+     *
      *             @OA\Property(property="name", type="string", example="Обновленное название"),
      *             @OA\Property(property="description", type="string", nullable=true, example="Обновленное описание"),
      *             @OA\Property(property="slug", type="string", nullable=true, example="updated-slug")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Категория успешно обновлена",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Category")
      *     ),
+     *
      *     @OA\Response(
      *         response=404,
      *         description="Категория не найдена"
@@ -292,7 +331,7 @@ class CategoryController extends Controller
             $category->update($validated);
 
             return $this->formatResponse(
-                new CategoryResource($category->loadCount('posts')), 
+                new CategoryResource($category->loadCount('posts')),
                 $request
             );
         } catch (ValidationException $e) {
@@ -309,20 +348,25 @@ class CategoryController extends Controller
      *     description="Удаляет категорию по ID (только если нет связанных постов)",
      *     tags={"Categories"},
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Parameter(
      *         name="category",
      *         in="path",
      *         description="ID категории",
      *         required=true,
+     *
      *         @OA\Schema(type="integer", example=1)
      *     ),
+     *
      *     @OA\Parameter(
      *         name="format",
      *         in="query",
      *         description="Формат ответа (json или xml)",
      *         required=false,
+     *
      *         @OA\Schema(type="string", enum={"json", "xml"}, example="json")
      *     ),
+     *
      *     @OA\Response(
      *         response=204,
      *         description="Категория успешно удалена"
@@ -345,8 +389,8 @@ class CategoryController extends Controller
 
             if ($categoryToDelete->posts()->count() > 0) {
                 return $this->formatErrorResponse(
-                    'Нельзя удалить категорию с постами', 
-                    $request, 
+                    'Нельзя удалить категорию с постами',
+                    $request,
                     409
                 );
             }
@@ -356,7 +400,7 @@ class CategoryController extends Controller
             if ($this->getResponseFormat($request) === 'xml') {
                 return response('', 204)->header('Content-Type', 'application/xml');
             }
-            
+
             return response()->json(null, 204);
         } catch (\Exception $e) {
             return $this->formatErrorResponse('Ошибка при удалении категории', $request, 500);

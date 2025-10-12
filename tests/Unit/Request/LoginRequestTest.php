@@ -2,17 +2,17 @@
 
 namespace Tests\Unit\Http\Requests\Auth;
 
-use Tests\TestCase;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
+use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Validation\ValidationException;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class LoginRequestTest extends TestCase
 {
@@ -21,7 +21,7 @@ class LoginRequestTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Очищаем rate limiter перед каждым тестом
         RateLimiter::clear('test@example.com|127.0.0.1');
     }
@@ -30,7 +30,7 @@ class LoginRequestTest extends TestCase
     public function authorize_returns_true(): void
     {
         $request = new LoginRequest();
-        
+
         $this->assertTrue($request->authorize());
     }
 
@@ -38,9 +38,9 @@ class LoginRequestTest extends TestCase
     public function rules_returns_correct_validation_rules(): void
     {
         $request = new LoginRequest();
-        
+
         $rules = $request->rules();
-        
+
         $this->assertArrayHasKey('email', $rules);
         $this->assertArrayHasKey('password', $rules);
         $this->assertContains('required', $rules['email']);
@@ -55,17 +55,17 @@ class LoginRequestTest extends TestCase
     {
         $user = User::factory()->create([
             'email' => 'test@example.com',
-            'password' => Hash::make('password123')
+            'password' => Hash::make('password123'),
         ]);
 
         $request = LoginRequest::create('/login', 'POST', [
             'email' => 'test@example.com',
-            'password' => 'password123'
+            'password' => 'password123',
         ]);
 
         // Аутентификация должна пройти без исключений
         $request->authenticate();
-        
+
         // Проверяем, что пользователь аутентифицирован
         $this->assertTrue(Auth::check());
         $this->assertEquals($user->id, Auth::id());
@@ -76,18 +76,18 @@ class LoginRequestTest extends TestCase
     {
         User::factory()->create([
             'email' => 'test@example.com',
-            'password' => Hash::make('correct-password')
+            'password' => Hash::make('correct-password'),
         ]);
 
         $request = LoginRequest::create('/login', 'POST', [
             'email' => 'test@example.com',
-            'password' => 'wrong-password'
+            'password' => 'wrong-password',
         ]);
 
         $this->expectException(ValidationException::class);
-        
+
         $request->authenticate();
-        
+
         // Проверяем, что пользователь НЕ аутентифицирован
         $this->assertFalse(Auth::check());
     }
@@ -97,13 +97,13 @@ class LoginRequestTest extends TestCase
     {
         $request = LoginRequest::create('/login', 'POST', [
             'email' => 'nonexistent@example.com',
-            'password' => 'password123'
+            'password' => 'password123',
         ]);
 
         $this->expectException(ValidationException::class);
-        
+
         $request->authenticate();
-        
+
         $this->assertFalse(Auth::check());
     }
 
@@ -112,17 +112,17 @@ class LoginRequestTest extends TestCase
     {
         $user = User::factory()->create([
             'email' => 'test@example.com',
-            'password' => Hash::make('password123')
+            'password' => Hash::make('password123'),
         ]);
 
         $request = LoginRequest::create('/login', 'POST', [
             'email' => 'test@example.com',
             'password' => 'password123',
-            'remember' => '1'
+            'remember' => '1',
         ]);
 
         $request->authenticate();
-        
+
         $this->assertTrue(Auth::check());
         $this->assertEquals($user->id, Auth::id());
     }
@@ -132,12 +132,12 @@ class LoginRequestTest extends TestCase
     {
         User::factory()->create([
             'email' => 'test@example.com',
-            'password' => Hash::make('correct-password')
+            'password' => Hash::make('correct-password'),
         ]);
 
         $request = LoginRequest::create('/login', 'POST', [
             'email' => 'test@example.com',
-            'password' => 'wrong-password'
+            'password' => 'wrong-password',
         ], [], [], ['REMOTE_ADDR' => '127.0.0.1']);
 
         try {
@@ -155,12 +155,12 @@ class LoginRequestTest extends TestCase
     {
         $user = User::factory()->create([
             'email' => 'test@example.com',
-            'password' => Hash::make('password123')
+            'password' => Hash::make('password123'),
         ]);
 
         $request = LoginRequest::create('/login', 'POST', [
             'email' => 'test@example.com',
-            'password' => 'password123'
+            'password' => 'password123',
         ], [], [], ['REMOTE_ADDR' => '127.0.0.1']);
 
         // Сначала добавляем попытку в rate limiter
@@ -169,7 +169,7 @@ class LoginRequestTest extends TestCase
 
         // Успешная аутентификация должна очистить rate limiter
         $request->authenticate();
-        
+
         $this->assertEquals(0, RateLimiter::attempts($request->throttleKey()));
     }
 
@@ -178,7 +178,7 @@ class LoginRequestTest extends TestCase
     {
         $request = LoginRequest::create('/login', 'POST', [
             'email' => 'test@example.com',
-            'password' => 'password123'
+            'password' => 'password123',
         ], [], [], ['REMOTE_ADDR' => '127.0.0.1']);
 
         // Добавляем 4 попытки (меньше лимита в 5)
@@ -188,7 +188,7 @@ class LoginRequestTest extends TestCase
 
         // Не должно быть исключения
         $request->ensureIsNotRateLimited();
-        
+
         $this->assertTrue(true); // Тест прошел, если дошли до этой точки
     }
 
@@ -196,10 +196,10 @@ class LoginRequestTest extends TestCase
     public function ensure_is_not_rate_limited_throws_exception_when_over_limit(): void
     {
         Event::fake([Lockout::class]);
-        
+
         $request = LoginRequest::create('/login', 'POST', [
             'email' => 'test@example.com',
-            'password' => 'password123'
+            'password' => 'password123',
         ], [], [], ['REMOTE_ADDR' => '127.0.0.1']);
 
         // Добавляем 5 попыток (достигаем лимита)
@@ -208,7 +208,7 @@ class LoginRequestTest extends TestCase
         }
 
         $this->expectException(ValidationException::class);
-        
+
         $request->ensureIsNotRateLimited();
     }
 
@@ -216,10 +216,10 @@ class LoginRequestTest extends TestCase
     public function ensure_is_not_rate_limited_fires_lockout_event(): void
     {
         Event::fake([Lockout::class]);
-        
+
         $request = LoginRequest::create('/login', 'POST', [
             'email' => 'test@example.com',
-            'password' => 'password123'
+            'password' => 'password123',
         ], [], [], ['REMOTE_ADDR' => '127.0.0.1']);
 
         // Добавляем 5 попыток
@@ -242,7 +242,7 @@ class LoginRequestTest extends TestCase
     {
         $request = LoginRequest::create('/login', 'POST', [
             'email' => 'test@example.com',
-            'password' => 'password123'
+            'password' => 'password123',
         ], [], [], ['REMOTE_ADDR' => '127.0.0.1']);
 
         // Добавляем 5 попыток
@@ -268,7 +268,7 @@ class LoginRequestTest extends TestCase
         ], [], [], ['REMOTE_ADDR' => '192.168.1.1']);
 
         $throttleKey = $request->throttleKey();
-        
+
         // Ключ должен содержать email в нижнем регистре и IP
         $this->assertEquals('test@example.com|192.168.1.1', $throttleKey);
     }
@@ -281,7 +281,7 @@ class LoginRequestTest extends TestCase
         ], [], [], ['REMOTE_ADDR' => '127.0.0.1']);
 
         $throttleKey = $request->throttleKey();
-        
+
         // Проверяем, что специальные символы транслитерируются
         $this->assertStringContainsString('test@example.com|127.0.0.1', $throttleKey);
     }
@@ -291,12 +291,12 @@ class LoginRequestTest extends TestCase
     {
         $user = User::factory()->create([
             'email' => 'test@example.com',
-            'password' => Hash::make('correct-password')
+            'password' => Hash::make('correct-password'),
         ]);
 
         $request = LoginRequest::create('/login', 'POST', [
             'email' => 'test@example.com',
-            'password' => 'wrong-password'
+            'password' => 'wrong-password',
         ], [], [], ['REMOTE_ADDR' => '127.0.0.1']);
 
         // Делаем 4 неудачные попытки
@@ -319,11 +319,11 @@ class LoginRequestTest extends TestCase
         // Тест валидации через создание реального запроса
         $request = LoginRequest::create('/login', 'POST', [
             'email' => 'invalid-email',
-            'password' => ''
+            'password' => '',
         ]);
 
         $validator = \Validator::make($request->all(), $request->rules());
-        
+
         $this->assertTrue($validator->fails());
         $this->assertArrayHasKey('email', $validator->errors()->toArray());
         $this->assertArrayHasKey('password', $validator->errors()->toArray());
@@ -333,7 +333,7 @@ class LoginRequestTest extends TestCase
     public function class_instantiation_works(): void
     {
         $request = new LoginRequest();
-        
+
         $this->assertInstanceOf(LoginRequest::class, $request);
         $this->assertInstanceOf(\Illuminate\Foundation\Http\FormRequest::class, $request);
     }

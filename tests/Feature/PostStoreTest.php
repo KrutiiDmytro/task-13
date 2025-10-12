@@ -2,14 +2,13 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\UploadedFile;
-use Tests\TestCase;
-use App\Models\Post;
+use App\Models\Category;
 use App\Models\Tag;
 use App\Models\User;
-use App\Models\Category;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Tests\TestCase;
 
 class PostStoreTest extends TestCase
 {
@@ -24,16 +23,16 @@ class PostStoreTest extends TestCase
         $cat = Category::create(['name' => 'PHP']);
         $file = UploadedFile::fake()->image('cover.jpg', 1200, 675);
 
-        $existing = Tag::create(['name' => 'CSS']); 
+        $existing = Tag::create(['name' => 'CSS']);
 
         $res = $this->post(route('posts.store'), [
-            'title'       => 'Новый пост',
-            'content'     => 'Текст',
+            'title' => 'Новый пост',
+            'content' => 'Текст',
             'category_id' => $cat->id,
             'author_name' => 'Test Author',
             'author_email' => 'test@example.com',
-            'tags'        => ['API', $existing->id], 
-            'image'       => $file,
+            'tags' => ['API', $existing->id],
+            'image' => $file,
         ]);
 
         $res->assertRedirect();
@@ -42,7 +41,7 @@ class PostStoreTest extends TestCase
     public function test_guest_cannot_create_post(): void
     {
         $category = Category::factory()->create();
-        
+
         $response = $this->post(route('posts.store'), [
             'title' => 'От гостя',
             'content' => 'Контент',
@@ -53,7 +52,7 @@ class PostStoreTest extends TestCase
 
         // Гости должны быть перенаправлены на страницу логина
         $response->assertRedirect('/login');
-        
+
         // Пост не должен быть создан
         $this->assertDatabaseMissing('posts', [
             'title' => 'От гостя',
