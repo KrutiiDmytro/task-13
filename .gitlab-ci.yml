@@ -22,7 +22,7 @@ variables:
 # Установка зависимостей перед каждым job
 before_script:
   - apt-get update -qq
-      - apt-get install -y -qq git curl libzip-dev zip unzip nodejs npm libpng-dev libjpeg-dev libfreetype6-dev
+  - apt-get install -y -qq git curl libzip-dev zip unzip nodejs npm
   - docker-php-ext-install pdo_mysql zip
   - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
   - composer install --prefer-dist --no-ansi --no-interaction --no-progress
@@ -32,7 +32,7 @@ phpunit:
   stage: test
   before_script:
     - apt-get update -qq
-    - apt-get install -y -qq git curl libzip-dev zip unzip nodejs npm
+    - apt-get install -y -qq git curl libzip-dev zip unzip nodejs npm pkg-config libpng-dev libjpeg-dev libfreetype6-dev
     - docker-php-ext-configure gd --with-freetype --with-jpeg
     - docker-php-ext-install pdo_mysql zip gd
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
