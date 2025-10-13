@@ -81,10 +81,10 @@ pint:
 # Job: SonarQube анализ
 sonarcloud:
   stage: sonar
+  before_script: []
   image: 
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
-    before_script: []
   dependencies:
     - phpunit
     - phpcs
