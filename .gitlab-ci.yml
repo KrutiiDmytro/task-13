@@ -23,7 +23,7 @@ before_script:
   - apt-get install -y -qq git curl libzip-dev zip unzip
   - docker-php-ext-install pdo_mysql zip
   - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-  - composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-dev
+  - composer install --prefer-dist --no-ansi --no-interaction --no-progress
 
 # Job: Запуск PHPUnit тестов с coverage
 phpunit:
