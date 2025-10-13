@@ -86,7 +86,7 @@ class UserController extends Controller
             $user->update(['password' => bcrypt($data['password'])]);
         }
 
-        // Обновляем роли
+        // Обновляем Pоли
         if (isset($data['roles'])) {
             $user->syncRoles($data['roles']);
         } else {
