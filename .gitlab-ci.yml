@@ -84,6 +84,7 @@ sonarcloud:
   image: 
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
+    before_script: []
   dependencies:
     - phpunit
     - phpcs
