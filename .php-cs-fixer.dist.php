@@ -6,7 +6,7 @@ $finder = PhpCsFixer\Finder::create()
         __DIR__ . '/config',
         __DIR__ . '/database',
         __DIR__ . '/routes',
-        __DIR__ . '/test',
+        __DIR__ . '/tests',
         ])
         ->name('*.php')
         ->notName('*.blade.php')
