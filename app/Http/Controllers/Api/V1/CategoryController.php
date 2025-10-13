@@ -318,9 +318,9 @@ class CategoryController extends Controller
     {
         try {
             $validated = $request->validate([
-                'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
+                'name' => 'required|string|max:255|unique:categories,name,'.$category->id,
                 'description' => 'nullable|string|max:500',
-                'slug' => 'nullable|string|max:255|unique:categories,slug,' . $category->id,
+                'slug' => 'nullable|string|max:255|unique:categories,slug,'.$category->id,
             ]);
 
             // Автогенерация slug если не указан

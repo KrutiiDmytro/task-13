@@ -128,7 +128,7 @@ trait FormatsResponse
                 }
 
                 if ($this->isSequentialArray($value)) {
-                    $collection = $xml->addChild($key . '_collection');
+                    $collection = $xml->addChild($key.'_collection');
                     if (empty($value)) {
                         // Добавляем пустой текстовый узел, чтобы создать парные теги
                         $dom = dom_import_simplexml($collection);

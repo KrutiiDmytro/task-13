@@ -40,7 +40,7 @@ class CommentTest extends TestCase
 
     public function test_comment_validation_rules()
     {
-        $comment = new Comment();
+        $comment = new Comment;
 
         $this->assertContains('author_name', $comment->getFillable());
         $this->assertContains('author_email', $comment->getFillable());

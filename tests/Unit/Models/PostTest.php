@@ -16,7 +16,7 @@ class PostTest extends TestCase
     #[Test]
     public function it_has_correct_casts(): void
     {
-        $post = new Post();
+        $post = new Post;
 
         $casts = $post->getCasts();
 
@@ -53,7 +53,7 @@ class PostTest extends TestCase
     #[Test]
     public function model_has_timestamps(): void
     {
-        $post = new Post();
+        $post = new Post;
 
         // Проверяем, что модель использует timestamps
         $this->assertTrue($post->usesTimestamps(), 'Post model should use timestamps');

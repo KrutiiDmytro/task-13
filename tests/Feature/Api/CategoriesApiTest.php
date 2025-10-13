@@ -45,7 +45,7 @@ class CategoriesApiTest extends ApiTestCase
         Category::factory()->create(['name' => 'Vue.js Library']);
         Category::factory()->create(['name' => 'PHP Language']);
 
-        $response = $this->getJson($this->getResourceUrl() . '?search=Laravel');
+        $response = $this->getJson($this->getResourceUrl().'?search=Laravel');
 
         $response->assertOk();
         $data = $response->json('data');
@@ -58,7 +58,7 @@ class CategoriesApiTest extends ApiTestCase
     {
         Category::factory()->count(15)->create();
 
-        $response = $this->getJson($this->getResourceUrl() . '?per_page=5');
+        $response = $this->getJson($this->getResourceUrl().'?per_page=5');
 
         $response->assertOk();
         $data = $response->json('data');
@@ -100,7 +100,7 @@ class CategoriesApiTest extends ApiTestCase
     {
         Category::factory()->count(3)->create();
 
-        $response = $this->get($this->getResourceUrl() . '?format=xml', ['Accept' => 'application/xml']);
+        $response = $this->get($this->getResourceUrl().'?format=xml', ['Accept' => 'application/xml']);
 
         $response->assertOk();
         $this->assertStringContainsString('application/xml', $response->headers->get('Content-Type'));
@@ -202,7 +202,7 @@ class CategoriesApiTest extends ApiTestCase
     {
         $payload = $this->createResourceData();
 
-        $response = $this->post($this->getResourceUrl() . '?format=xml', $payload, ['Accept' => 'application/xml']);
+        $response = $this->post($this->getResourceUrl().'?format=xml', $payload, ['Accept' => 'application/xml']);
 
         $response->assertCreated();
         $this->assertStringContainsString('application/xml', $response->headers->get('Content-Type'));
@@ -249,7 +249,7 @@ class CategoriesApiTest extends ApiTestCase
         $category = Category::factory()->create();
         $posts = Post::factory()->count(2)->create(['category_id' => $category->id]);
 
-        $response = $this->getJson($this->getResourceUrl($category->id) . '?include_posts=true');
+        $response = $this->getJson($this->getResourceUrl($category->id).'?include_posts=true');
 
         $response->assertOk()
             ->assertJsonStructure([
@@ -271,7 +271,7 @@ class CategoriesApiTest extends ApiTestCase
     {
         $category = Category::factory()->create();
 
-        $response = $this->get($this->getResourceUrl($category->id) . '?format=xml', ['Accept' => 'application/xml']);
+        $response = $this->get($this->getResourceUrl($category->id).'?format=xml', ['Accept' => 'application/xml']);
 
         $response->assertOk();
         $this->assertStringContainsString('application/xml', $response->headers->get('Content-Type'));
@@ -301,7 +301,7 @@ class CategoriesApiTest extends ApiTestCase
         $category = Category::factory()->create();
         $post = Post::factory()->create(['category_id' => $category->id]);
 
-        $response = $this->getJson($this->getResourceUrl($category->id) . '?include_posts=true');
+        $response = $this->getJson($this->getResourceUrl($category->id).'?include_posts=true');
 
         $response->assertOk()
             ->assertJsonStructure([
@@ -324,7 +324,7 @@ class CategoriesApiTest extends ApiTestCase
     {
         $category = Category::factory()->create();
 
-        $response = $this->get($this->getResourceUrl($category->id) . '?format=xml', ['Accept' => 'application/xml']);
+        $response = $this->get($this->getResourceUrl($category->id).'?format=xml', ['Accept' => 'application/xml']);
 
         $response->assertOk();
         $this->assertStringContainsString('application/xml', $response->headers->get('Content-Type'));
@@ -383,7 +383,7 @@ class CategoriesApiTest extends ApiTestCase
             'description' => 'Updated XML Description',
         ];
 
-        $response = $this->put($this->getResourceUrl($category->id) . '?format=xml', $updateData, ['Accept' => 'application/xml']);
+        $response = $this->put($this->getResourceUrl($category->id).'?format=xml', $updateData, ['Accept' => 'application/xml']);
 
         $response->assertOk();
         $this->assertStringContainsString('application/xml', $response->headers->get('Content-Type'));
@@ -431,7 +431,7 @@ class CategoriesApiTest extends ApiTestCase
         $category = Category::factory()->create();
 
         $response = $this->put(
-            $this->getResourceUrl($category->id) . '?format=xml',
+            $this->getResourceUrl($category->id).'?format=xml',
             ['name' => ''], // Пустое имя вызовет ошибку валидации
             ['Accept' => 'application/xml']
         );
@@ -472,7 +472,7 @@ class CategoriesApiTest extends ApiTestCase
         $category = Category::factory()->create();
 
         $response = $this->delete(
-            $this->getResourceUrl($category->id) . '?format=xml',
+            $this->getResourceUrl($category->id).'?format=xml',
             [],
             ['Accept' => 'application/xml']
         );
@@ -493,7 +493,7 @@ class CategoriesApiTest extends ApiTestCase
         Post::factory()->create(['category_id' => $category->id]);
 
         $response = $this->delete(
-            $this->getResourceUrl($category->id) . '?format=xml',
+            $this->getResourceUrl($category->id).'?format=xml',
             [],
             ['Accept' => 'application/xml']
         );
@@ -535,7 +535,7 @@ class CategoriesApiTest extends ApiTestCase
     #[Test]
     public function constructor_applies_auth_middleware_correctly(): void
     {
-        $controller = new \App\Http\Controllers\Api\V1\CategoryController();
+        $controller = new \App\Http\Controllers\Api\V1\CategoryController;
 
         // Проверим, что контроллер создан корректно
         $this->assertInstanceOf(\App\Http\Controllers\Api\V1\CategoryController::class, $controller);
@@ -724,8 +724,8 @@ class CategoriesApiTest extends ApiTestCase
             $mock->shouldReceive('loadCount')->andThrow(new \Exception('Database error'));
         });
 
-        $controller = new \App\Http\Controllers\Api\V1\CategoryController();
-        $request = \Illuminate\Http\Request::create('/api/v1/categories/' . $category->id, 'GET');
+        $controller = new \App\Http\Controllers\Api\V1\CategoryController;
+        $request = \Illuminate\Http\Request::create('/api/v1/categories/'.$category->id, 'GET');
 
         $response = $controller->show($request, $mockCategory);
 
@@ -747,8 +747,8 @@ class CategoriesApiTest extends ApiTestCase
             $mock->shouldReceive('update')->andThrow(new \Exception('Database error'));
         });
 
-        $controller = new \App\Http\Controllers\Api\V1\CategoryController();
-        $request = \Illuminate\Http\Request::create('/api/v1/categories/' . $category->id, 'PUT');
+        $controller = new \App\Http\Controllers\Api\V1\CategoryController;
+        $request = \Illuminate\Http\Request::create('/api/v1/categories/'.$category->id, 'PUT');
         $request->merge([
             'name' => 'Updated Name',
             'description' => 'Updated Description',
@@ -772,7 +772,7 @@ class CategoriesApiTest extends ApiTestCase
         $post->tags()->attach($tag);
 
         // Тестируем с include_posts=true для полного покрытия
-        $response = $this->getJson($this->getResourceUrl($category->id) . '?include_posts=true');
+        $response = $this->getJson($this->getResourceUrl($category->id).'?include_posts=true');
 
         $response->assertOk()
             ->assertJsonStructure([

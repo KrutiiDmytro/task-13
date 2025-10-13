@@ -167,7 +167,7 @@ class EmailVerificationNotificationTest extends TestCase
     #[Test]
     public function controller_can_be_instantiated(): void
     {
-        $controller = new \App\Http\Controllers\Auth\EmailVerificationNotificationController();
+        $controller = new \App\Http\Controllers\Auth\EmailVerificationNotificationController;
 
         $this->assertInstanceOf(
             \App\Http\Controllers\Auth\EmailVerificationNotificationController::class,
@@ -178,7 +178,7 @@ class EmailVerificationNotificationTest extends TestCase
     #[Test]
     public function store_method_exists_and_returns_redirect_response(): void
     {
-        $controller = new \App\Http\Controllers\Auth\EmailVerificationNotificationController();
+        $controller = new \App\Http\Controllers\Auth\EmailVerificationNotificationController;
 
         $this->assertTrue(method_exists($controller, 'store'));
 

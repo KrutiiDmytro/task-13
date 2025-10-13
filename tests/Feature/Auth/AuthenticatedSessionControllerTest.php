@@ -243,7 +243,7 @@ class AuthenticatedSessionControllerTest extends TestCase
     #[Test]
     public function controller_can_be_instantiated(): void
     {
-        $controller = new \App\Http\Controllers\Auth\AuthenticatedSessionController();
+        $controller = new \App\Http\Controllers\Auth\AuthenticatedSessionController;
 
         $this->assertInstanceOf(
             \App\Http\Controllers\Auth\AuthenticatedSessionController::class,
@@ -254,7 +254,7 @@ class AuthenticatedSessionControllerTest extends TestCase
     #[Test]
     public function all_methods_return_correct_types(): void
     {
-        $controller = new \App\Http\Controllers\Auth\AuthenticatedSessionController();
+        $controller = new \App\Http\Controllers\Auth\AuthenticatedSessionController;
 
         // Тест create метода
         $createResponse = $controller->create();

@@ -116,7 +116,7 @@ class CategoryTest extends TestCase
     #[Test]
     public function it_has_correct_fillable_attributes(): void
     {
-        $category = new Category();
+        $category = new Category;
 
         $this->assertEquals(['name', 'description', 'slug'], $category->getFillable());
     }

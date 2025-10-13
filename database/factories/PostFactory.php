@@ -18,7 +18,7 @@ class PostFactory extends Factory
 
         return [
             'title' => $title,
-            'slug' => Str::slug($title) . '-' . $this->faker->unique()->randomNumber(4),
+            'slug' => Str::slug($title).'-'.$this->faker->unique()->randomNumber(4),
             'content' => $this->faker->paragraphs(3, true),
             'user_id' => User::factory(),
             'category_id' => Category::factory(),

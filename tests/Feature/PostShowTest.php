@@ -31,6 +31,6 @@ class PostShowTest extends TestCase
         ]);
 
         $res = $this->get(route('posts.show', $post));
-        $res->assertOk()->assertSee('/storage/' . $path)->assertSee('Просмотр');
+        $res->assertOk()->assertSee('/storage/'.$path)->assertSee('Просмотр');
     }
 }

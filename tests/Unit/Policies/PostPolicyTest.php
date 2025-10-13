@@ -18,7 +18,7 @@ class PostPolicyTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->policy = new PostPolicy();
+        $this->policy = new PostPolicy;
     }
 
     #[Test]

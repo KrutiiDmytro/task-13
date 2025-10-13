@@ -21,8 +21,8 @@ class PostService
         $search = $request->get('q') ?: $request->get('search') ?: $request->get('search_title');
         if (! empty($search)) {
             $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', '%' . $search . '%')
-                    ->orWhere('content', 'like', '%' . $search . '%');
+                $q->where('title', 'like', '%'.$search.'%')
+                    ->orWhere('content', 'like', '%'.$search.'%');
             });
         }
 

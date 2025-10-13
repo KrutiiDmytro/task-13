@@ -20,7 +20,7 @@ class PostServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->postService = new PostService();
+        $this->postService = new PostService;
     }
 
     public function test_get_filtered_posts_returns_paginated_posts()
@@ -28,7 +28,7 @@ class PostServiceTest extends TestCase
         // Создаем 15 постов
         Post::factory()->count(15)->create(['date' => now()->subDays(1)]);
         $latest = Post::factory()->create(['date' => now()]);
-        $request = new Request();
+        $request = new Request;
 
         $result = $this->postService->getFilteredPosts($request);
 

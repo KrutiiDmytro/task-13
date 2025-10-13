@@ -48,7 +48,7 @@ class TagControllerTest extends TestCase
     public function store_creates_tag_with_valid_data(): void
     {
         $tagData = [
-            'name' => 'Unique Test Tag ' . uniqid(), // Делаем имя уникальным
+            'name' => 'Unique Test Tag '.uniqid(), // Делаем имя уникальным
         ];
 
         $response = $this->post(route('tags.store'), $tagData);
@@ -99,7 +99,7 @@ class TagControllerTest extends TestCase
     public function update_modifies_tag_with_valid_data(): void
     {
         $tag = Tag::factory()->create();
-        $newName = 'Updated Tag Name ' . uniqid();
+        $newName = 'Updated Tag Name '.uniqid();
 
         $response = $this->put(route('tags.update', $tag), [
             'name' => $newName,
@@ -143,7 +143,7 @@ class TagControllerTest extends TestCase
     public function store_ajax_creates_tag(): void
     {
         $tagData = [
-            'name' => 'AJAX Test Tag ' . uniqid(),
+            'name' => 'AJAX Test Tag '.uniqid(),
         ];
 
         $response = $this->post(route('tags.store'), $tagData, [

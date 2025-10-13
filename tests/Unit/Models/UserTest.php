@@ -85,7 +85,7 @@ class UserTest extends TestCase
     #[Test]
     public function casts_method_returns_correct_array(): void
     {
-        $user = new User();
+        $user = new User;
 
         // ЯВНО вызываем метод casts() для покрытия
         $casts = $user->getCasts();
@@ -98,7 +98,7 @@ class UserTest extends TestCase
     #[Test]
     public function it_has_correct_fillable_attributes(): void
     {
-        $user = new User();
+        $user = new User;
 
         $this->assertEquals(['name', 'email', 'password', 'admin'], $user->getFillable());
     }
@@ -106,7 +106,7 @@ class UserTest extends TestCase
     #[Test]
     public function it_has_correct_hidden_attributes(): void
     {
-        $user = new User();
+        $user = new User;
 
         $this->assertEquals(['password', 'remember_token'], $user->getHidden());
     }

@@ -16,7 +16,7 @@ class FormatsResponseTest extends TestCase
     #[Test]
     public function it_returns_json_by_default(): void
     {
-        $request = new Request();
+        $request = new Request;
         $data = ['message' => 'test'];
 
         $response = $this->formatResponse($data, $request);
@@ -51,7 +51,7 @@ class FormatsResponseTest extends TestCase
     #[Test]
     public function get_response_format_detects_xml_from_accept_header(): void
     {
-        $request = new Request();
+        $request = new Request;
         $request->headers->set('Accept', 'application/xml');
 
         $format = $this->getResponseFormat($request);
@@ -62,7 +62,7 @@ class FormatsResponseTest extends TestCase
     #[Test]
     public function get_response_format_detects_xml_from_text_xml_header(): void
     {
-        $request = new Request();
+        $request = new Request;
         $request->headers->set('Accept', 'text/xml');
 
         $format = $this->getResponseFormat($request);
@@ -73,7 +73,7 @@ class FormatsResponseTest extends TestCase
     #[Test]
     public function get_response_format_defaults_to_json(): void
     {
-        $request = new Request();
+        $request = new Request;
 
         $format = $this->getResponseFormat($request);
 
@@ -238,7 +238,7 @@ class FormatsResponseTest extends TestCase
     #[Test]
     public function format_validation_errors_returns_422_status(): void
     {
-        $request = new Request();
+        $request = new Request;
         $errors = ['name' => ['Name is required'], 'email' => ['Email is invalid']];
 
         $response = $this->formatValidationErrors($errors, $request);
@@ -264,7 +264,7 @@ class FormatsResponseTest extends TestCase
     #[Test]
     public function format_validation_errors_uses_custom_status_code(): void
     {
-        $request = new Request();
+        $request = new Request;
         $errors = ['field' => ['Error message']];
 
         $response = $this->formatValidationErrors($errors, $request, 400);
@@ -275,7 +275,7 @@ class FormatsResponseTest extends TestCase
     #[Test]
     public function format_error_response_returns_error_structure(): void
     {
-        $request = new Request();
+        $request = new Request;
 
         $response = $this->formatErrorResponse('Something went wrong', $request, 500);
 
@@ -287,7 +287,7 @@ class FormatsResponseTest extends TestCase
     #[Test]
     public function format_error_response_includes_additional_data(): void
     {
-        $request = new Request();
+        $request = new Request;
         $additionalData = ['code' => 'ERR001', 'details' => 'Database connection failed'];
 
         $response = $this->formatErrorResponse('Error occurred', $request, 500, $additionalData);
@@ -312,7 +312,7 @@ class FormatsResponseTest extends TestCase
     #[Test]
     public function format_success_response_returns_success_structure(): void
     {
-        $request = new Request();
+        $request = new Request;
 
         $response = $this->formatSuccessResponse('Operation successful', $request);
 
@@ -324,7 +324,7 @@ class FormatsResponseTest extends TestCase
     #[Test]
     public function format_success_response_uses_custom_status_code(): void
     {
-        $request = new Request();
+        $request = new Request;
 
         $response = $this->formatSuccessResponse('Created successfully', $request, 201);
 
@@ -335,7 +335,7 @@ class FormatsResponseTest extends TestCase
     #[Test]
     public function format_success_response_includes_additional_data(): void
     {
-        $request = new Request();
+        $request = new Request;
         $additionalData = ['id' => 123, 'created_at' => '2023-12-01'];
 
         $response = $this->formatSuccessResponse('Created successfully', $request, 201, $additionalData);
@@ -465,7 +465,7 @@ class FormatsResponseTest extends TestCase
     public function array_to_xml_recursive_handles_json_resource(): void
     {
         // Создаем мок JsonResource с данными
-        $mockResource = new class (['resource_data' => 'test_value']) extends JsonResource
+        $mockResource = new class(['resource_data' => 'test_value']) extends JsonResource
         {
             public function toArray($request)
             {
@@ -485,7 +485,7 @@ class FormatsResponseTest extends TestCase
     public function array_to_xml_recursive_handles_resource_collection(): void
     {
         // Создаем мок ResourceCollection с данными
-        $mockCollection = new class ([]) extends ResourceCollection
+        $mockCollection = new class([]) extends ResourceCollection
         {
             public function toArray($request)
             {
@@ -570,7 +570,7 @@ class FormatsResponseTest extends TestCase
     public function json_response_handles_json_resource(): void
     {
         // Тестируем JsonResource в jsonResponse
-        $mockResource = new class (['test' => 'data']) extends JsonResource
+        $mockResource = new class(['test' => 'data']) extends JsonResource
         {
             public function toArray($request)
             {
@@ -588,7 +588,7 @@ class FormatsResponseTest extends TestCase
     public function json_response_handles_resource_collection(): void
     {
         // Тестируем ResourceCollection в jsonResponse
-        $mockCollection = new class ([]) extends ResourceCollection
+        $mockCollection = new class([]) extends ResourceCollection
         {
             public function toArray($request)
             {
@@ -606,7 +606,7 @@ class FormatsResponseTest extends TestCase
     public function xml_response_handles_json_resource(): void
     {
         // Тестируем JsonResource в xmlResponse
-        $mockResource = new class (['test' => 'data']) extends JsonResource
+        $mockResource = new class(['test' => 'data']) extends JsonResource
         {
             public function toArray($request)
             {
@@ -624,7 +624,7 @@ class FormatsResponseTest extends TestCase
     public function xml_response_handles_resource_collection(): void
     {
         // Тестируем ResourceCollection в xmlResponse
-        $mockCollection = new class ([]) extends ResourceCollection
+        $mockCollection = new class([]) extends ResourceCollection
         {
             public function toArray($request)
             {
@@ -662,7 +662,7 @@ class FormatsResponseTest extends TestCase
     public function array_to_xml_recursive_handles_objects_without_methods(): void
     {
         // Тестируем объекты без специальных методов (должны быть JSON-сериализованы)
-        $plainObject = new \stdClass();
+        $plainObject = new \stdClass;
         $plainObject->test = 'value';
 
         $data = ['json_object' => $plainObject];
@@ -697,7 +697,7 @@ class FormatsResponseTest extends TestCase
     #[Test]
     public function xml_response_handles_null_data(): void
     {
-        $request = new Request();
+        $request = new Request;
 
         // Покрывает строки 70-72 в xmlResponse
         $response = $this->xmlResponse(null, 200, $request);
@@ -710,7 +710,7 @@ class FormatsResponseTest extends TestCase
     #[Test]
     public function array_to_xml_handles_scalar_data(): void
     {
-        $request = new Request();
+        $request = new Request;
 
         // Покрывает строки 87-89 в arrayToXml
         $xml = $this->arrayToXml('simple string', 'response', $request);
@@ -722,7 +722,7 @@ class FormatsResponseTest extends TestCase
     #[Test]
     public function array_to_xml_handles_numeric_scalar(): void
     {
-        $request = new Request();
+        $request = new Request;
 
         // Покрывает строки 87-89 в arrayToXml для числового значения
         $xml = $this->arrayToXml(42, 'response', $request);
@@ -735,7 +735,7 @@ class FormatsResponseTest extends TestCase
     public function array_to_xml_recursive_handles_null_data(): void
     {
         $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><root></root>');
-        $request = new Request();
+        $request = new Request;
 
         // Покрывает строки 101-103 в arrayToXmlRecursive (early return для null)
         $this->arrayToXmlRecursive(null, $xml, $request);
@@ -748,7 +748,7 @@ class FormatsResponseTest extends TestCase
     public function array_to_xml_recursive_handles_non_array_non_object_data(): void
     {
         $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><root></root>');
-        $request = new Request();
+        $request = new Request;
 
         // Покрывает строки 117-120 в arrayToXmlRecursive
         $this->arrayToXmlRecursive('simple text', $xml, $request);
@@ -761,10 +761,10 @@ class FormatsResponseTest extends TestCase
     public function array_to_xml_recursive_handles_object_without_toarray_or_tostring(): void
     {
         $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><root></root>');
-        $request = new Request();
+        $request = new Request;
 
         // Создаем объект без методов toArray или __toString
-        $plainObject = new \stdClass();
+        $plainObject = new \stdClass;
         $plainObject->property = 'value';
 
         $data = ['plain_object' => $plainObject];
@@ -781,7 +781,7 @@ class FormatsResponseTest extends TestCase
     public function array_to_xml_recursive_handles_object_with_tostring(): void
     {
         $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><root></root>');
-        $request = new Request();
+        $request = new Request;
 
         // Создаем объект с методом __toString
         $stringableObject = new class
@@ -805,10 +805,10 @@ class FormatsResponseTest extends TestCase
     public function array_to_xml_recursive_handles_object_casting(): void
     {
         $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><root></root>');
-        $request = new Request();
+        $request = new Request;
 
         // Создаем объект без специальных методов для приведения к массиву
-        $plainObject = new \stdClass();
+        $plainObject = new \stdClass;
         $plainObject->prop1 = 'value1';
         $plainObject->prop2 = 'value2';
 

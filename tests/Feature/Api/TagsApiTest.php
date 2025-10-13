@@ -39,7 +39,7 @@ class TagsApiTest extends ApiTestCase
     {
         Tag::factory()->count(10)->create();
 
-        $response = $this->getJson($this->getResourceUrl() . '?per_page=5');
+        $response = $this->getJson($this->getResourceUrl().'?per_page=5');
 
         $response->assertOk();
 
@@ -59,7 +59,7 @@ class TagsApiTest extends ApiTestCase
     {
         Tag::factory()->count(60)->create();
 
-        $response = $this->getJson($this->getResourceUrl() . '?per_page=100');
+        $response = $this->getJson($this->getResourceUrl().'?per_page=100');
 
         $response->assertOk();
 
@@ -78,7 +78,7 @@ class TagsApiTest extends ApiTestCase
         Tag::factory()->create(['name' => 'Vue.js Library']);
         Tag::factory()->create(['name' => 'PHP Language']);
 
-        $response = $this->getJson($this->getResourceUrl() . '?search=Laravel');
+        $response = $this->getJson($this->getResourceUrl().'?search=Laravel');
 
         $response->assertOk();
         $data = $response->json('data');
@@ -92,7 +92,7 @@ class TagsApiTest extends ApiTestCase
         Tag::factory()->create(['name' => 'Test Tag', 'slug' => 'laravel-framework']);
         Tag::factory()->create(['name' => 'Other Tag', 'slug' => 'vue-library']);
 
-        $response = $this->getJson($this->getResourceUrl() . '?search=laravel');
+        $response = $this->getJson($this->getResourceUrl().'?search=laravel');
 
         $response->assertOk();
         $data = $response->json('data');
@@ -127,7 +127,7 @@ class TagsApiTest extends ApiTestCase
             $post->tags()->attach($tag);
         }
 
-        $response = $this->getJson($this->getResourceUrl() . '?include_posts=true');
+        $response = $this->getJson($this->getResourceUrl().'?include_posts=true');
 
         $response->assertOk();
         $data = $response->json('data');
@@ -145,7 +145,7 @@ class TagsApiTest extends ApiTestCase
             $post->tags()->attach($tag);
         }
 
-        $response = $this->getJson($this->getResourceUrl() . '?include_posts=true');
+        $response = $this->getJson($this->getResourceUrl().'?include_posts=true');
 
         $response->assertOk();
         $data = $response->json('data');
@@ -174,7 +174,7 @@ class TagsApiTest extends ApiTestCase
     {
         Tag::factory()->count(3)->create();
 
-        $response = $this->get($this->getResourceUrl() . '?format=xml', ['Accept' => 'application/xml']);
+        $response = $this->get($this->getResourceUrl().'?format=xml', ['Accept' => 'application/xml']);
 
         $response->assertOk();
         $this->assertStringContainsString('application/xml', $response->headers->get('Content-Type'));
@@ -259,7 +259,7 @@ class TagsApiTest extends ApiTestCase
     {
         $payload = $this->createResourceData();
 
-        $response = $this->post($this->getResourceUrl() . '?format=xml', $payload, ['Accept' => 'application/xml']);
+        $response = $this->post($this->getResourceUrl().'?format=xml', $payload, ['Accept' => 'application/xml']);
 
         $response->assertCreated();
         $this->assertStringContainsString('application/xml', $response->headers->get('Content-Type'));
@@ -298,7 +298,7 @@ class TagsApiTest extends ApiTestCase
             $post->tags()->attach($tag);
         }
 
-        $response = $this->getJson($this->getResourceUrl($tag->id) . '?include_posts=true');
+        $response = $this->getJson($this->getResourceUrl($tag->id).'?include_posts=true');
 
         $response->assertOk()
             ->assertJsonStructure([
@@ -320,7 +320,7 @@ class TagsApiTest extends ApiTestCase
     {
         $tag = Tag::factory()->create();
 
-        $response = $this->get($this->getResourceUrl($tag->id) . '?format=xml', ['Accept' => 'application/xml']);
+        $response = $this->get($this->getResourceUrl($tag->id).'?format=xml', ['Accept' => 'application/xml']);
 
         $response->assertOk();
         $this->assertStringContainsString('application/xml', $response->headers->get('Content-Type'));
@@ -418,7 +418,7 @@ class TagsApiTest extends ApiTestCase
             'slug' => 'updated-xml-tag',
         ];
 
-        $response = $this->put($this->getResourceUrl($tag->id) . '?format=xml', $updateData, ['Accept' => 'application/xml']);
+        $response = $this->put($this->getResourceUrl($tag->id).'?format=xml', $updateData, ['Accept' => 'application/xml']);
 
         $response->assertOk();
         $this->assertStringContainsString('application/xml', $response->headers->get('Content-Type'));
@@ -497,7 +497,7 @@ class TagsApiTest extends ApiTestCase
         $tag = Tag::factory()->create();
 
         $response = $this->delete(
-            $this->getResourceUrl($tag->id) . '?format=xml',
+            $this->getResourceUrl($tag->id).'?format=xml',
             [],
             ['Accept' => 'application/xml']
         );
@@ -521,7 +521,7 @@ class TagsApiTest extends ApiTestCase
     #[Test]
     public function constructor_applies_auth_middleware_correctly(): void
     {
-        $controller = new \App\Http\Controllers\Api\V1\TagController();
+        $controller = new \App\Http\Controllers\Api\V1\TagController;
 
         // Проверим, что контроллер создан корректно
         $this->assertInstanceOf(\App\Http\Controllers\Api\V1\TagController::class, $controller);
@@ -532,7 +532,7 @@ class TagsApiTest extends ApiTestCase
     {
         Tag::factory()->count(3)->create();
 
-        $response = $this->getJson($this->getResourceUrl() . '?search=');
+        $response = $this->getJson($this->getResourceUrl().'?search=');
 
         $response->assertOk();
         $data = $response->json('data');
@@ -545,7 +545,7 @@ class TagsApiTest extends ApiTestCase
         Tag::factory()->create(['name' => 'Laravel', 'slug' => 'laravel']);
         Tag::factory()->create(['name' => 'Vue', 'slug' => 'vue']);
 
-        $response = $this->getJson($this->getResourceUrl() . '?search=NonExistentTag');
+        $response = $this->getJson($this->getResourceUrl().'?search=NonExistentTag');
 
         $response->assertOk();
         $data = $response->json('data');

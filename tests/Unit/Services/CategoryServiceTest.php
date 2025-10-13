@@ -17,7 +17,7 @@ class CategoryServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->categoryService = new CategoryService();
+        $this->categoryService = new CategoryService;
     }
 
     public function test_get_all_returns_categories_sorted_by_name()

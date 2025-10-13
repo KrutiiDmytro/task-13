@@ -112,7 +112,7 @@ class TagTest extends TestCase
     #[Test]
     public function it_has_correct_fillable_attributes(): void
     {
-        $tag = new Tag();
+        $tag = new Tag;
 
         $this->assertEquals(['name', 'slug'], $tag->getFillable());
     }

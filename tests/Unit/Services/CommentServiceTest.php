@@ -19,7 +19,7 @@ class CommentServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new CommentService();
+        $this->service = new CommentService;
     }
 
     public function test_list_returns_paginated_comments_with_post_loaded(): void
@@ -27,7 +27,7 @@ class CommentServiceTest extends TestCase
         $post = Post::factory()->create();
         Comment::factory()->count(3)->create(['post_id' => $post->id]);
 
-        $paginator = $this->service->list(new Request());
+        $paginator = $this->service->list(new Request);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $paginator);
         $this->assertCount(3, $paginator->items());

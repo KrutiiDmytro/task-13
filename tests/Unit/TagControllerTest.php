@@ -18,7 +18,7 @@ class TagControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->controller = new TagController();
+        $this->controller = new TagController;
     }
 
     #[Test]

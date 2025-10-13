@@ -45,7 +45,7 @@ class PostsApiTest extends ApiTestCase
     {
         Post::factory()->count(3)->create();
 
-        $response = $this->get($this->getResourceUrl() . '?format=xml', ['Accept' => 'application/xml']);
+        $response = $this->get($this->getResourceUrl().'?format=xml', ['Accept' => 'application/xml']);
 
         $response->assertOk();
         $this->assertStringContainsString('application/xml', $response->headers->get('Content-Type'));
@@ -57,7 +57,7 @@ class PostsApiTest extends ApiTestCase
     {
         // Создаем ситуацию, которая может привести к исключению
         // Например, неправильный параметр поиска или проблему с БД
-        $response = $this->getJson($this->getResourceUrl() . '?search=' . str_repeat('x', 1000));
+        $response = $this->getJson($this->getResourceUrl().'?search='.str_repeat('x', 1000));
 
         // Контроллер должен вернуть 200 или 500 с сообщением об ошибке
         $this->assertContains($response->status(), [200, 500]);
@@ -92,8 +92,8 @@ class PostsApiTest extends ApiTestCase
         $category = Category::factory()->create();
 
         // Используем уникальные имена для тегов
-        $uniqueTag1 = 'unique-tag-' . uniqid();
-        $uniqueTag2 = 'unique-tag-' . uniqid();
+        $uniqueTag1 = 'unique-tag-'.uniqid();
+        $uniqueTag2 = 'unique-tag-'.uniqid();
 
         $payload = [
             'title' => 'Post with Tags',
@@ -132,7 +132,7 @@ class PostsApiTest extends ApiTestCase
     {
         $payload = $this->createResourceData();
 
-        $response = $this->post($this->getResourceUrl() . '?format=xml', $payload, ['Accept' => 'application/xml']);
+        $response = $this->post($this->getResourceUrl().'?format=xml', $payload, ['Accept' => 'application/xml']);
 
         $response->assertCreated();
         $this->assertStringContainsString('application/xml', $response->headers->get('Content-Type'));
@@ -157,7 +157,7 @@ class PostsApiTest extends ApiTestCase
     {
         $post = Post::factory()->create();
 
-        $response = $this->get($this->getResourceUrl($post->id) . '?format=xml', ['Accept' => 'application/xml']);
+        $response = $this->get($this->getResourceUrl($post->id).'?format=xml', ['Accept' => 'application/xml']);
 
         $response->assertOk();
         $this->assertStringContainsString('application/xml', $response->headers->get('Content-Type'));
@@ -210,7 +210,7 @@ class PostsApiTest extends ApiTestCase
             'category_id' => $category->id,
         ];
 
-        $response = $this->put($this->getResourceUrl($post->id) . '?format=xml', $payload, ['Accept' => 'application/xml']);
+        $response = $this->put($this->getResourceUrl($post->id).'?format=xml', $payload, ['Accept' => 'application/xml']);
 
         $response->assertOk();
         $this->assertStringContainsString('application/xml', $response->headers->get('Content-Type'));
@@ -244,7 +244,7 @@ class PostsApiTest extends ApiTestCase
         $post = Post::factory()->create();
 
         $response = $this->delete(
-            $this->getResourceUrl($post->id) . '?format=xml',
+            $this->getResourceUrl($post->id).'?format=xml',
             [],
             ['Accept' => 'application/xml']
         );
@@ -270,7 +270,7 @@ class PostsApiTest extends ApiTestCase
         Post::factory()->create(['title' => 'PHP Basics']);
         Post::factory()->create(['content' => 'This is about Laravel framework']);
 
-        $response = $this->getJson($this->getResourceUrl() . '?search=Laravel');
+        $response = $this->getJson($this->getResourceUrl().'?search=Laravel');
 
         $response->assertOk();
         $data = $response->json('data');
@@ -286,7 +286,7 @@ class PostsApiTest extends ApiTestCase
         Post::factory()->create(['category_id' => $category1->id]);
         Post::factory()->create(['category_id' => $category2->id]);
 
-        $response = $this->getJson($this->getResourceUrl() . '?category_id=' . $category1->id);
+        $response = $this->getJson($this->getResourceUrl().'?category_id='.$category1->id);
 
         $response->assertOk();
         $data = $response->json('data');
@@ -303,7 +303,7 @@ class PostsApiTest extends ApiTestCase
 
         Post::factory()->create(); // post without tags
 
-        $response = $this->getJson($this->getResourceUrl() . '?tag_id=' . $tag->id);
+        $response = $this->getJson($this->getResourceUrl().'?tag_id='.$tag->id);
 
         $response->assertOk();
         $data = $response->json('data');
@@ -315,7 +315,7 @@ class PostsApiTest extends ApiTestCase
     {
         Post::factory()->count(15)->create();
 
-        $response = $this->getJson($this->getResourceUrl() . '?per_page=5');
+        $response = $this->getJson($this->getResourceUrl().'?per_page=5');
 
         // Временная отладка - посмотрим полную структуру
         dump('Full response:', $response->json());
@@ -418,7 +418,7 @@ class PostsApiTest extends ApiTestCase
     {
         Post::factory()->count(3)->create();
 
-        $response = $this->getJson($this->getResourceUrl() . '?search=');
+        $response = $this->getJson($this->getResourceUrl().'?search=');
 
         $response->assertOk();
         $data = $response->json('data');
@@ -430,7 +430,7 @@ class PostsApiTest extends ApiTestCase
     {
         Post::factory()->count(3)->create();
 
-        $response = $this->getJson($this->getResourceUrl() . '?category_id=99999');
+        $response = $this->getJson($this->getResourceUrl().'?category_id=99999');
 
         $response->assertOk();
         $data = $response->json('data');
@@ -442,7 +442,7 @@ class PostsApiTest extends ApiTestCase
     {
         Post::factory()->count(3)->create();
 
-        $response = $this->getJson($this->getResourceUrl() . '?tag_id=99999');
+        $response = $this->getJson($this->getResourceUrl().'?tag_id=99999');
 
         $response->assertOk();
         $data = $response->json('data');
@@ -456,7 +456,7 @@ class PostsApiTest extends ApiTestCase
         Post::factory()->create(['category_id' => $category->id]);
         Post::factory()->create(); // другой пост
 
-        $response = $this->getJson($this->getResourceUrl() . '?category=tech-news');
+        $response = $this->getJson($this->getResourceUrl().'?category=tech-news');
 
         $response->assertOk();
         $data = $response->json('data');
@@ -472,7 +472,7 @@ class PostsApiTest extends ApiTestCase
 
         Post::factory()->create(); // пост без тегов
 
-        $response = $this->getJson($this->getResourceUrl() . '?tag=php-tutorial');
+        $response = $this->getJson($this->getResourceUrl().'?tag=php-tutorial');
 
         $response->assertOk();
         $data = $response->json('data');
@@ -490,7 +490,7 @@ class PostsApiTest extends ApiTestCase
         Post::factory()->create(['category_id' => $category2->id]);
         Post::factory()->create(['category_id' => $category3->id]);
 
-        $response = $this->getJson($this->getResourceUrl() . '?category_ids[]=' . $category1->id . '&category_ids[]=' . $category2->id);
+        $response = $this->getJson($this->getResourceUrl().'?category_ids[]='.$category1->id.'&category_ids[]='.$category2->id);
 
         $response->assertOk();
         $data = $response->json('data');
@@ -513,7 +513,7 @@ class PostsApiTest extends ApiTestCase
         $post3 = Post::factory()->create();
         $post3->tags()->attach($tag3->id);
 
-        $response = $this->getJson($this->getResourceUrl() . '?tag_ids[]=' . $tag1->id . '&tag_ids[]=' . $tag2->id);
+        $response = $this->getJson($this->getResourceUrl().'?tag_ids[]='.$tag1->id.'&tag_ids[]='.$tag2->id);
 
         $response->assertOk();
         $data = $response->json('data');
@@ -542,7 +542,7 @@ class PostsApiTest extends ApiTestCase
         $post2->tags()->attach([$tag1->id]);
 
         // Тестируем комбинированный поиск
-        $response = $this->getJson($this->getResourceUrl() . '?search=Laravel&category_id=' . $category1->id . '&tag_id=' . $tag1->id);
+        $response = $this->getJson($this->getResourceUrl().'?search=Laravel&category_id='.$category1->id.'&tag_id='.$tag1->id);
 
         $response->assertOk();
         $data = $response->json('data');
@@ -566,7 +566,7 @@ class PostsApiTest extends ApiTestCase
         $post = Post::factory()->create();
 
         $response = $this->delete(
-            $this->getResourceUrl($post->id) . '?format=xml',
+            $this->getResourceUrl($post->id).'?format=xml',
             [],
             ['Accept' => 'application/xml']
         );
@@ -592,7 +592,7 @@ class PostsApiTest extends ApiTestCase
 
         $controller = new \App\Http\Controllers\Api\V1\PostController(app(\App\Services\PostService::class));
 
-        $request = \Illuminate\Http\Request::create('/api/v1/posts/' . $post->id, 'DELETE');
+        $request = \Illuminate\Http\Request::create('/api/v1/posts/'.$post->id, 'DELETE');
 
         $response = $controller->destroy($request, $mockPost);
 
@@ -626,7 +626,7 @@ class PostsApiTest extends ApiTestCase
 
         $controller = new \App\Http\Controllers\Api\V1\PostController(app(\App\Services\PostService::class));
 
-        $request = \Illuminate\Http\Request::create('/api/v1/posts/' . $post->id . '?format=xml', 'DELETE');
+        $request = \Illuminate\Http\Request::create('/api/v1/posts/'.$post->id.'?format=xml', 'DELETE');
 
         $response = $controller->destroy($request, $mockPost);
 
@@ -648,7 +648,7 @@ class PostsApiTest extends ApiTestCase
         $post = Post::factory()->create();
 
         $response = $this->delete(
-            $this->getResourceUrl($post->id) . '?format=xml',
+            $this->getResourceUrl($post->id).'?format=xml',
             [],
             ['Accept' => 'application/xml']
         );
@@ -675,7 +675,7 @@ class PostsApiTest extends ApiTestCase
         });
 
         $controller = new \App\Http\Controllers\Api\V1\PostController(app(\App\Services\PostService::class));
-        $request = \Illuminate\Http\Request::create('/api/v1/posts/' . $post->id, 'GET');
+        $request = \Illuminate\Http\Request::create('/api/v1/posts/'.$post->id, 'GET');
 
         $response = $controller->show($request, $mockPost);
 

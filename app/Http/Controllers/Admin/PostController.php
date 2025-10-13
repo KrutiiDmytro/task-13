@@ -86,7 +86,7 @@ class PostController extends Controller
     public function update(Request $request, Post $post): RedirectResponse
     {
         $data = $request->validate([
-            'title' => 'required|string|max:255|unique:posts,title,' . $post->id,
+            'title' => 'required|string|max:255|unique:posts,title,'.$post->id,
             'content' => 'required|string',
             'category_id' => 'nullable|exists:categories,id',
             'tags' => 'nullable|array',

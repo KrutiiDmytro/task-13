@@ -42,9 +42,9 @@ class PostIndexTest extends TestCase
         $res = $this->get(route('posts.index'));
         $res->assertOk()
             ->assertSee('Тестовый пост')
-            ->assertSee('#' . $tag1->name)
-            ->assertSee('#' . $tag2->name)
-            ->assertSee('/storage/' . $path); // картинка выводится
+            ->assertSee('#'.$tag1->name)
+            ->assertSee('#'.$tag2->name)
+            ->assertSee('/storage/'.$path); // картинка выводится
     }
 
     public function test_filter_by_tag_and_category_and_search(): void

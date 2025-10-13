@@ -43,7 +43,7 @@ class CommentsApiTest extends ApiTestCase
     {
         Comment::factory()->count(60)->create();
 
-        $response = $this->getJson($this->getResourceUrl() . '?per_page=5');
+        $response = $this->getJson($this->getResourceUrl().'?per_page=5');
 
         $response->assertOk();
 
@@ -57,7 +57,7 @@ class CommentsApiTest extends ApiTestCase
     {
         Comment::factory()->count(60)->create();
 
-        $response = $this->getJson($this->getResourceUrl() . '?per_page=100');
+        $response = $this->getJson($this->getResourceUrl().'?per_page=100');
 
         $response->assertOk();
         $this->assertEquals(50, (int) $response->json('meta.per_page'));
@@ -72,7 +72,7 @@ class CommentsApiTest extends ApiTestCase
         Comment::factory()->count(3)->create(['post_id' => $post1->id]);
         Comment::factory()->count(2)->create(['post_id' => $post2->id]);
 
-        $response = $this->getJson($this->getResourceUrl() . "?post_id={$post1->id}");
+        $response = $this->getJson($this->getResourceUrl()."?post_id={$post1->id}");
 
         $response->assertOk();
         $data = $response->json('data');
@@ -120,7 +120,7 @@ class CommentsApiTest extends ApiTestCase
     {
         Comment::factory()->count(3)->create();
 
-        $response = $this->get($this->getResourceUrl() . '?format=xml', ['Accept' => 'application/xml']);
+        $response = $this->get($this->getResourceUrl().'?format=xml', ['Accept' => 'application/xml']);
 
         $response->assertOk();
         $this->assertStringContainsString('application/xml', $response->headers->get('Content-Type'));
@@ -230,7 +230,7 @@ class CommentsApiTest extends ApiTestCase
     {
         $payload = $this->createResourceData();
 
-        $response = $this->post($this->getResourceUrl() . '?format=xml', $payload, ['Accept' => 'application/xml']);
+        $response = $this->post($this->getResourceUrl().'?format=xml', $payload, ['Accept' => 'application/xml']);
 
         $response->assertCreated();
         $this->assertStringContainsString('application/xml', $response->headers->get('Content-Type'));
@@ -272,7 +272,7 @@ class CommentsApiTest extends ApiTestCase
     {
         $comment = Comment::factory()->create();
 
-        $response = $this->get($this->getResourceUrl($comment->id) . '?format=xml', ['Accept' => 'application/xml']);
+        $response = $this->get($this->getResourceUrl($comment->id).'?format=xml', ['Accept' => 'application/xml']);
 
         $response->assertOk();
         $this->assertStringContainsString('application/xml', $response->headers->get('Content-Type'));
@@ -366,7 +366,7 @@ class CommentsApiTest extends ApiTestCase
             'author_name' => 'XML Author',
         ];
 
-        $response = $this->put($this->getResourceUrl($comment->id) . '?format=xml', $updateData, ['Accept' => 'application/xml']);
+        $response = $this->put($this->getResourceUrl($comment->id).'?format=xml', $updateData, ['Accept' => 'application/xml']);
 
         $response->assertOk();
         $this->assertStringContainsString('application/xml', $response->headers->get('Content-Type'));
@@ -427,7 +427,7 @@ class CommentsApiTest extends ApiTestCase
         $comment = Comment::factory()->create();
 
         $response = $this->delete(
-            $this->getResourceUrl($comment->id) . '?format=xml',
+            $this->getResourceUrl($comment->id).'?format=xml',
             [],
             ['Accept' => 'application/xml']
         );
@@ -447,7 +447,7 @@ class CommentsApiTest extends ApiTestCase
     #[Test]
     public function constructor_applies_auth_middleware_correctly(): void
     {
-        $controller = new \App\Http\Controllers\Api\V1\CommentController();
+        $controller = new \App\Http\Controllers\Api\V1\CommentController;
 
         // Проверим, что контроллер создан корректно
         $this->assertInstanceOf(\App\Http\Controllers\Api\V1\CommentController::class, $controller);
@@ -459,7 +459,7 @@ class CommentsApiTest extends ApiTestCase
         Comment::factory()->count(3)->create();
 
         // Пустой post_id должен игнорироваться и возвращать все комментарии
-        $response = $this->getJson($this->getResourceUrl() . '?post_id=');
+        $response = $this->getJson($this->getResourceUrl().'?post_id=');
 
         $response->assertOk();
         $data = $response->json('data');
@@ -474,7 +474,7 @@ class CommentsApiTest extends ApiTestCase
 
         Comment::factory()->count(3)->create(['post_id' => $post1->id]);
 
-        $response = $this->getJson($this->getResourceUrl() . "?post_id={$post2->id}");
+        $response = $this->getJson($this->getResourceUrl()."?post_id={$post2->id}");
 
         $response->assertOk();
         $data = $response->json('data');

@@ -340,8 +340,8 @@ class TagController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'name' => 'sometimes|required|string|max:255|unique:tags,name,' . $tag->id,
-                'slug' => 'sometimes|nullable|string|max:255|unique:tags,slug,' . $tag->id,
+                'name' => 'sometimes|required|string|max:255|unique:tags,name,'.$tag->id,
+                'slug' => 'sometimes|nullable|string|max:255|unique:tags,slug,'.$tag->id,
             ]);
 
             // Автоматическое обновление slug если изменилось имя, но slug не указан

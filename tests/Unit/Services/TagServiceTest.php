@@ -17,7 +17,7 @@ class TagServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->tagService = new TagService();
+        $this->tagService = new TagService;
     }
 
     #[Test]

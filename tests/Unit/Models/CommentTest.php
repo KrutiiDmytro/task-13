@@ -101,7 +101,7 @@ class CommentTest extends TestCase
     #[Test]
     public function it_has_correct_fillable_attributes(): void
     {
-        $comment = new Comment();
+        $comment = new Comment;
 
         $expectedFillable = [
             'content', 'author_name', 'author_email', 'post_id', 'user_id',

@@ -26,7 +26,7 @@ class AdminMiddlewareTest extends TestCase
         Auth::shouldReceive('user')->once()->andReturn($admin);
 
         $request = Request::create('/admin');
-        $middleware = new AdminMiddleware();
+        $middleware = new AdminMiddleware;
 
         $response = $middleware->handle($request, function ($request) {
             return new Response('OK');
@@ -46,7 +46,7 @@ class AdminMiddlewareTest extends TestCase
         Auth::shouldReceive('user')->once()->andReturn($user);
 
         $request = Request::create('/admin');
-        $middleware = new AdminMiddleware();
+        $middleware = new AdminMiddleware;
 
         // Ожидаем HttpException с кодом 403
         $this->expectException(HttpException::class);
@@ -64,7 +64,7 @@ class AdminMiddlewareTest extends TestCase
         Auth::shouldReceive('check')->once()->andReturn(false);
 
         $request = Request::create('/admin');
-        $middleware = new AdminMiddleware();
+        $middleware = new AdminMiddleware;
 
         $response = $middleware->handle($request, function ($request) {
             return new Response('OK');
@@ -85,7 +85,7 @@ class AdminMiddlewareTest extends TestCase
         Auth::shouldReceive('user')->once()->andReturn($user);
 
         $request = Request::create('/admin');
-        $middleware = new AdminMiddleware();
+        $middleware = new AdminMiddleware;
 
         // Ожидаем HttpException с кодом 403
         $this->expectException(HttpException::class);
@@ -100,7 +100,7 @@ class AdminMiddlewareTest extends TestCase
     public function it_blocks_users_without_admin_property(): void
     {
         // Создаем пользователя и тестируем случай, когда свойство не определено
-        $user = new User();
+        $user = new User;
         $user->id = 1;
         $user->name = 'Test User';
         $user->email = 'test@example.com';
@@ -110,7 +110,7 @@ class AdminMiddlewareTest extends TestCase
         Auth::shouldReceive('user')->once()->andReturn($user);
 
         $request = Request::create('/admin');
-        $middleware = new AdminMiddleware();
+        $middleware = new AdminMiddleware;
 
         // Ожидаем HttpException с кодом 403
         $this->expectException(HttpException::class);
@@ -124,7 +124,7 @@ class AdminMiddlewareTest extends TestCase
     #[Test]
     public function middleware_can_be_instantiated(): void
     {
-        $middleware = new AdminMiddleware();
+        $middleware = new AdminMiddleware;
 
         $this->assertInstanceOf(AdminMiddleware::class, $middleware);
     }
@@ -132,7 +132,7 @@ class AdminMiddlewareTest extends TestCase
     #[Test]
     public function handle_method_exists(): void
     {
-        $middleware = new AdminMiddleware();
+        $middleware = new AdminMiddleware;
 
         $this->assertTrue(method_exists($middleware, 'handle'));
 
@@ -153,7 +153,7 @@ class AdminMiddlewareTest extends TestCase
         Auth::shouldReceive('user')->once()->andReturn($user);
 
         $request = Request::create('/admin');
-        $middleware = new AdminMiddleware();
+        $middleware = new AdminMiddleware;
 
         try {
             $middleware->handle($request, function ($request) {
@@ -175,7 +175,7 @@ class AdminMiddlewareTest extends TestCase
         Auth::shouldReceive('user')->once()->andReturn($admin);
 
         $request = Request::create('/admin');
-        $middleware = new AdminMiddleware();
+        $middleware = new AdminMiddleware;
 
         $nextCalled = false;
         $response = $middleware->handle($request, function ($request) use (&$nextCalled) {
@@ -209,7 +209,7 @@ class AdminMiddlewareTest extends TestCase
             Auth::shouldReceive('user')->once()->andReturn($user);
 
             $request = Request::create('/admin');
-            $middleware = new AdminMiddleware();
+            $middleware = new AdminMiddleware;
 
             if ($testCase['expected']) {
                 // Ожидаем успешное прохождение

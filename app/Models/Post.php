@@ -151,7 +151,7 @@ class Post extends Model
                 $originalSlug = $post->slug;
                 $count = 1;
                 while (static::where('slug', $post->slug)->exists()) {
-                    $post->slug = $originalSlug . '-' . $count;
+                    $post->slug = $originalSlug.'-'.$count;
                     $count++;
                 }
             }
@@ -165,7 +165,7 @@ class Post extends Model
                 $originalSlug = $post->slug;
                 $count = 1;
                 while (static::where('slug', $post->slug)->where('id', '!=', $post->id)->exists()) {
-                    $post->slug = $originalSlug . '-' . $count;
+                    $post->slug = $originalSlug.'-'.$count;
                     $count++;
                 }
             }

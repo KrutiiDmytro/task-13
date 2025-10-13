@@ -29,7 +29,7 @@ class LoginRequestTest extends TestCase
     #[Test]
     public function authorize_returns_true(): void
     {
-        $request = new LoginRequest();
+        $request = new LoginRequest;
 
         $this->assertTrue($request->authorize());
     }
@@ -37,7 +37,7 @@ class LoginRequestTest extends TestCase
     #[Test]
     public function rules_returns_correct_validation_rules(): void
     {
-        $request = new LoginRequest();
+        $request = new LoginRequest;
 
         $rules = $request->rules();
 
@@ -332,7 +332,7 @@ class LoginRequestTest extends TestCase
     #[Test]
     public function class_instantiation_works(): void
     {
-        $request = new LoginRequest();
+        $request = new LoginRequest;
 
         $this->assertInstanceOf(LoginRequest::class, $request);
         $this->assertInstanceOf(\Illuminate\Foundation\Http\FormRequest::class, $request);

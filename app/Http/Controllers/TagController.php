@@ -19,7 +19,7 @@ class TagController extends Controller
         $tags = Tag::query()
             //  Якщо є запит, фільтруємо по 'name'
             ->when($q !== '', function ($builder) use ($q) {
-                $builder->where('name', 'like', '%' . $q . '%');
+                $builder->where('name', 'like', '%'.$q.'%');
             })
             ->orderBy('name')
             ->paginate(24)
@@ -97,7 +97,7 @@ class TagController extends Controller
     public function update(Request $request, Tag $tag): RedirectResponse
     {
         $request->validate([
-            'name' => 'required|string|max:255|unique:tags,name,' . $tag->id,
+            'name' => 'required|string|max:255|unique:tags,name,'.$tag->id,
         ]);
 
         $tag->update([
