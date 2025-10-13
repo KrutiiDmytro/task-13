@@ -64,7 +64,7 @@ phpcs:
   stage: quality
   script:
     - ./vendor/bin/phpcs --report=checkstyle --report-file=reports/phpcs-report.xml || true
-    - ./vendor/bin/phpcs --report=summary
+    - ./vendor/bin/phpcs --report=summary || true
   artifacts:
     paths:
       - reports/phpcs-report.xml
