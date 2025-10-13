@@ -3,44 +3,31 @@ image: php:8.2
 
 # Определяем стадии пайплайна
 stages:
-  - build
   - test
   - quality
   - sonar
 
-# Кэш для ускорения сборки
+# Глобальный кэш (вместо artifacts для vendor)
 cache:
+  key: ${CI_COMMIT_REF_SLUG}
   paths:
     - vendor/
-    - node_modules/
 
 # Переменные окружения
 variables:
   COMPOSER_CACHE_DIR: "$CI_PROJECT_DIR/.composer-cache"
 
-# Установка зависимостей
+# Установка зависимостей перед каждым job
 before_script:
   - apt-get update -qq
   - apt-get install -y -qq git curl libzip-dev zip unzip
   - docker-php-ext-install pdo_mysql zip
   - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-  - composer install --prefer-dist --no-ansi --no-interaction --no-progress
-
-# Job: Установка зависимостей
-install_dependencies:
-  stage: build
-  script:
-    - composer install --no-interaction --prefer-dist --optimize-autoloader
-  artifacts:
-    paths:
-      - vendor/
-    expire_in: 1 hour
+  - composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-dev
 
 # Job: Запуск PHPUnit тестов с coverage
 phpunit:
   stage: test
-  dependencies:
-    - install_dependencies
   script:
     - php -v
     - cp .env.example .env
@@ -62,8 +49,6 @@ phpunit:
 # Job: PHPCS проверка стандартов кодирования
 phpcs:
   stage: quality
-  dependencies:
-    - install_dependencies
   script:
     - ./vendor/bin/phpcs --report=checkstyle --report-file=reports/phpcs-report.xml || true
     - ./vendor/bin/phpcs --report=summary
@@ -76,8 +61,6 @@ phpcs:
 # Job: Laravel Pint проверка форматирования
 pint:
   stage: quality
-  dependencies:
-    - install_dependencies
   script:
     - ./vendor/bin/pint --test -v
   allow_failure: true
@@ -93,7 +76,7 @@ sonarcloud:
     - phpcs
   variables:
     SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
-    GIT_DEPTH: "0"  # Shallow clones should be disabled for better analysis
+    GIT_DEPTH: "0"
   cache:
     key: "${CI_JOB_NAME}"
     paths:
