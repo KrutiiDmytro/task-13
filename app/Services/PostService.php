@@ -4,10 +4,10 @@ namespace App\Services;
 
 use App\Models\Post;
 use App\Models\Tag;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Builder;
 
 class PostService
 {
@@ -35,7 +35,7 @@ class PostService
     protected function applySearchFilter(Builder $query, Request $request): void
     {
         $search = $request->get('q') ?: $request->get('search') ?: $request->get('search_title');
-        
+
         if (empty($search)) {
             return;
         }
@@ -54,15 +54,16 @@ class PostService
         // Одиночная категория
         $category = $request->get('category');
         $categoryId = $request->get('category_id');
-        
-        if (!empty($category) || !empty($categoryId)) {
+
+        if (! empty($category) || ! empty($categoryId)) {
             $this->applySingleCategoryFilter($query, $category ?: $categoryId);
+
             return;
         }
 
         // Множественные категории
         $categoryIds = $request->get('category_ids');
-        if (!empty($categoryIds) && is_array($categoryIds)) {
+        if (! empty($categoryIds) && is_array($categoryIds)) {
             $query->whereIn('category_id', $categoryIds);
         }
     }
@@ -74,6 +75,7 @@ class PostService
     {
         if (is_numeric($categoryValue)) {
             $query->where('category_id', $categoryValue);
+
             return;
         }
 
@@ -91,15 +93,16 @@ class PostService
         // Одиночный тег
         $tag = $request->get('tag');
         $tagId = $request->get('tag_id');
-        
-        if (!empty($tag) || !empty($tagId)) {
+
+        if (! empty($tag) || ! empty($tagId)) {
             $this->applySingleTagFilter($query, $tag ?: $tagId);
+
             return;
         }
 
         // Множественные теги
         $tagIds = $request->get('tag_ids');
-        if (!empty($tagIds) && is_array($tagIds)) {
+        if (! empty($tagIds) && is_array($tagIds)) {
             $query->whereHas('tags', function ($q) use ($tagIds) {
                 $q->whereIn('tags.id', $tagIds);
             });
@@ -115,6 +118,7 @@ class PostService
             $query->whereHas('tags', function ($q) use ($tagValue) {
                 $q->where('tags.id', $tagValue);
             });
+
             return;
         }
 
@@ -135,7 +139,7 @@ class PostService
         $data['published_at'] = now();
         $post = Post::create($data);
 
-        if (!empty($tagIds)) {
+        if (! empty($tagIds)) {
             $post->tags()->attach(array_unique($tagIds));
         }
 
@@ -152,7 +156,7 @@ class PostService
         $tagIds = $this->extractTagIds($data);
 
         // Если пост еще не опубликован, публикуем его при обновлении
-        if (!isset($data['published_at']) && is_null($post->published_at)) {
+        if (! isset($data['published_at']) && is_null($post->published_at)) {
             $data['published_at'] = now();
         }
 
@@ -173,12 +177,12 @@ class PostService
         $tagIds = [];
 
         // Обрабатываем tags_text (строка с тегами через запятую)
-        if (!empty($data['tags_text']) && is_string($data['tags_text'])) {
+        if (! empty($data['tags_text']) && is_string($data['tags_text'])) {
             $tagIds = array_merge($tagIds, $this->processTagsText($data['tags_text']));
         }
 
         // Обрабатываем tags (массив)
-        if (!empty($data['tags']) && is_array($data['tags'])) {
+        if (! empty($data['tags']) && is_array($data['tags'])) {
             $tagIds = array_merge($tagIds, $this->processTagsArray($data['tags']));
         }
 
@@ -192,12 +196,12 @@ class PostService
     {
         $tagIds = [];
         $tagNames = array_map('trim', explode(',', $tagsText));
-        
+
         foreach ($tagNames as $tagName) {
             if (empty($tagName)) {
                 continue;
             }
-            
+
             $tag = Tag::firstOrCreate(
                 ['name' => $tagName],
                 ['slug' => Str::slug($tagName)]
@@ -235,8 +239,9 @@ class PostService
      */
     protected function syncPostTags(Post $post, array $tagIds, array $data): void
     {
-        if (!empty($tagIds)) {
+        if (! empty($tagIds)) {
             $post->tags()->sync(array_unique($tagIds));
+
             return;
         }
 
@@ -252,6 +257,7 @@ class PostService
     public function deletePost(Post $post): bool
     {
         $post->tags()->detach();
+
         return $post->delete();
     }
 }
