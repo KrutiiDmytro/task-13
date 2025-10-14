@@ -101,6 +101,7 @@ sonarcloud:
       -Dsonar.organization=${SONAR_ORGANIZATION}
       -Dsonar.host.url=${SONAR_HOST_URL}
       -Dsonar.token=${SONAR_TOKEN}
+      -Dsonar.branch.name=${CI_COMMIT_REF_NAME}
       -Dsonar.sources=app,config,routes,database
       -Dsonar.tests=tests
       -Dsonar.php.coverage.reportPaths=reports/coverage.xml
