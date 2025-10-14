@@ -16,13 +16,10 @@ trait FormatsResponse
     {
         $format = $this->getResponseFormat($request);
 
-        switch ($format) {
-            case 'xml':
-                return $this->xmlResponse($data, $statusCode, $request);
-            case 'json':
-            default:
-                return $this->jsonResponse($data, $statusCode);
-        }
+        return match($format) {
+            'xml' => $this->xmlResponse($data, $statusCode, $request),
+            default => $this->jsonResponse($data, $statusCode),
+        };
     }
 
     /**
@@ -30,18 +27,27 @@ trait FormatsResponse
      */
     protected function getResponseFormat(Request $request): string
     {
-        // Проверяем параметр format
         $format = strtolower(trim((string) $request->get('format', 'json')));
 
-        // Проверяем Accept заголовок
-        if (! $request->has('format')) {
-            $acceptHeader = $request->header('Accept', '');
-            if (str_contains($acceptHeader, 'application/xml') || str_contains($acceptHeader, 'text/xml')) {
-                $format = 'xml';
-            }
+        if (!$request->has('format')) {
+            $format = $this->getFormatFromAcceptHeader($request);
         }
 
         return in_array($format, ['json', 'xml']) ? $format : 'json';
+    }
+
+    /**
+     * Получает формат из Accept заголовка
+     */
+    protected function getFormatFromAcceptHeader(Request $request): string
+    {
+        $acceptHeader = $request->header('Accept', '');
+        
+        if (str_contains($acceptHeader, 'application/xml') || str_contains($acceptHeader, 'text/xml')) {
+            return 'xml';
+        }
+
+        return 'json';
     }
 
     /**
@@ -62,12 +68,15 @@ trait FormatsResponse
     protected function xmlResponse($data, int $statusCode = 200, ?Request $request = null)
     {
         $request = $request ?: request();
+        
         if ($data instanceof JsonResource || $data instanceof ResourceCollection) {
             $data = $data->toArray($request);
         }
+        
         if ($data === null) {
             $data = ['message' => 'No data'];
         }
+        
         $xml = $this->arrayToXml($data, 'response', $request);
 
         return response($xml, $statusCode)->header('Content-Type', 'application/xml');
@@ -101,77 +110,138 @@ trait FormatsResponse
             return;
         }
 
-        // Если это объект, конвертируем в массив
-        if (is_object($data)) {
-            if (
-                $data instanceof \Illuminate\Http\Resources\Json\JsonResource
-                || $data instanceof \Illuminate\Http\Resources\Json\ResourceCollection
-            ) {
-                $data = $data->toArray($request);
-            } elseif (method_exists($data, 'toArray')) {
-                $data = $data->toArray();
-            } else {
-                $data = (array) $data;
-            }
-        }
+        $data = $this->normalizeDataToArray($data, $request);
 
-        if (! is_array($data)) {
+        if (!is_array($data)) {
             $xml[0] = htmlspecialchars((string) $data);
-
             return;
         }
 
         foreach ($data as $key => $value) {
-            if (is_array($value)) {
-                if (is_numeric($key)) {
-                    $key = 'item';
-                }
-
-                if ($this->isSequentialArray($value)) {
-                    $collection = $xml->addChild($key.'_collection');
-                    if (empty($value)) {
-                        // Добавляем пустой текстовый узел, чтобы создать парные теги
-                        $dom = dom_import_simplexml($collection);
-                        $dom->appendChild($dom->ownerDocument->createTextNode(''));
-
-                        continue;
-                    }
-                    foreach ($value as $item) {
-                        $itemElement = $collection->addChild($key);
-                        if (is_array($item)) {
-                            $this->arrayToXmlRecursive($item, $itemElement, $request);
-                        } else {
-                            $itemElement[0] = htmlspecialchars((string) $item);
-                        }
-                    }
-                } else {
-                    $child = $xml->addChild($key);
-                    $this->arrayToXmlRecursive($value, $child, $request);
-                }
-            } else {
-                if ($value === null) {
-                    $xml->addChild($key)->addAttribute('nil', 'true');
-                } elseif (is_object($value)) {
-                    if (method_exists($value, 'toArray')) {
-                        $child = $xml->addChild($key);
-                        if (
-                            $value instanceof \Illuminate\Http\Resources\Json\JsonResource
-                            || $value instanceof \Illuminate\Http\Resources\Json\ResourceCollection
-                        ) {
-                            $this->arrayToXmlRecursive($value->toArray($request), $child, $request);
-                        } else {
-                            $this->arrayToXmlRecursive($value->toArray(), $child, $request);
-                        }
-                    } elseif (method_exists($value, '__toString')) {
-                        $xml->addChild($key, htmlspecialchars((string) $value));
-                    } else {
-                        $xml->addChild($key, htmlspecialchars(json_encode($value)));
-                    }
-                } else {
-                    $xml->addChild($key, htmlspecialchars((string) $value));
-                }
-            }
+            $this->addXmlChild($xml, $key, $value, $request);
         }
+    }
+
+    /**
+     * Нормализует данные в массив
+     */
+    protected function normalizeDataToArray($data, Request $request)
+    {
+        if (!is_object($data)) {
+            return $data;
+        }
+
+        if ($data instanceof JsonResource || $data instanceof ResourceCollection) {
+            return $data->toArray($request);
+        }
+
+        if (method_exists($data, 'toArray')) {
+            return $data->toArray();
+        }
+
+        return (array) $data;
+    }
+
+    /**
+     * Добавляет дочерний элемент в XML
+     */
+    protected function addXmlChild(SimpleXMLElement $xml, $key, $value, Request $request): void
+    {
+        if (is_array($value)) {
+            $this->addArrayChild($xml, $key, $value, $request);
+            return;
+        }
+
+        if ($value === null) {
+            $xml->addChild($key)->addAttribute('nil', 'true');
+            return;
+        }
+
+        if (is_object($value)) {
+            $this->addObjectChild($xml, $key, $value, $request);
+            return;
+        }
+
+        $xml->addChild($key, htmlspecialchars((string) $value));
+    }
+
+    /**
+     * Добавляет массив как дочерний элемент
+     */
+    protected function addArrayChild(SimpleXMLElement $xml, $key, array $value, Request $request): void
+    {
+        if (is_numeric($key)) {
+            $key = 'item';
+        }
+
+        if ($this->isSequentialArray($value)) {
+            $this->addSequentialArrayChild($xml, $key, $value, $request);
+        } else {
+            $child = $xml->addChild($key);
+            $this->arrayToXmlRecursive($value, $child, $request);
+        }
+    }
+
+    /**
+     * Добавляет последовательный массив как коллекцию
+     */
+    protected function addSequentialArrayChild(SimpleXMLElement $xml, string $key, array $value, Request $request): void
+    {
+        $collection = $xml->addChild($key.'_collection');
+        
+        if (empty($value)) {
+            $this->addEmptyTextNode($collection);
+            return;
+        }
+
+        foreach ($value as $item) {
+            $this->addCollectionItem($collection, $key, $item, $request);
+        }
+    }
+
+    /**
+     * Добавляет элемент коллекции
+     */
+    protected function addCollectionItem(SimpleXMLElement $collection, string $key, $item, Request $request): void
+    {
+        $itemElement = $collection->addChild($key);
+        
+        if (is_array($item)) {
+            $this->arrayToXmlRecursive($item, $itemElement, $request);
+        } else {
+            $itemElement[0] = htmlspecialchars((string) $item);
+        }
+    }
+
+    /**
+     * Добавляет пустой текстовый узел
+     */
+    protected function addEmptyTextNode(SimpleXMLElement $element): void
+    {
+        $dom = dom_import_simplexml($element);
+        $dom->appendChild($dom->ownerDocument->createTextNode(''));
+    }
+
+    /**
+     * Добавляет объект как дочерний элемент
+     */
+    protected function addObjectChild(SimpleXMLElement $xml, string $key, object $value, Request $request): void
+    {
+        if (!method_exists($value, 'toArray')) {
+            if (method_exists($value, '__toString')) {
+                $xml->addChild($key, htmlspecialchars((string) $value));
+            } else {
+                $xml->addChild($key, htmlspecialchars(json_encode($value)));
+            }
+            return;
+        }
+
+        $child = $xml->addChild($key);
+        $arrayValue = ($value instanceof JsonResource || $value instanceof ResourceCollection) 
+            ? $value->toArray($request) 
+            : $value->toArray();
+        
+        $this->arrayToXmlRecursive($arrayValue, $child, $request);
     }
 
     /**

@@ -31,6 +31,10 @@ return (new PhpCsFixer\Config())
         'blank_line_before_statement' => [
             'statements' => ['break', 'continue', 'declare', 'return', 'throw', 'try'],
         ],
+        'phpdoc_align' => ['align' => 'vertical'],
+        'phpdoc_order' => true,
+        'no_superfluous_phpdoc_tags' => ['allow_mixed' => true],
+        'phpdoc_summary' => true,
         'phpdoc_single_line_var_spacing' => true,
         'phpdoc_var_without_name' => true,
         'method_argument_space' => [
