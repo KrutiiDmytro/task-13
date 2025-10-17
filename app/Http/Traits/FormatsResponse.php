@@ -42,7 +42,7 @@ trait FormatsResponse
     protected function getFormatFromAcceptHeader(Request $request): string
     {
         $acceptHeader = $request->header('Accept', '');
-        
+
         if (str_contains($acceptHeader, 'application/xml') || str_contains($acceptHeader, 'text/xml')) {
             return 'xml';
         }
@@ -68,15 +68,15 @@ trait FormatsResponse
     protected function xmlResponse($data, int $statusCode = 200, ?Request $request = null)
     {
         $request = $request ?: request();
-        
+
         if ($data instanceof JsonResource || $data instanceof ResourceCollection) {
             $data = $data->toArray($request);
         }
-        
+
         if ($data === null) {
             $data = ['message' => 'No data'];
         }
-        
+
         $xml = $this->arrayToXml($data, 'response', $request);
 
         return response($xml, $statusCode)->header('Content-Type', 'application/xml');
@@ -112,8 +112,9 @@ trait FormatsResponse
 
         $data = $this->normalizeDataToArray($data, $request);
 
-        if (!is_array($data)) {
+        if (! is_array($data)) {
             $xml[0] = htmlspecialchars((string) $data);
+
             return;
         }
 
@@ -127,7 +128,7 @@ trait FormatsResponse
      */
     protected function normalizeDataToArray($data, Request $request)
     {
-        if (!is_object($data)) {
+        if (! is_object($data)) {
             return $data;
         }
 
@@ -149,16 +150,19 @@ trait FormatsResponse
     {
         if (is_array($value)) {
             $this->addArrayChild($xml, $key, $value, $request);
+
             return;
         }
 
         if ($value === null) {
             $xml->addChild($key)->addAttribute('nil', 'true');
+
             return;
         }
 
         if (is_object($value)) {
             $this->addObjectChild($xml, $key, $value, $request);
+
             return;
         }
 
@@ -188,9 +192,10 @@ trait FormatsResponse
     protected function addSequentialArrayChild(SimpleXMLElement $xml, string $key, array $value, Request $request): void
     {
         $collection = $xml->addChild($key.'_collection');
-        
+
         if (empty($value)) {
             $this->addEmptyTextNode($collection);
+
             return;
         }
 
@@ -205,7 +210,7 @@ trait FormatsResponse
     protected function addCollectionItem(SimpleXMLElement $collection, string $key, $item, Request $request): void
     {
         $itemElement = $collection->addChild($key);
-        
+
         if (is_array($item)) {
             $this->arrayToXmlRecursive($item, $itemElement, $request);
         } else {
@@ -227,20 +232,21 @@ trait FormatsResponse
      */
     protected function addObjectChild(SimpleXMLElement $xml, string $key, object $value, Request $request): void
     {
-        if (!method_exists($value, 'toArray')) {
+        if (! method_exists($value, 'toArray')) {
             if (method_exists($value, '__toString')) {
                 $xml->addChild($key, htmlspecialchars((string) $value));
             } else {
                 $xml->addChild($key, htmlspecialchars(json_encode($value)));
             }
+
             return;
         }
 
         $child = $xml->addChild($key);
-        $arrayValue = ($value instanceof JsonResource || $value instanceof ResourceCollection) 
-            ? $value->toArray($request) 
+        $arrayValue = ($value instanceof JsonResource || $value instanceof ResourceCollection)
+            ? $value->toArray($request)
             : $value->toArray();
-        
+
         $this->arrayToXmlRecursive($arrayValue, $child, $request);
     }
 
