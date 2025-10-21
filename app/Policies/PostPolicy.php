@@ -10,7 +10,7 @@ class PostPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(?User $user): bool
+    public function viewAny(): bool
     {
         return true; // Все могут просматривать посты
     }
@@ -18,7 +18,7 @@ class PostPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(?User $user, Post $post): bool
+    public function view(Post $post): bool
     {
         return true; // Все могут просматривать отдельные посты
     }
@@ -32,21 +32,34 @@ class PostPolicy
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Проверяет, может ли пользователь выполнить действие с постом
+     * (редактировать или удалять)
+     * 
+     * @param User|null $user Пользователь
+     * @param Post $post Пост
+     * @return bool true если пользователь может выполнить действие
      */
-    public function update(?User $user, Post $post): bool
+    protected function canModifyPost(?User $user, Post $post): bool
     {
         if ($user === null) {
             return false;
         }
 
-        // Админы могут редактировать любые посты
+        // Админы могут редактировать/удалять любые посты
         if ($user->admin) {
             return true;
         }
 
-        // Пользователи могут редактировать только свои посты
+        // Пользователи могут редактировать/удалять только свои посты
         return $post->user_id === $user->id;
+    }
+
+    /**
+     * Determine whether the user can update the model.
+     */
+    public function update(?User $user, Post $post): bool
+    {
+        return $this->canModifyPost($user, $post);
     }
 
     /**
@@ -54,16 +67,6 @@ class PostPolicy
      */
     public function delete(?User $user, Post $post): bool
     {
-        if ($user === null) {
-            return false;
-        }
-
-        // Админы могут удалять любые посты
-        if ($user->admin) {
-            return true;
-        }
-
-        // Пользователи могут удалять только свои посты
-        return $post->user_id === $user->id;
+        return $this->canModifyPost($user, $post);
     }
 }

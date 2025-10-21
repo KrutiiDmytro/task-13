@@ -11,6 +11,8 @@ use App\Services\PostService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
+
+
 /**
  * @OA\Tag(
  *     name="Posts",
@@ -84,20 +86,31 @@ class PostController extends Controller
      *   @OA\Response(response=201, description="Пост создан")
      * )
      */
+    private const STRING_REQUIRED_255 = 'required|string|max:255';
+    private const STRING_OPTIONAL_255 = 'nullable|string|max:255';
+    private const TAGS_TEXT_500 = 'nullable|string|max:500';
+    private const EMAIL_STRING_255 = 'nullable|email|max:255';
+    private const CONTENT_REQUIRED_STRING = 'required|string';
+    private const CATEGORIES_ID_REQUIRED = 'required|exists:categories,id';
+    private const USER_ID = 'nullable|exists:users,id';
+    private const TAGS_ARRAY = 'nullable|array';
+    private const TAGS_STRING_30 = 'string|max:30';
+
+
     public function store(Request $request)
     {
         try {
             $validated = $request->validate([
-                'title' => 'required|string|max:255',
-                'content' => 'required|string',
-                'category_id' => 'required|exists:categories,id',
-                'user_id' => 'nullable|exists:users,id',
-                'author_name' => 'nullable|string|max:255',
-                'author_email' => 'nullable|email|max:255',
-                'image' => 'nullable|string|max:255',
-                'tags' => 'nullable|array',
-                'tags.*' => 'string|max:30',
-                'tags_text' => 'nullable|string|max:500',
+                'title' =>        self::STRING_REQUIRED_255,
+                'content' =>      self::CONTENT_REQUIRED_STRING,
+                'category_id' =>  self::CATEGORIES_ID_REQUIRED,
+                'user_id' =>      self::USER_ID,
+                'author_name' =>  self::STRING_OPTIONAL_255,
+                'author_email' => self::EMAIL_STRING_255,
+                'image' =>        self::STRING_OPTIONAL_255,
+                'tags' =>         self::TAGS_ARRAY,
+                'tags.*' =>       self::TAGS_STRING_30,
+                'tags_text' =>    self::TAGS_TEXT_500,
             ]);
 
             $post = $this->postService->createPost($validated);
@@ -163,16 +176,16 @@ class PostController extends Controller
     {
         try {
             $validated = $request->validate([
-                'title' => 'required|string|max:255',
-                'content' => 'required|string',
-                'category_id' => 'required|exists:categories,id',
-                'user_id' => 'nullable|exists:users,id',
-                'author_name' => 'nullable|string|max:255',
-                'author_email' => 'nullable|email|max:255',
-                'image' => 'nullable|string|max:255',
-                'tags' => 'nullable|array',
-                'tags.*' => 'string|max:30',
-                'tags_text' => 'nullable|string|max:500',
+                'title' =>        self::STRING_REQUIRED_255,
+                'content' =>      self::CONTENT_REQUIRED_STRING,
+                'category_id' =>  self::CATEGORIES_ID_REQUIRED,
+                'user_id' =>      self::USER_ID,
+                'author_name' =>  self::STRING_OPTIONAL_255,
+                'author_email' => self::EMAIL_STRING_255,
+                'image' =>        self::STRING_OPTIONAL_255,
+                'tags' =>         self::TAGS_ARRAY,
+                'tags.*' =>       self::TAGS_STRING_30,
+                'tags_text' =>    self::TAGS_TEXT_500,
             ]);
 
             $post = $this->postService->updatePost($post, $validated);

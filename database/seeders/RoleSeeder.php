@@ -31,7 +31,7 @@ class RoleSeeder extends Seeder
         // Создаём роли (только если их нет)
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
         $authorRole = Role::firstOrCreate(['name' => 'author']);
-        $userRole = Role::firstOrCreate(['name' => 'user']);
+        Role::firstOrCreate(['name' => 'user']);
 
         // Назначаем права ролям (только если они ещё не назначены)
         if (! $adminRole->hasPermissionTo('manage-posts')) {

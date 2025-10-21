@@ -383,27 +383,36 @@ class CategoryController extends Controller
      */
     public function destroy(Request $request, Category $category)
     {
+        $response = null;
+
         try {
+            /** @var \App\Services\CategoryService $service */
             $service = app(\App\Services\CategoryService::class);
             $categoryToDelete = $service->find($category->id) ?? $category;
 
-            if ($categoryToDelete->posts()->count() > 0) {
-                return $this->formatErrorResponse(
+            if ($categoryToDelete->posts()->exists()) {
+                $response = $this->formatErrorResponse(
                     'Нельзя удалить категорию с постами',
                     $request,
                     409
                 );
+            } else {
+                $service->delete($categoryToDelete);
+
+                $isXml = $this->getResponseFormat($request) === 'xml';
+                $response = $isXml
+                    ? response('', 204)->header('Content-Type', 'application/xml')
+                    : response()->json(null, 204);
             }
-
-            $service->delete($categoryToDelete);
-
-            if ($this->getResponseFormat($request) === 'xml') {
-                return response('', 204)->header('Content-Type', 'application/xml');
-            }
-
-            return response()->json(null, 204);
-        } catch (\Exception $e) {
-            return $this->formatErrorResponse('Ошибка при удалении категории', $request, 500);
+        } catch (\Throwable $e) {
+            // log if needed: report($e);
+            $response = $this->formatErrorResponse(
+                'Ошибка при удалении категории',
+                $request,
+                500
+            );
         }
+
+        return $response;
     }
 }

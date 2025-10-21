@@ -197,8 +197,6 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     |--------------------------------------------------------------------------
     | Здесь можно добавить дополнительные ресурсы:
     */
-
-    // Route::apiResource('users', UserController::class);
 });
 
 /*
@@ -209,10 +207,3 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
 
 |
 */
-
-// Route::prefix('v2')->name('api.v2.')->group(function () {
-//     Route::apiResource('posts', V2\PostController::class);
-//     Route::apiResource('categories', V2\CategoryController::class);
-//     Route::apiResource('comments', V2\CommentController::class);
-//     Route::apiResource('tags', V2\TagController::class);
-// });

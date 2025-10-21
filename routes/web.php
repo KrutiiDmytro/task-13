@@ -12,6 +12,9 @@ use App\Http\Controllers\PublicController;
 use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 
+// Константы маршрутов
+const PROFILE_ROUTE = '/profile';
+
 // Публичные роуты через PublicController
 Route::get('/', [PublicController::class, 'index'])->name('home');
 Route::get('/search', [PublicController::class, 'search'])->name('public.search');
@@ -23,7 +26,7 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-require __DIR__.'/auth.php';
+require_once __DIR__.'/auth.php'; //NOSONAR
 
 // Admin routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -40,9 +43,9 @@ Route::resource('comments', CommentController::class);
 Route::resource('tags', TagController::class);
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get(PROFILE_ROUTE, [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch(PROFILE_ROUTE, [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete(PROFILE_ROUTE, [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 // Маршруты для Swagger UI

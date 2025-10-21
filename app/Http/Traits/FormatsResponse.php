@@ -136,11 +136,9 @@ trait FormatsResponse
             return $data->toArray($request);
         }
 
-        if (method_exists($data, 'toArray')) {
-            return $data->toArray();
-        }
-
-        return (array) $data;
+        return method_exists($data, 'toArray')
+            ? $data->toArray()
+            : (array) $data;
     }
 
     /**
@@ -282,20 +280,19 @@ trait FormatsResponse
     {
         $data = array_merge([
             'message' => $message,
-            'status' => $statusCode,
+            'status'  => $statusCode,
+            'success' => false,
         ], $additionalData);
 
         return $this->formatResponse($data, $request, $statusCode);
     }
 
-    /**
-     * Форматирует успешный ответ без данных
-     */
     protected function formatSuccessResponse(string $message, Request $request, int $statusCode = 200, array $additionalData = [])
     {
         $data = array_merge([
             'message' => $message,
-            'status' => $statusCode,
+            'status'  => $statusCode,
+            'success' => true,
         ], $additionalData);
 
         return $this->formatResponse($data, $request, $statusCode);

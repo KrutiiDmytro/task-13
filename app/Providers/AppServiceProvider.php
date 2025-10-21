@@ -20,19 +20,19 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         // Регистрируем сервисы
-        $this->app->singleton(PostService::class, function ($app) {
+        $this->app->singleton(PostService::class, function () {
             return new PostService;
         });
 
-        $this->app->singleton(CategoryService::class, function ($app) {
+        $this->app->singleton(CategoryService::class, function () {
             return new CategoryService;
         });
 
-        $this->app->singleton(TagService::class, function ($app) {
+        $this->app->singleton(TagService::class, function () {
             return new TagService;
         });
 
-        $this->app->singleton(CommentService::class, function ($app) {
+        $this->app->singleton(CommentService::class, function () {
             return new CommentService;
         });
     }
