@@ -50,8 +50,8 @@ phpunit:
     - touch database/database.sqlite
     - php artisan migrate --force
     - XDEBUG_MODE=coverage php artisan test --coverage-clover reports/coverage.xml --coverage-html reports/coverage
-coverage: '/^\s*Lines:\s*\d+.\d+\%/'
-artifacts:
+  coverage: '/^\s*Lines:\s*\d+.\d+\%/'
+  artifacts:
     when: always
     paths:
       - reports/
