@@ -22,7 +22,8 @@ variables:
 # Установка зависимостей перед каждым job
 before_script:
   - apt-get update -qq
-  - apt-get install -y -qq git curl libzip-dev zip unzip nodejs npm
+  - apt-get install -y -qq git curl libzip-dev zip unzip nodejs npm icu-devtools
+  - docker-php-ext-configure intl
   - docker-php-ext-install pdo_mysql zip intl
   - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
   - composer install --prefer-dist --no-ansi --no-interaction --no-progress
@@ -34,7 +35,8 @@ phpunit:
     - apt-get update -qq
     - apt-get install -y -qq git curl libzip-dev zip unzip nodejs npm pkg-config libpng-dev libjpeg-dev libfreetype6-dev
     - docker-php-ext-configure gd --with-freetype --with-jpeg
-    - docker-php-ext-install pdo_mysql zip gd
+    - docker-php-ext-install pdo_mysql zip gd intl
+    - php -m | grep intl 
     - pecl install xdebug
     - docker-php-ext-enable xdebug
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
