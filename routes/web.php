@@ -12,8 +12,12 @@ use App\Http\Controllers\PublicController;
 use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 
-// Константы маршрутов
-const PROFILE_ROUTE = '/profile';
+require __DIR__.'/auth.php'; //NOSONAR
+
+// Константы маршрутов (использутся define чтобы избежать переопределения)
+if (!defined('PROFILE_ROUTE')) {
+    define('PROFILE_ROUTE', '/profile');
+}
 
 // Публичные роуты через PublicController
 Route::get('/', [PublicController::class, 'index'])->name('home');
@@ -26,7 +30,7 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-require_once __DIR__.'/auth.php'; //NOSONAR
+
 
 // Admin routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {

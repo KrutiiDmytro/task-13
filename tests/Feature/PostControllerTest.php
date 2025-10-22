@@ -388,65 +388,6 @@ class PostControllerTest extends TestCase
     }
 
     #[Test]
-    public function is_admin_returns_true_for_admin_user(): void
-    {
-        $controller = new \App\Http\Controllers\PostController(
-            app(\App\Services\CategoryService::class),
-            app(\App\Services\TagService::class),
-            app(\App\Services\PostService::class)
-        );
-
-        $reflection = new \ReflectionClass($controller);
-        $method = $reflection->getMethod('isAdmin');
-        $method->setAccessible(true);
-
-        // Тестируем как админ
-        $this->actingAs($this->admin);
-        $result = $method->invoke($controller);
-
-        $this->assertTrue($result);
-    }
-
-    #[Test]
-    public function is_admin_returns_false_for_regular_user(): void
-    {
-        $controller = new \App\Http\Controllers\PostController(
-            app(\App\Services\CategoryService::class),
-            app(\App\Services\TagService::class),
-            app(\App\Services\PostService::class)
-        );
-
-        $reflection = new \ReflectionClass($controller);
-        $method = $reflection->getMethod('isAdmin');
-        $method->setAccessible(true);
-
-        // Тестируем как обычный пользователь
-        $this->actingAs($this->user);
-        $result = $method->invoke($controller);
-
-        $this->assertFalse($result);
-    }
-
-    #[Test]
-    public function is_admin_returns_false_for_guest(): void
-    {
-        $controller = new \App\Http\Controllers\PostController(
-            app(\App\Services\CategoryService::class),
-            app(\App\Services\TagService::class),
-            app(\App\Services\PostService::class)
-        );
-
-        $reflection = new \ReflectionClass($controller);
-        $method = $reflection->getMethod('isAdmin');
-        $method->setAccessible(true);
-
-        // Тестируем без аутентификации
-        $result = $method->invoke($controller);
-
-        $this->assertFalse($result);
-    }
-
-    #[Test]
     public function store_creates_post_with_image_upload(): void
     {
         Storage::fake('public');

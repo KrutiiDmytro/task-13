@@ -2,7 +2,10 @@
 
 use Illuminate\Support\Str;
 
-const LOCALHOST = '127.0.0.1';;
+// Константа для localhost (используем define чтобы избежать переопределения)
+if (!defined('LOCALHOST')) {
+    define('LOCALHOST', '127.0.0.1');
+}
 
 
 return [

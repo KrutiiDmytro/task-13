@@ -114,8 +114,8 @@ class PostController extends Controller
             $rules['author_name'] = self::STRING_REQUIRED_255;
             $rules['author_email'] = self::EMAIL_REQUIRED_255;
         } else {
-            $rules['author_name'] = self::STRING_REQUIRED_255;
-            $rules['author_email'] = self::STRING_NULLABLE_255;
+            $rules['author_name'] = self::STRING_NULLABLE_255;
+            $rules['author_email'] = self::EMAIL_STRING_255;
         }
 
         $validatedData = $request->validate($rules);
