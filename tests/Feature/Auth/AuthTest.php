@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -10,37 +10,41 @@ class AuthTest extends TestCase
 {
     use RefreshDatabase;
 
+    private const EMAIL_TEST_EXAMPLE = 'test@example.com';
+
+    private const DASHBORD = '/dashboard';
+
     public function test_user_can_register()
     {
         $userData = [
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => self::EMAIL_TEST_EXAMPLE,
             'password' => 'password',
             'password_confirmation' => 'password',
         ];
 
         $response = $this->post('/register', $userData);
 
-        $response->assertRedirect('/dashboard');
+        $response->assertRedirect(self::DASHBORD);
         $this->assertDatabaseHas('users', [
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => self::EMAIL_TEST_EXAMPLE,
         ]);
     }
 
     public function test_user_can_login()
     {
-        $user = User::factory()->create([
-            'email' => 'test@example.com',
+        User::factory()->create([
+            'email' => self::EMAIL_TEST_EXAMPLE,
             'password' => bcrypt('password'),
         ]);
 
         $response = $this->post('/login', [
-            'email' => 'test@example.com',
+            'email' => self::EMAIL_TEST_EXAMPLE,
             'password' => 'password',
         ]);
 
-        $response->assertRedirect('/dashboard');
+        $response->assertRedirect(self::DASHBORD);
         $this->assertAuthenticated();
     }
 
@@ -56,7 +60,7 @@ class AuthTest extends TestCase
 
     public function test_guest_cannot_access_protected_routes()
     {
-        $response = $this->get('/dashboard');
+        $response = $this->get(self::DASHBORD);
 
         $response->assertRedirect('/login');
     }
@@ -65,7 +69,7 @@ class AuthTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->get('/dashboard');
+        $response = $this->actingAs($user)->get(self::DASHBORD);
 
         $response->assertStatus(200);
     }

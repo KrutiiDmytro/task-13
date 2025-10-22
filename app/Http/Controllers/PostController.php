@@ -83,25 +83,23 @@ class PostController extends Controller
     /**
      * Зберегти новий пост у базу даних.
      */
-    private const STRING_REQUIRED_255 = 'required|string|max:255';
+    private const STRING_REQUIRED_255 = 'required|string|max:255'; // NOSONAR
 
-    private const STRING_NULLABLE_255 = 'nullable|string|max:255';
+    private const STRING_NULLABLE_255 = 'nullable|string|max:255'; // NOSONAR
 
-    private const TAGS_TEXT_500 = 'nullable|string|max:500';
+    private const EMAIL_STRING_255 = 'nullable|email|max:255'; // NOSONAR
 
-    private const EMAIL_STRING_255 = 'nullable|email|max:255';
+    private const EMAIL_REQUIRED_255 = 'required|email|max:255'; // NOSONAR
 
-    private const EMAIL_REQUIRED_255 = 'required|email|max:255';
+    private const CONTENT_REQUIRED_STRING = 'required|string';  // NOSONAR
 
-    private const CONTENT_REQUIRED_STRING = 'required|string';
+    private const CATEGORIES_ID_REQUIRED = 'required|exists:categories,id'; // NOSONAR
 
-    private const CATEGORIES_ID_REQUIRED = 'required|exists:categories,id';
+    private const USER_ID = 'nullable|exists:users,id'; // NOSONAR
 
-    private const USER_ID = 'nullable|exists:users,id';
+    private const TAGS_ARRAY = 'nullable|array'; // NOSONAR
 
-    private const TAGS_ARRAY = 'nullable|array';
-
-    private const TAGS_STRING_30 = 'string|max:30';
+    private const TAGS_STRING_30 = 'string|max:30'; // NOSONAR
 
     public function store(Request $request): RedirectResponse
     {

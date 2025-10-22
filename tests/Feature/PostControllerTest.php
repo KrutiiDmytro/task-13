@@ -15,6 +15,15 @@ class PostControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    private const TEST_POST_TITLE = 'Test Post';
+    private const EMAIL_AUTHOR = 'test@example.com';
+    private const TEST_CONTENT = 'Test content';
+    private const UDATE_TITLE = 'Updated Title';
+    private const AUTHOR_TEST = 'Test Author';
+    private const AUTHOR_UPDATE = 'Updated Author';
+    private const AUTHOR_EMAIL_UDATE = 'updated@example.com';
+    private const CONTENT_UPDATE = 'Updated Content';
+
     protected $user;
 
     protected $admin;
@@ -34,7 +43,7 @@ class PostControllerTest extends TestCase
     #[Test]
     public function index_displays_posts_list(): void
     {
-        $posts = Post::factory()->count(3)->create();
+        Post::factory()->count(3)->create();
 
         $response = $this->get(route('posts.index'));
 
@@ -82,8 +91,8 @@ class PostControllerTest extends TestCase
             'title' => 'Test Post Title',
             'content' => 'This is the content of the test post.',
             'category_id' => $this->category->id,
-            'author_name' => 'Test Author',
-            'author_email' => 'test@example.com',
+            'author_name' => self::AUTHOR_TEST,
+            'author_email' => self::EMAIL_AUTHOR,
         ]);
 
         $response->assertRedirect(route('posts.index'))
@@ -93,8 +102,8 @@ class PostControllerTest extends TestCase
             'title' => 'Test Post Title',
             'content' => 'This is the content of the test post.',
             'category_id' => $this->category->id,
-            'author_name' => 'Test Author',
-            'author_email' => 'test@example.com',
+            'author_name' => self::AUTHOR_TEST,
+            'author_email' => self::EMAIL_AUTHOR,
             'user_id' => $this->user->id, // Пост должен быть привязан к текущему пользователю
         ]);
     }
@@ -112,18 +121,18 @@ class PostControllerTest extends TestCase
     public function store_creates_new_tags_from_input(): void
     {
         $response = $this->actingAs($this->user)->post(route('posts.store'), [
-            'title' => 'Test Post',
-            'content' => 'Test content',
+            'title' => self::TEST_POST_TITLE,
+            'content' => self::TEST_CONTENT,
             'category_id' => $this->category->id,
-            'author_name' => 'Test Author',
-            'author_email' => 'test@example.com',
+            'author_name' => self::AUTHOR_TEST,
+            'author_email' => self::EMAIL_AUTHOR,
             'tags' => ['Laravel', 'PHP', 'Testing'],
         ]);
 
         $response->assertRedirect(route('posts.index'));
 
-        $post = Post::where('title', 'Test Post')->first();
-        $this->assertCount(3, $post->tags);
+        $post = Post::where('title', self::TEST_POST_TITLE)->first();
+        $this->assertEquals(3, $post->tags->count());
     }
 
     #[Test]
@@ -166,11 +175,11 @@ class PostControllerTest extends TestCase
         $post = Post::factory()->create(['user_id' => $this->user->id]);
 
         $response = $this->actingAs($this->user)->put(route('posts.update', $post), [
-            'title' => 'Updated Title',
-            'content' => 'Updated content',
+            'title' => self::UDATE_TITLE,
+            'content' => self::CONTENT_UPDATE,
             'category_id' => $this->category->id,
-            'author_name' => 'Updated Author',
-            'author_email' => 'updated@example.com',
+            'author_name' => self::AUTHOR_UPDATE,
+            'author_email' => self::AUTHOR_EMAIL_UDATE,
         ]);
 
         $response->assertRedirect(route('posts.index'))
@@ -178,8 +187,8 @@ class PostControllerTest extends TestCase
 
         $this->assertDatabaseHas('posts', [
             'id' => $post->id,
-            'title' => 'Updated Title',
-            'content' => 'Updated content',
+            'title' => self::UDATE_TITLE,
+            'content' => self::CONTENT_UPDATE,
         ]);
     }
 
@@ -237,11 +246,13 @@ class PostControllerTest extends TestCase
             'image' => $path,
         ]);
 
-        Storage::disk('public')->assertExists($path);
+        // Проверяем, что файл существует
+        $this->assertTrue(Storage::disk('public')->exists($path));
 
         $this->actingAs($this->user)->delete(route('posts.destroy', $post));
 
-        Storage::disk('public')->assertMissing($path);
+        // Проверяем, что файл удалён
+        $this->assertFalse(Storage::disk('public')->exists($path));
     }
 
     #[Test]
@@ -260,11 +271,11 @@ class PostControllerTest extends TestCase
     public function guest_cannot_create_posts(): void
     {
         $response = $this->post(route('posts.store'), [
-            'title' => 'Test Post',
-            'content' => 'Test content',
+            'title' => self::TEST_POST_TITLE,
+            'content' => self::TEST_CONTENT,
             'category_id' => $this->category->id,
-            'author_name' => 'Test Author',
-            'author_email' => 'test@example.com',
+            'author_name' => self::AUTHOR_TEST,
+            'author_email' => self::EMAIL_AUTHOR,
         ]);
 
         $response->assertRedirect('/login');
@@ -301,9 +312,9 @@ class PostControllerTest extends TestCase
 
         $postData = [
             'title' => 'Test Post without user_id',
-            'content' => 'Test content',
+            'content' => self::TEST_CONTENT,
             'category_id' => $this->category->id,
-            'author_name' => 'Test Author',
+            'author_name' => self::AUTHOR_TEST,
             'author_email' => 'author@example.com',
             // Намеренно не передаем user_id
         ];
@@ -320,74 +331,6 @@ class PostControllerTest extends TestCase
     }
 
     #[Test]
-    public function can_manage_post_returns_false_for_guest(): void
-    {
-        $post = Post::factory()->create(['user_id' => $this->user->id]);
-
-        // Создаем контроллер для прямого тестирования приватного метода
-        $controller = new \App\Http\Controllers\PostController(
-            app(\App\Services\CategoryService::class),
-            app(\App\Services\TagService::class),
-            app(\App\Services\PostService::class)
-        );
-
-        // Используем рефлексию для доступа к приватному методу
-        $reflection = new \ReflectionClass($controller);
-        $method = $reflection->getMethod('canManagePost');
-        $method->setAccessible(true);
-
-        // Тестируем без аутентификации (гость)
-        $result = $method->invoke($controller, $post);
-
-        $this->assertFalse($result);
-    }
-
-    #[Test]
-    public function can_manage_post_returns_true_for_admin(): void
-    {
-        $otherUser = User::factory()->create(['admin' => false]);
-        $post = Post::factory()->create(['user_id' => $otherUser->id]);
-
-        $controller = new \App\Http\Controllers\PostController(
-            app(\App\Services\CategoryService::class),
-            app(\App\Services\TagService::class),
-            app(\App\Services\PostService::class)
-        );
-
-        $reflection = new \ReflectionClass($controller);
-        $method = $reflection->getMethod('canManagePost');
-        $method->setAccessible(true);
-
-        // Тестируем как админ
-        $this->actingAs($this->admin);
-        $result = $method->invoke($controller, $post);
-
-        $this->assertTrue($result);
-    }
-
-    #[Test]
-    public function can_manage_post_returns_true_for_post_owner(): void
-    {
-        $post = Post::factory()->create(['user_id' => $this->user->id]);
-
-        $controller = new \App\Http\Controllers\PostController(
-            app(\App\Services\CategoryService::class),
-            app(\App\Services\TagService::class),
-            app(\App\Services\PostService::class)
-        );
-
-        $reflection = new \ReflectionClass($controller);
-        $method = $reflection->getMethod('canManagePost');
-        $method->setAccessible(true);
-
-        // Тестируем как владелец поста
-        $this->actingAs($this->user);
-        $result = $method->invoke($controller, $post);
-
-        $this->assertTrue($result);
-    }
-
-    #[Test]
     public function store_creates_post_with_image_upload(): void
     {
         Storage::fake('public');
@@ -398,7 +341,7 @@ class PostControllerTest extends TestCase
             'title' => 'Test Post with Image',
             'content' => 'Test content with image',
             'category_id' => $this->category->id,
-            'author_name' => 'Test Author',
+            'author_name' => self::AUTHOR_TEST,
             'author_email' => 'author@example.com',
             'image' => $image, // Покрывает строки 100-102 в методе store
         ];
@@ -417,7 +360,7 @@ class PostControllerTest extends TestCase
         $this->assertStringContainsString('images/posts/', $post->image);
 
         // Проверяем, что файл действительно сохранен
-        Storage::disk('public')->assertExists($post->image);
+         $this->assertTrue(Storage::disk('public')->exists($post->image));
     }
 
     #[Test]
@@ -426,14 +369,14 @@ class PostControllerTest extends TestCase
         $category = Category::factory()->create();
 
         $response = $this->actingAs($this->user)->post(route('posts.store'), [
-            'title' => 'Test Post',
-            'content' => 'Test Content',
+            'title' => self::TEST_POST_TITLE,
+            'content' => self::TEST_CONTENT,
             'category_id' => $category->id,
         ]);
 
         $response->assertRedirect(route('posts.index'));
 
-        $post = Post::where('title', 'Test Post')->first();
+        $post = Post::where('title', self::TEST_POST_TITLE)->first();
         $this->assertEquals($this->user->name, $post->author_name);
         $this->assertEquals($this->user->email, $post->author_email);
     }
@@ -444,7 +387,7 @@ class PostControllerTest extends TestCase
         Storage::fake('public');
 
         // Создаём пост с изображением
-        $oldImage = UploadedFile::fake()->image('old.jpg');
+        UploadedFile::fake()->image('old.jpg');
         $post = Post::factory()->create([
             'user_id' => $this->user->id,
             'image' => 'images/posts/old.jpg',
@@ -454,8 +397,8 @@ class PostControllerTest extends TestCase
         $newImage = UploadedFile::fake()->image('new.jpg');
 
         $response = $this->actingAs($this->user)->patch(route('posts.update', $post), [
-            'title' => 'Updated Title',
-            'content' => 'Updated Content',
+            'title' => self::UDATE_TITLE,
+            'content' => self::CONTENT_UPDATE,
             'category_id' => $this->category->id,
             'image' => $newImage,
         ]);
@@ -471,7 +414,7 @@ class PostControllerTest extends TestCase
 
         $response = $this->actingAs($this->user)->patch(route('posts.update', $post), [
             'title' => 'Updated Post',
-            'content' => 'Updated Content',
+            'content' => self::CONTENT_UPDATE,
             'category_id' => $this->category->id,
         ]);
 
@@ -499,5 +442,78 @@ class PostControllerTest extends TestCase
 
         $response->assertRedirect(route('posts.index'));
         $this->assertDatabaseMissing('posts', ['id' => $post->id]);
+    }
+
+    #[Test]
+    public function store_with_provided_author_name_and_email(): void
+    {
+        $category = Category::factory()->create();
+
+        $response = $this->actingAs($this->user)->post(route('posts.store'), [
+            'title' => self::TEST_POST_TITLE,
+            'content' => self::TEST_CONTENT,
+            'category_id' => $category->id,
+            'author_name' => 'Custom Author',
+            'author_email' => 'custom@example.com',
+        ]);
+
+        $response->assertRedirect(route('posts.index'));
+
+        $post = Post::where('title', self::TEST_POST_TITLE)->first();
+        $this->assertEquals('Custom Author', $post->author_name);
+        $this->assertEquals('custom@example.com', $post->author_email);
+    }
+
+    #[Test]
+    public function update_with_provided_author_data(): void
+    {
+        $post = Post::factory()->create(['user_id' => $this->user->id]);
+        $category = Category::factory()->create();
+
+        $response = $this->actingAs($this->user)->patch(route('posts.update', $post), [
+            'title' =>        self::UDATE_TITLE,
+            'content' =>      self::CONTENT_UPDATE,
+            'category_id' =>  $category->id,
+            'author_name' =>  self::AUTHOR_UPDATE,
+            'author_email' => self::AUTHOR_EMAIL_UDATE,
+        ]);
+
+        $response->assertRedirect(route('posts.index'));
+
+        $post->refresh();
+        $this->assertEquals(self::AUTHOR_UPDATE, $post->author_name);
+        $this->assertEquals(self::AUTHOR_EMAIL_UDATE, $post->author_email);
+    }
+
+    #[Test]
+    public function update_without_changing_image(): void
+    {
+        $post = Post::factory()->create(['user_id' => $this->user->id]);
+        $category = Category::factory()->create();
+
+        $response = $this->actingAs($this->user)->patch(route('posts.update', $post), [
+            'title' =>       self::UDATE_TITLE,
+            'content' =>     self::CONTENT_UPDATE,
+            'category_id' => $category->id,
+        ]);
+
+        $response->assertRedirect(route('posts.index'));
+        $this->assertNull(Post::find($post->id)->image);
+    }
+
+    #[Test]
+    public function update_for_non_owner_returns_403(): void
+    {
+        $otherUser = User::factory()->create();
+        $post = Post::factory()->create(['user_id' => $otherUser->id]);
+        $category = Category::factory()->create();
+
+        $response = $this->actingAs($this->user)->patch(route('posts.update', $post), [
+            'title' =>      'Hacked Title',
+            'content' =>    'Hacked Content',
+            'category_id' => $category->id,
+        ]);
+
+        $response->assertStatus(403);
     }
 }
