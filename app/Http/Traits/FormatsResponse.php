@@ -280,7 +280,7 @@ trait FormatsResponse
     {
         $data = array_merge([
             'message' => $message,
-            'status'  => $statusCode,
+            'status' => $statusCode,
             'success' => false,
         ], $additionalData);
 
@@ -291,7 +291,7 @@ trait FormatsResponse
     {
         $data = array_merge([
             'message' => $message,
-            'status'  => $statusCode,
+            'status' => $statusCode,
             'success' => true,
         ], $additionalData);
 

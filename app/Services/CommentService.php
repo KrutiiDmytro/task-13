@@ -9,7 +9,7 @@ class CommentService
 {
     /**
      * Получает список всех комментариев с пагинацией
-     * 
+     *
      * @return LengthAwarePaginator Пагинированный список комментариев
      */
     public function list(): LengthAwarePaginator
@@ -19,8 +19,8 @@ class CommentService
 
     /**
      * Создает новый комментарий
-     * 
-     * @param array<string, mixed> $data Данные комментария
+     *
+     * @param  array<string, mixed>  $data  Данные комментария
      * @return Comment Созданный комментарий
      */
     public function create(array $data): Comment
@@ -35,9 +35,9 @@ class CommentService
 
     /**
      * Обновляет существующий комментарий
-     * 
-     * @param Comment $comment Комментарий для обновления
-     * @param array<string, mixed> $data Новые данные
+     *
+     * @param  Comment  $comment  Комментарий для обновления
+     * @param  array<string, mixed>  $data  Новые данные
      * @return Comment Обновленный комментарий
      */
     public function update(Comment $comment, array $data): Comment
@@ -54,9 +54,8 @@ class CommentService
 
     /**
      * Удаляет комментарий
-     * 
-     * @param Comment $comment Комментарий для удаления
-     * @return void
+     *
+     * @param  Comment  $comment  Комментарий для удаления
      */
     public function delete(Comment $comment): void
     {

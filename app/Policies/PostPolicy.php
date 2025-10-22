@@ -10,7 +10,7 @@ class PostPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(?User $user): bool //NOSONAR
+    public function viewAny(?User $user): bool // NOSONAR
     {
         return true; // Все могут просматривать посты
     }
@@ -18,7 +18,7 @@ class PostPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(?User $user, Post $post): bool //NOSONAR
+    public function view(?User $user, Post $post): bool // NOSONAR
     {
         return true; // Все могут просматривать отдельные посты
     }
@@ -34,9 +34,9 @@ class PostPolicy
     /**
      * Проверяет, может ли пользователь выполнить действие с постом
      * (редактировать или удалять)
-     * 
-     * @param User|null $user Пользователь
-     * @param Post $post Пост
+     *
+     * @param  User|null  $user  Пользователь
+     * @param  Post  $post  Пост
      * @return bool true если пользователь может выполнить действие
      */
     protected function canModifyPost(?User $user, Post $post): bool

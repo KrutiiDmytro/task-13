@@ -12,10 +12,10 @@ use App\Http\Controllers\PublicController;
 use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 
-require __DIR__.'/auth.php'; //NOSONAR
+require __DIR__.'/auth.php'; // NOSONAR
 
 // Константы маршрутов (использутся define чтобы избежать переопределения)
-if (!defined('PROFILE_ROUTE')) {
+if (! defined('PROFILE_ROUTE')) {
     define('PROFILE_ROUTE', '/profile');
 }
 
@@ -29,8 +29,6 @@ Route::get('/post/{slug}', [PublicController::class, 'show'])->name('public.post
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-
-
 
 // Admin routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {

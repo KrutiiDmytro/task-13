@@ -1,7 +1,7 @@
 <?php
 
 // Константа для пути к логотипу AdminLTE (используем define чтобы избежать переопределения)
-if (!defined('ADMINLTE_LOGO_PATH')) {
+if (! defined('ADMINLTE_LOGO_PATH')) {
     define('ADMINLTE_LOGO_PATH', 'vendor/adminlte/dist/img/AdminLTELogo.png');
 }
 

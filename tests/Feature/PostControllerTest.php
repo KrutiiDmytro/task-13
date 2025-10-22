@@ -437,4 +437,67 @@ class PostControllerTest extends TestCase
         $this->assertEquals($this->user->name, $post->author_name);
         $this->assertEquals($this->user->email, $post->author_email);
     }
+
+    #[Test]
+    public function update_removes_old_image_when_uploading_new_one(): void
+    {
+        Storage::fake('public');
+
+        // Создаём пост с изображением
+        $oldImage = UploadedFile::fake()->image('old.jpg');
+        $post = Post::factory()->create([
+            'user_id' => $this->user->id,
+            'image' => 'images/posts/old.jpg',
+        ]);
+
+        // Загружаем новое изображение
+        $newImage = UploadedFile::fake()->image('new.jpg');
+
+        $response = $this->actingAs($this->user)->patch(route('posts.update', $post), [
+            'title' => 'Updated Title',
+            'content' => 'Updated Content',
+            'category_id' => $this->category->id,
+            'image' => $newImage,
+        ]);
+
+        $response->assertRedirect(route('posts.index'));
+        $this->assertNotEquals('images/posts/old.jpg', $post->refresh()->image);
+    }
+
+    #[Test]
+    public function update_fills_author_data_for_authenticated_users(): void
+    {
+        $post = Post::factory()->create(['user_id' => $this->user->id]);
+
+        $response = $this->actingAs($this->user)->patch(route('posts.update', $post), [
+            'title' => 'Updated Post',
+            'content' => 'Updated Content',
+            'category_id' => $this->category->id,
+        ]);
+
+        $response->assertRedirect(route('posts.index'));
+
+        $post->refresh();
+        $this->assertEquals($this->user->name, $post->author_name);
+        $this->assertEquals($this->user->email, $post->author_email);
+    }
+
+    #[Test]
+    public function destroy_removes_image_from_storage(): void
+    {
+        Storage::fake('public');
+
+        $post = Post::factory()->create([
+            'user_id' => $this->user->id,
+            'image' => 'images/posts/test.jpg',
+        ]);
+
+        // Создаём фиктивный файл
+        Storage::disk('public')->put('images/posts/test.jpg', 'test content');
+
+        $response = $this->actingAs($this->user)->delete(route('posts.destroy', $post));
+
+        $response->assertRedirect(route('posts.index'));
+        $this->assertDatabaseMissing('posts', ['id' => $post->id]);
+    }
 }

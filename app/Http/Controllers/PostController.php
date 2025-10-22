@@ -84,14 +84,23 @@ class PostController extends Controller
      * Зберегти новий пост у базу даних.
      */
     private const STRING_REQUIRED_255 = 'required|string|max:255';
+
     private const STRING_NULLABLE_255 = 'nullable|string|max:255';
+
     private const TAGS_TEXT_500 = 'nullable|string|max:500';
+
     private const EMAIL_STRING_255 = 'nullable|email|max:255';
+
     private const EMAIL_REQUIRED_255 = 'required|email|max:255';
+
     private const CONTENT_REQUIRED_STRING = 'required|string';
+
     private const CATEGORIES_ID_REQUIRED = 'required|exists:categories,id';
+
     private const USER_ID = 'nullable|exists:users,id';
+
     private const TAGS_ARRAY = 'nullable|array';
+
     private const TAGS_STRING_30 = 'string|max:30';
 
     public function store(Request $request): RedirectResponse
@@ -100,13 +109,13 @@ class PostController extends Controller
         $isAuthenticated = auth()->check();
 
         $rules = [
-            'title' =>       self::STRING_REQUIRED_255,
-            'content' =>     self::CONTENT_REQUIRED_STRING,
+            'title' => self::STRING_REQUIRED_255,
+            'content' => self::CONTENT_REQUIRED_STRING,
             'category_id' => self::CATEGORIES_ID_REQUIRED,
-            'user_id' =>     self::USER_ID,
-            'image' =>      'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'tags' =>        self::TAGS_ARRAY,
-            'tags.*' =>      self::TAGS_STRING_30,
+            'user_id' => self::USER_ID,
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'tags' => self::TAGS_ARRAY,
+            'tags.*' => self::TAGS_STRING_30,
         ];
 
         // Добавляем правила для author_name и author_email только для гостей
@@ -259,5 +268,4 @@ class PostController extends Controller
         // Пользователи могут управлять только своими постами
         return $post->user_id === $user->id;
     }
-
 }

@@ -5,7 +5,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
 use Monolog\Processor\PsrLogMessageProcessor;
 
-if (!defined('LARAVEL_LOG_PATH')) {
+if (! defined('LARAVEL_LOG_PATH')) {
     define('LARAVEL_LOG_PATH', 'logs/laravel.log');
 }
 
