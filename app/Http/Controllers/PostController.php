@@ -33,7 +33,7 @@ class PostController extends Controller
         $this->tagService = $tagService;
         $this->postService = $postService;
 
-        // Применяем middleware auth только к методам, которые изменяют данные
+        // Применяем middleware auth только к методам, которые изменяют данные.
         $this->middleware('auth')->only(['create', 'store', 'edit', 'update', 'destroy']);
     }
 
