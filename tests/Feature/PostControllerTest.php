@@ -142,7 +142,7 @@ class PostControllerTest extends TestCase
         $this->assertEquals(3, $post->tags->count());
     }
 
-        #[Test]
+    #[Test]
     public function store_auto_fills_empty_author_name_for_authenticated_users(): void
     {
         $category = Category::factory()->create();
@@ -248,7 +248,7 @@ class PostControllerTest extends TestCase
         $response->assertStatus(403);
     }
 
-       #[Test]
+    #[Test]
     public function update_auto_fills_empty_author_name_for_authenticated_users(): void
     {
         $post = Post::factory()->create(['user_id' => $this->user->id]);

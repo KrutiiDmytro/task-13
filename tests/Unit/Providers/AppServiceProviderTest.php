@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Route;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-
 class AppServiceProviderTest extends TestCase
 {
     #[Test]
@@ -100,12 +99,13 @@ class AppServiceProviderTest extends TestCase
         $this->assertArrayHasKey('admin', $middlewareGroups);
         $this->assertEquals(AdminMiddleware::class, $middlewareGroups['admin']);
     }
+
     #[Test]
     public function post_service_is_registered_as_singleton(): void
     {
         $postService1 = app(PostService::class);
         $postService2 = app(PostService::class);
-        
+
         $this->assertSame($postService1, $postService2);
     }
 
@@ -114,7 +114,7 @@ class AppServiceProviderTest extends TestCase
     {
         $categoryService1 = app(CategoryService::class);
         $categoryService2 = app(CategoryService::class);
-        
+
         $this->assertSame($categoryService1, $categoryService2);
     }
 
@@ -123,7 +123,7 @@ class AppServiceProviderTest extends TestCase
     {
         $tagService1 = app(TagService::class);
         $tagService2 = app(TagService::class);
-        
+
         $this->assertSame($tagService1, $tagService2);
     }
 
@@ -132,7 +132,7 @@ class AppServiceProviderTest extends TestCase
     {
         $commentService1 = app(CommentService::class);
         $commentService2 = app(CommentService::class);
-        
+
         $this->assertSame($commentService1, $commentService2);
     }
 }
