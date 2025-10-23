@@ -16,12 +16,19 @@ class PostControllerTest extends TestCase
     use RefreshDatabase;
 
     private const TEST_POST_TITLE = 'Test Post';
+
     private const EMAIL_AUTHOR = 'test@example.com';
+
     private const TEST_CONTENT = 'Test content';
+
     private const UDATE_TITLE = 'Updated Title';
+
     private const AUTHOR_TEST = 'Test Author';
+
     private const AUTHOR_UPDATE = 'Updated Author';
+
     private const AUTHOR_EMAIL_UDATE = 'updated@example.com';
+
     private const CONTENT_UPDATE = 'Updated Content';
 
     protected $user;
@@ -135,6 +142,27 @@ class PostControllerTest extends TestCase
         $this->assertEquals(3, $post->tags->count());
     }
 
+        #[Test]
+    public function store_auto_fills_empty_author_name_for_authenticated_users(): void
+    {
+        $category = Category::factory()->create();
+
+        $response = $this->actingAs($this->user)->post(route('posts.store'), [
+            'title' => self::TEST_POST_TITLE,
+            'content' => self::TEST_CONTENT,
+            'category_id' => $category->id,
+            'author_name' => '', // Пустое значение
+            'author_email' => '', // Пустое значение
+        ]);
+
+        $response->assertRedirect(route('posts.index'));
+
+        $post = Post::where('title', self::TEST_POST_TITLE)->first();
+        // Должны быть заполнены автоматически из auth()->user()
+        $this->assertEquals($this->user->name, $post->author_name);
+        $this->assertEquals($this->user->email, $post->author_email);
+    }
+
     #[Test]
     public function edit_displays_form_for_post_owner(): void
     {
@@ -218,6 +246,96 @@ class PostControllerTest extends TestCase
         ]);
 
         $response->assertStatus(403);
+    }
+
+       #[Test]
+    public function update_auto_fills_empty_author_name_for_authenticated_users(): void
+    {
+        $post = Post::factory()->create(['user_id' => $this->user->id]);
+        $category = Category::factory()->create();
+
+        $response = $this->actingAs($this->user)->patch(route('posts.update', $post), [
+            'title' => self::UDATE_TITLE,
+            'content' => self::CONTENT_UPDATE,
+            'category_id' => $category->id,
+            'author_name' => '', // Пустое значение
+            'author_email' => '', // Пустое значение
+        ]);
+
+        $response->assertRedirect(route('posts.index'));
+
+        $post->refresh();
+        // Должны быть заполнены автоматически из auth()->user()
+        $this->assertEquals($this->user->name, $post->author_name);
+        $this->assertEquals($this->user->email, $post->author_email);
+    }
+
+    #[Test]
+    public function update_deletes_old_image_before_uploading_new_one(): void
+    {
+        Storage::fake('public');
+
+        // Создаём пост с изображением
+        $oldImage = UploadedFile::fake()->image('old.jpg');
+        $oldImagePath = $oldImage->store('images/posts', 'public');
+
+        $post = Post::factory()->create([
+            'user_id' => $this->user->id,
+            'image' => $oldImagePath,
+        ]);
+
+        // Убеждаемся, что старое изображение существует
+        $this->assertTrue(Storage::disk('public')->exists($oldImagePath));
+
+        // Загружаем новое изображение
+        $newImage = UploadedFile::fake()->image('new.jpg');
+
+        $response = $this->actingAs($this->user)->patch(route('posts.update', $post), [
+            'title' => self::UDATE_TITLE,
+            'content' => self::CONTENT_UPDATE,
+            'category_id' => $this->category->id,
+            'image' => $newImage,
+        ]);
+
+        $response->assertRedirect(route('posts.index'));
+
+        // Проверяем, что старое изображение удалено
+        $this->assertFalse(Storage::disk('public')->exists($oldImagePath));
+
+        // Проверяем, что новое изображение сохранено
+        $post->refresh();
+        $this->assertNotNull($post->image);
+        $this->assertStringContainsString('images/posts/', $post->image);
+        $this->assertTrue(Storage::disk('public')->exists($post->image));
+    }
+
+    #[Test]
+    public function update_preserves_author_data_when_not_provided(): void
+    {
+        $originalAuthorName = 'Original Author';
+        $originalAuthorEmail = 'original@example.com';
+
+        $post = Post::factory()->create([
+            'user_id' => $this->user->id,
+            'author_name' => $originalAuthorName,
+            'author_email' => $originalAuthorEmail,
+        ]);
+
+        $category = Category::factory()->create();
+
+        // Обновляем пост БЕЗ передачи author_name и author_email
+        $response = $this->actingAs($this->user)->patch(route('posts.update', $post), [
+            'title' => self::UDATE_TITLE,
+            'content' => self::CONTENT_UPDATE,
+            'category_id' => $category->id,
+        ]);
+
+        $response->assertRedirect(route('posts.index'));
+
+        $post->refresh();
+        // Проверяем, что данные автора заменены на данные текущего пользователя
+        $this->assertEquals($this->user->name, $post->author_name);
+        $this->assertEquals($this->user->email, $post->author_email);
     }
 
     #[Test]
@@ -360,7 +478,7 @@ class PostControllerTest extends TestCase
         $this->assertStringContainsString('images/posts/', $post->image);
 
         // Проверяем, что файл действительно сохранен
-         $this->assertTrue(Storage::disk('public')->exists($post->image));
+        $this->assertTrue(Storage::disk('public')->exists($post->image));
     }
 
     #[Test]
@@ -471,10 +589,10 @@ class PostControllerTest extends TestCase
         $category = Category::factory()->create();
 
         $response = $this->actingAs($this->user)->patch(route('posts.update', $post), [
-            'title' =>        self::UDATE_TITLE,
-            'content' =>      self::CONTENT_UPDATE,
-            'category_id' =>  $category->id,
-            'author_name' =>  self::AUTHOR_UPDATE,
+            'title' => self::UDATE_TITLE,
+            'content' => self::CONTENT_UPDATE,
+            'category_id' => $category->id,
+            'author_name' => self::AUTHOR_UPDATE,
             'author_email' => self::AUTHOR_EMAIL_UDATE,
         ]);
 
@@ -492,8 +610,8 @@ class PostControllerTest extends TestCase
         $category = Category::factory()->create();
 
         $response = $this->actingAs($this->user)->patch(route('posts.update', $post), [
-            'title' =>       self::UDATE_TITLE,
-            'content' =>     self::CONTENT_UPDATE,
+            'title' => self::UDATE_TITLE,
+            'content' => self::CONTENT_UPDATE,
             'category_id' => $category->id,
         ]);
 
@@ -509,8 +627,8 @@ class PostControllerTest extends TestCase
         $category = Category::factory()->create();
 
         $response = $this->actingAs($this->user)->patch(route('posts.update', $post), [
-            'title' =>      'Hacked Title',
-            'content' =>    'Hacked Content',
+            'title' => 'Hacked Title',
+            'content' => 'Hacked Content',
             'category_id' => $category->id,
         ]);
 

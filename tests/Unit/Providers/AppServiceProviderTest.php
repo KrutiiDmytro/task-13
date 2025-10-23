@@ -5,11 +5,13 @@ namespace Tests\Unit\Providers;
 use App\Http\Middleware\AdminMiddleware;
 use App\Providers\AppServiceProvider;
 use App\Services\CategoryService;
+use App\Services\CommentService;
 use App\Services\PostService;
 use App\Services\TagService;
 use Illuminate\Support\Facades\Route;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
+
 
 class AppServiceProviderTest extends TestCase
 {
@@ -97,5 +99,40 @@ class AppServiceProviderTest extends TestCase
         $middlewareGroups = Route::getMiddleware();
         $this->assertArrayHasKey('admin', $middlewareGroups);
         $this->assertEquals(AdminMiddleware::class, $middlewareGroups['admin']);
+    }
+    #[Test]
+    public function post_service_is_registered_as_singleton(): void
+    {
+        $postService1 = app(PostService::class);
+        $postService2 = app(PostService::class);
+        
+        $this->assertSame($postService1, $postService2);
+    }
+
+    #[Test]
+    public function category_service_is_registered_as_singleton(): void
+    {
+        $categoryService1 = app(CategoryService::class);
+        $categoryService2 = app(CategoryService::class);
+        
+        $this->assertSame($categoryService1, $categoryService2);
+    }
+
+    #[Test]
+    public function tag_service_is_registered_as_singleton(): void
+    {
+        $tagService1 = app(TagService::class);
+        $tagService2 = app(TagService::class);
+        
+        $this->assertSame($tagService1, $tagService2);
+    }
+
+    #[Test]
+    public function comment_service_is_registered_as_singleton(): void
+    {
+        $commentService1 = app(CommentService::class);
+        $commentService2 = app(CommentService::class);
+        
+        $this->assertSame($commentService1, $commentService2);
     }
 }
