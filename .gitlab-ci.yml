@@ -80,7 +80,7 @@ pint:
     - ./vendor/bin/pint --test -v
   allow_failure: true
 
-# Job: SonarQube анализ
+# Job: SonarQube анализ.
 sonarcloud:
   stage: sonar
   before_script: []
