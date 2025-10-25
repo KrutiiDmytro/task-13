@@ -109,4 +109,6 @@ sonarcloud:
       -Dsonar.php.phpcs.reportPaths=reports/phpcs-report.xml
       -Dsonar.sourceEncoding=UTF-8
   only:
+    - merge_requests
     - master
+    - develop
