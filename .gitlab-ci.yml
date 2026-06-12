@@ -38,7 +38,7 @@ phpunit:
   - docker-php-ext-configure intl --enable-intl
   - docker-php-ext-install pdo_mysql zip gd intl
   - curl -fsSL https://xdebug.org/files/xdebug-3.3.2.tgz | tar xz -C /tmp
-  - cd /tmp/xdebug-3.3.2 && phpize && ./configure && make && make install
+  - (cd /tmp/xdebug-3.3.2 && phpize && ./configure && make && make install)
   - docker-php-ext-enable xdebug
   - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
   - composer install --prefer-dist --no-ansi --no-interaction --no-progress
