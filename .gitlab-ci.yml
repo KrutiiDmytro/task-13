@@ -39,7 +39,7 @@ phpunit:
   - docker-php-ext-install pdo_mysql zip gd intl
   - curl -sSLo /usr/local/bin/install-php-extensions https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions
   - chmod +x /usr/local/bin/install-php-extensions
-  - install-php-extensions xdebug
+  - install-php-extensions xdebug-3.3.2
   - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
   - composer install --prefer-dist --no-ansi --no-interaction --no-progress
   - npm ci
