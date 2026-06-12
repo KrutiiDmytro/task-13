@@ -1,19 +1,19 @@
-# Task-13: Laravel Blog — Code Quality & Testing
+# Task-13: Laravel Blog — Якість коду та тестування
 
-## 📋 Описание проекта
+## 📋 Опис проекту
 
-Laravel-приложение блога с полной интеграцией инструментов анализа кода и тестирования.
+Laravel-застосунок блогу з повною інтеграцією інструментів аналізу коду та тестування.
 
-## ✨ Основные возможности
+## ✨ Основні можливості
 
-- 📝 **CRUD операции** для постов, категорий, тегов и комментариев
-- 🔐 **Аутентификация и авторизация** пользователей
-- 📊 **API endpoints** с поддержкой JSON и XML
-- 🧪 **Полное тестирование** (PHPUnit)
-- 📈 **Анализ качества кода** (SonarCloud, PHPCS)
+- 📝 **CRUD операції** для постів, категорій, тегів і коментарів
+- 🔐 **Аутентифікація та авторизація** користувачів
+- 📊 **API endpoints** з підтримкою JSON та XML
+- 🧪 **Повне тестування** (PHPUnit)
+- 📈 **Аналіз якості коду** (SonarCloud, PHPCS)
 - 🔄 **CI/CD pipeline** (GitLab CI)
 
-## 🛠️ Технологический стек
+## 🛠️ Технологічний стек
 
 - **PHP**: 8.3
 - **Framework**: Laravel 11
@@ -26,9 +26,9 @@ Laravel-приложение блога с полной интеграцией �
   - PHP-CS-Fixer
 - **CI/CD**: GitLab CI/CD
 
-## 📊 Метрики качества кода
+## 📊 Метрики якості коду
 
-| Метрика | Значение |
+| Метрика | Значення |
 |---------|----------|
 | **Coverage** | 91.1% |
 | **Security** | 🟢 A (0 issues) |
@@ -39,58 +39,58 @@ Laravel-приложение блога с полной интеграцией �
 
 📊 **[SonarCloud Dashboard](https://sonarcloud.io/project/overview?id=task-13)**
 
-## 🚀 Быстрый старт
+## 🚀 Швидкий старт
 
-### Требования
+### Вимоги
 - PHP 8.3+
 - Composer
 - Node.js & npm
 
-### Установка
+### Встановлення
 
 ```bash
-# Клонируем репозиторий
+# Клонуємо репозиторій
 git clone https://git.foxminded.ua/foxmidedteam/task-13.git
 cd task-13
 
-# Установка зависимостей
+# Встановлення залежностей
 composer install
 npm install
 
-# Настройка окружения
+# Налаштування середовища
 cp .env.example .env
 php artisan key:generate
 
-# Миграция БД
+# Міграція БД
 php artisan migrate
 
 # Запуск Vite
 npm run dev
 
-# Запуск приложения
+# Запуск застосунку
 php artisan serve
 ```
 
-## 🧪 Тестирование
+## 🧪 Тестування
 
 ```bash
-# Запуск всех тестов
+# Запуск усіх тестів
 php artisan test
 
-# Запуск тестов с покрытием
+# Запуск тестів з покриттям
 XDEBUG_MODE=coverage php artisan test --coverage-html reports/coverage
 
-# Конкретный тест
+# Конкретний тест
 php artisan test tests/Feature/PostControllerTest.php
 ```
 
-## 📝 Проверка качества кода
+## 📝 Перевірка якості коду
 
 ```bash
-# PHPCS — проверка стандартов
+# PHPCS — перевірка стандартів
 ./vendor/bin/phpcs
 
-# PHP-CS-Fixer — автоматическое исправление
+# PHP-CS-Fixer — автоматичне виправлення
 ./vendor/bin/php-cs-fixer fix
 
 # Laravel Pint
@@ -99,125 +99,125 @@ php artisan test tests/Feature/PostControllerTest.php
 
 ## 🔄 CI/CD Pipeline
 
-GitLab CI автоматически запускает при каждом push:
+GitLab CI автоматично запускається при кожному push:
 
-1. **phpunit** — запуск тестов с coverage
-2. **phpcs** — проверка кодовых стандартов
-3. **pint** — проверка форматирования
-4. **sonarcloud** — анализ качества кода
+1. **phpunit** — запуск тестів з coverage
+2. **phpcs** — перевірка стандартів коду
+3. **pint** — перевірка форматування
+4. **sonarcloud** — аналіз якості коду
 
 ✅ **[Статус pipeline](https://git.foxminded.ua/foxmidedteam/task-13/-/pipelines)**
 
-## 📂 Структура проекта
+## 📂 Структура проекту
 app/
 ├── Http/
 │ ├── Controllers/
-│ │ ├── Api/ # API контроллеры
-│ │ ├── Admin/ # Админ контроллеры
+│ │ ├── Api/ # API контролери
+│ │ ├── Admin/ # Адмін контролери
 │ │ └── PostController.php
 │ ├── Traits/
 │ │ └── FormatsResponse.php
 │ └── Middleware/
-├── Services/ # Бизнес-логика
-├── Models/ # Eloquent модели
-├── Collections/ # Пользовательские коллекции
-├── Generators/ # Генераторы данных
-└── Policies/ # Авторизация
+├── Services/ # Бізнес-логіка
+├── Models/ # Eloquent моделі
+├── Collections/ # Користувацькі колекції
+├── Generators/ # Генератори даних
+└── Policies/ # Авторизація
 tests/
-├── Feature/ # Интеграционные тесты
-├── Unit/ # Юнит-тесты
+├── Feature/ # Інтеграційні тести
+├── Unit/ # Юніт-тести
 └── TestCase.php
 database/
-├── migrations/ # Миграции БД
-└── seeders/ # Seeder'ы
+├── migrations/ # Міграції БД
+└── seeders/ # Seeder'и
 routes/
-├── api.php # API маршруты
-└── web.php # Веб маршруты
+├── api.php # API маршрути
+└── web.php # Веб маршрути
 
-## 🔧 Ключевые реализованные возможности
+## 🔧 Ключові реалізовані можливості
 
-### ✅ Расширенные функции PHP
+### ✅ Розширені функції PHP
 
-- **Namespaces & PSR-4** — организация кода
-- **Interfaces & Traits** — контракты и переиспользование кода
-- **Iterators & Generators** — эффективная обработка данных
-- **Abstract Classes** — общая функциональность
-- **Magic Methods** — гибкий доступ к свойствам
-- **Type Declarations** — строгая типизация
+- **Namespaces & PSR-4** — організація коду
+- **Interfaces & Traits** — контракти та повторне використання коду
+- **Iterators & Generators** — ефективна обробка даних
+- **Abstract Classes** — загальна функціональність
+- **Magic Methods** — гнучкий доступ до властивостей
+- **Type Declarations** — сувора типізація
 
-### ✅ Оптимизация и рефакторинг
+### ✅ Оптимізація та рефакторинг
 
-- **Уменьшение cyclomatic complexity** в `PostService` и `FormatsResponse`
-- **DRY принцип** — базовый `BaseApiController`
-- **Query optimization** — eager loading с `->with()`
-- **Code duplication** — устранено через `sonar-project.properties`
+- **Зменшення cyclomatic complexity** у `PostService` та `FormatsResponse`
+- **DRY принцип** — базовий `BaseApiController`
+- **Query optimization** — eager loading з `->with()`
+- **Code duplication** — усунено через `sonar-project.properties`
 
-### ✅ Безопасность
+### ✅ Безпека
 
-- **Password hashing** — использование `bcrypt` в Laravel
-- **Input validation** — проверка и очистка всех данных
-- **Authorization policies** — `PostPolicy` для доступа
-- **CSRF protection** — встроенная в Laravel
+- **Password hashing** — використання `bcrypt` у Laravel
+- **Input validation** — перевірка та очищення всіх даних
+- **Authorization policies** — `PostPolicy` для доступу
+- **CSRF protection** — вбудована в Laravel
 
-### ✅ Тестирование
+### ✅ Тестування
 
-- **98%+ code coverage** — почти все функции покрыты
-- **Mocks & Stubs** — изоляция компонентов
-- **Feature & Unit tests** — оба типа тестов
-- **Test factories** — быстрое создание тестовых данных
+- **98%+ code coverage** — майже всі функції покриті
+- **Mocks & Stubs** — ізоляція компонентів
+- **Feature & Unit tests** — обидва типи тестів
+- **Test factories** — швидке створення тестових даних
 
 ## 📝 API Documentation
 
-API поддерживает:
-- **JSON** (по умолчанию)
+API підтримує:
+- **JSON** (за замовчуванням)
 - **XML** (через `Accept: application/xml` header)
 
-### Примеры запросов
+### Приклади запитів
 
 ```bash
-# Получить все посты
+# Отримати всі пости
 GET /api/v1/posts
 
-# Создать пост
+# Створити пост
 POST /api/v1/posts
 Content-Type: application/json
 
 {
-  "title": "Новый пост",
-  "content": "Содержание...",
+  "title": "Новий пост",
+  "content": "Зміст...",
   "category_id": 1
 }
 
-# Получить в XML
+# Отримати у XML
 GET /api/v1/posts
 Accept: application/xml
 ```
 
-## 📈 Что было улучшено
+## 📈 Що було покращено
 
-| Задача | Статус |
+| Завдання | Статус |
 |--------|--------|
 | PHPCS + PHP-CS-Fixer | ✅ |
 | GitLab CI/CD pipeline | ✅ |
-| SonarCloud интеграция | ✅ |
+| SonarCloud інтеграція | ✅ |
 | Code quality improvements | ✅ |
 | Test coverage 90%+ | ✅ |
-| Итераторы и генераторы | ✅ |
-| Документация кода | ✅ |
+| Ітератори та генератори | ✅ |
+| Документація коду | ✅ |
 
 ## 🤝 Автор
 
-**Дмитрий Крутий**
+**Дмитро Крутий**
 - GitHub: [foxminded](https://github.com/foxminded)
 - GitLab: [foxmidedteam](https://git.foxminded.ua/foxmidedteam)
 
-## 📄 Лицензия
+## 📄 Ліцензія
 
 MIT License
 
 ---
 
-## 🔗 Полезные ссылки
+## 🔗 Корисні посилання
 
 - 📊 [SonarCloud Dashboard](https://sonarcloud.io/project/overview?id=task-13)
 - 📦 [GitLab Repository](https://git.foxminded.ua/foxmidedteam/task-13)
@@ -226,4 +226,4 @@ MIT License
 
 ---
 
-**Последнее обновление:** 2025-10-25
+**Останнє оновлення:** 2025-10-25
