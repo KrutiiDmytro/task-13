@@ -147,7 +147,10 @@ class PostsApiTest extends ApiTestCase
 
         $response->assertOk()
             ->assertJsonStructure([
-                'data' => ['id', 'title', 'content', 'category_id', 'created_at', 'updated_at', 'category', 'tags', 'comments'],
+                'data' => [
+                    'id', 'title', 'content', 'category_id', 'created_at',
+                    'updated_at', 'category', 'tags', 'comments',
+                ],
             ])
             ->assertJsonPath('data.id', $post->id);
     }
@@ -210,7 +213,11 @@ class PostsApiTest extends ApiTestCase
             'category_id' => $category->id,
         ];
 
-        $response = $this->put($this->getResourceUrl($post->id).'?format=xml', $payload, ['Accept' => 'application/xml']);
+        $response = $this->put(
+            $this->getResourceUrl($post->id).'?format=xml',
+            $payload,
+            ['Accept' => 'application/xml']
+        );
 
         $response->assertOk();
         $this->assertStringContainsString('application/xml', $response->headers->get('Content-Type'));
@@ -490,7 +497,9 @@ class PostsApiTest extends ApiTestCase
         Post::factory()->create(['category_id' => $category2->id]);
         Post::factory()->create(['category_id' => $category3->id]);
 
-        $response = $this->getJson($this->getResourceUrl().'?category_ids[]='.$category1->id.'&category_ids[]='.$category2->id);
+        $response = $this->getJson(
+            $this->getResourceUrl().'?category_ids[]='.$category1->id.'&category_ids[]='.$category2->id
+        );
 
         $response->assertOk();
         $data = $response->json('data');
@@ -542,7 +551,9 @@ class PostsApiTest extends ApiTestCase
         $post2->tags()->attach([$tag1->id]);
 
         // Тестируем комбинированный поиск
-        $response = $this->getJson($this->getResourceUrl().'?search=Laravel&category_id='.$category1->id.'&tag_id='.$tag1->id);
+        $response = $this->getJson(
+            $this->getResourceUrl().'?search=Laravel&category_id='.$category1->id.'&tag_id='.$tag1->id
+        );
 
         $response->assertOk();
         $data = $response->json('data');

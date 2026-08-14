@@ -383,7 +383,11 @@ class CategoriesApiTest extends ApiTestCase
             'description' => 'Updated XML Description',
         ];
 
-        $response = $this->put($this->getResourceUrl($category->id).'?format=xml', $updateData, ['Accept' => 'application/xml']);
+        $response = $this->put(
+            $this->getResourceUrl($category->id).'?format=xml',
+            $updateData,
+            ['Accept' => 'application/xml']
+        );
 
         $response->assertOk();
         $this->assertStringContainsString('application/xml', $response->headers->get('Content-Type'));

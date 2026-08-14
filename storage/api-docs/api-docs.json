@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Blog API Documentation",
-        "description": "Полная документация REST API для системы управления блогом. API поддерживает форматы JSON и XML.",
+        "description": "Документация REST API системы управления блогом. Форматы: JSON и XML.",
         "contact": {
             "name": "API Support",
             "email": "support@example.com"
@@ -841,7 +841,6 @@
                                     "author_email": {
                                         "type": "string",
                                         "format": "email",
-                                        "example": "ivan@example.com",
                                         "nullable": true
                                     },
                                     "image": {
@@ -854,10 +853,6 @@
                                         "items": {
                                             "type": "string"
                                         },
-                                        "example": [
-                                            "php",
-                                            "laravel"
-                                        ],
                                         "nullable": true
                                     },
                                     "tags_text": {
@@ -885,9 +880,22 @@
                 ],
                 "summary": "Получить пост по ID",
                 "operationId": "a8c7efde35a86efcbbf0bfbfc04b10be",
+                "parameters": [
+                    {
+                        "name": "post",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Пост найден"
+                    },
+                    "404": {
+                        "description": "Пост не найден"
                     }
                 }
             },
@@ -1539,70 +1547,6 @@
                         "items": {
                             "$ref": "#/components/schemas/PostResource"
                         }
-                    }
-                },
-                "type": "object"
-            },
-            "CommentCollection": {
-                "title": "Comment Collection",
-                "description": "Коллекция комментариев с пагинацией",
-                "properties": {
-                    "data": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/CommentResource"
-                        }
-                    },
-                    "links": {
-                        "properties": {
-                            "first": {
-                                "type": "string",
-                                "example": "http://localhost:8000/api/v1/comments?page=1"
-                            },
-                            "last": {
-                                "type": "string",
-                                "example": "http://localhost:8000/api/v1/comments?page=10"
-                            },
-                            "prev": {
-                                "type": "string",
-                                "example": null,
-                                "nullable": true
-                            },
-                            "next": {
-                                "type": "string",
-                                "example": "http://localhost:8000/api/v1/comments?page=2"
-                            }
-                        },
-                        "type": "object"
-                    },
-                    "meta": {
-                        "properties": {
-                            "current_page": {
-                                "type": "integer",
-                                "example": 1
-                            },
-                            "from": {
-                                "type": "integer",
-                                "example": 1
-                            },
-                            "last_page": {
-                                "type": "integer",
-                                "example": 10
-                            },
-                            "per_page": {
-                                "type": "integer",
-                                "example": 15
-                            },
-                            "to": {
-                                "type": "integer",
-                                "example": 15
-                            },
-                            "total": {
-                                "type": "integer",
-                                "example": 150
-                            }
-                        },
-                        "type": "object"
                     }
                 },
                 "type": "object"

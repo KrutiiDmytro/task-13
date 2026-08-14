@@ -39,7 +39,8 @@ class RoleSeeder extends Seeder
         }
 
         if (! $authorRole->hasPermissionTo('manage-posts')) {
-            $authorRole->givePermissionTo(['manage-posts', 'manage-categories', 'manage-tags']); // Автор может управлять контентом
+            // Автор может управлять контентом
+            $authorRole->givePermissionTo(['manage-posts', 'manage-categories', 'manage-tags']);
         }
 
         // Создаём тестового админа, если его нет

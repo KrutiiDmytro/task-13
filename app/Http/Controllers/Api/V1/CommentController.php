@@ -269,7 +269,10 @@ class CommentController extends Controller
      *
      *             @OA\Property(property="content", type="string", example="Обновленный комментарий"),
      *             @OA\Property(property="author_name", type="string", example="Иван Петров"),
-     *             @OA\Property(property="author_email", type="string", format="email", example="ivan.petrov@example.com")
+     *             @OA\Property(
+     *                 property="author_email", type="string",
+     *                 format="email", example="ivan.petrov@example.com"
+     *             )
      *         )
      *     ),
      *

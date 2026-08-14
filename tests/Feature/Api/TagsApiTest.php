@@ -418,7 +418,11 @@ class TagsApiTest extends ApiTestCase
             'slug' => 'updated-xml-tag',
         ];
 
-        $response = $this->put($this->getResourceUrl($tag->id).'?format=xml', $updateData, ['Accept' => 'application/xml']);
+        $response = $this->put(
+            $this->getResourceUrl($tag->id).'?format=xml',
+            $updateData,
+            ['Accept' => 'application/xml']
+        );
 
         $response->assertOk();
         $this->assertStringContainsString('application/xml', $response->headers->get('Content-Type'));

@@ -19,8 +19,37 @@
     <exclude-pattern>*.blade.php</exclude-pattern>
 
         <!-- Стандарт кодирования -->
-    <rule ref="PSR12"/>
+    <rule ref="PSR12">
+        <!--
+            Форматуванням займається Laravel Pint (preset laravel). Ці два sniff'и прямо
+            суперечать його правилам, тож phpcbf і pint нескінченно перезаписували б
+            один одного. Джерело правди щодо форматування — Pint.
 
+            OperatorSpacing:      PHPCS вимагає 'a' . 'b', Pint (concat_space=none) — 'a'.'b'
+            ClassInstantiation:   PHPCS вимагає new Foo(), Pint (new_with_parentheses) — new Foo
+            AnonClassDeclaration: PHPCS вимагає new class (...), Pint (class_definition) — new class(...)
+        -->
+        <exclude name="PSR12.Operators.OperatorSpacing"/>
+        <exclude name="PSR12.Classes.ClassInstantiation"/>
+        <exclude name="PSR12.Classes.AnonClassDeclaration"/>
+    </rule>
+
+    <!--
+        Тестові методи в Laravel іменуються в snake_case (test_user_can_login) — це усталена
+        конвенція фреймворку, а не порушення. Для решти коду правило лишається чинним.
+    -->
+    <rule ref="PSR1.Methods.CamelCapsMethodName">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+
+    <!--
+        Файли config/* повертають масив, routes/* реєструють маршрути — за визначенням це
+        side effects без оголошення символів. Для Laravel це норма.
+    -->
+    <rule ref="PSR1.Files.SideEffects">
+        <exclude-pattern>config/*</exclude-pattern>
+        <exclude-pattern>routes/*</exclude-pattern>
+    </rule>
 
     <!-- Настройки -->
     <arg name="colors"/>
@@ -34,5 +63,10 @@
         <properties>
             <property name="lineLimit" value="120"/>
         </properties>
+        <!-- Файли, згенеровані/опубліковані пакетами — не наш код, не переформатовуємо -->
+        <exclude-pattern>database/migrations/*_create_permission_tables.php</exclude-pattern>
+        <exclude-pattern>config/l5-swagger.php</exclude-pattern>
+        <exclude-pattern>config/adminlte.php</exclude-pattern>
+        <exclude-pattern>config/mail.php</exclude-pattern>
     </rule>
 </ruleset>

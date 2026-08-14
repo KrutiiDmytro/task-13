@@ -32,7 +32,10 @@ class CommentsApiTest extends ApiTestCase
         $response->assertOk()
             ->assertJsonStructure([
                 'data' => [
-                    '*' => ['id', 'content', 'author_name', 'author_email', 'post_id', 'created_at', 'updated_at', 'post'],
+                    '*' => [
+                        'id', 'content', 'author_name', 'author_email',
+                        'post_id', 'created_at', 'updated_at', 'post',
+                    ],
                 ],
                 'meta' => ['total', 'count', 'per_page', 'current_page', 'total_pages'],
             ]);
@@ -136,7 +139,10 @@ class CommentsApiTest extends ApiTestCase
 
         $response->assertCreated()
             ->assertJsonStructure([
-                'data' => ['id', 'content', 'author_name', 'author_email', 'post_id', 'created_at', 'updated_at', 'post'],
+                'data' => [
+                    'id', 'content', 'author_name', 'author_email',
+                    'post_id', 'created_at', 'updated_at', 'post',
+                ],
             ])
             ->assertJsonFragment([
                 'content' => $payload['content'],
@@ -245,7 +251,10 @@ class CommentsApiTest extends ApiTestCase
 
         $response->assertOk()
             ->assertJsonStructure([
-                'data' => ['id', 'content', 'author_name', 'author_email', 'post_id', 'created_at', 'updated_at', 'post'],
+                'data' => [
+                    'id', 'content', 'author_name', 'author_email',
+                    'post_id', 'created_at', 'updated_at', 'post',
+                ],
             ])
             ->assertJsonFragment([
                 'id' => $comment->id,
@@ -366,7 +375,11 @@ class CommentsApiTest extends ApiTestCase
             'author_name' => 'XML Author',
         ];
 
-        $response = $this->put($this->getResourceUrl($comment->id).'?format=xml', $updateData, ['Accept' => 'application/xml']);
+        $response = $this->put(
+            $this->getResourceUrl($comment->id).'?format=xml',
+            $updateData,
+            ['Accept' => 'application/xml']
+        );
 
         $response->assertOk();
         $this->assertStringContainsString('application/xml', $response->headers->get('Content-Type'));

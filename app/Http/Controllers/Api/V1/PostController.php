@@ -21,6 +21,24 @@ class PostController extends Controller
 {
     use FormatsResponse;
 
+    private const STRING_REQUIRED_255 = 'required|string|max:255';
+
+    private const STRING_OPTIONAL_255 = 'nullable|string|max:255';
+
+    private const TAGS_TEXT_500 = 'nullable|string|max:500';
+
+    private const EMAIL_STRING_255 = 'nullable|email|max:255';
+
+    private const CONTENT_REQUIRED_STRING = 'required|string';
+
+    private const CATEGORIES_ID_REQUIRED = 'required|exists:categories,id';
+
+    private const USER_ID = 'nullable|exists:users,id';
+
+    private const TAGS_ARRAY = 'nullable|array';
+
+    private const TAGS_STRING_30 = 'string|max:30';
+
     protected $postService;
 
     public function __construct(PostService $postService)
@@ -74,9 +92,9 @@ class PostController extends Controller
      *       @OA\Property(property="category_id", type="integer", example=1),
      *       @OA\Property(property="user_id", type="integer", nullable=true, example=1),
      *       @OA\Property(property="author_name", type="string", nullable=true, example="Иван"),
-     *       @OA\Property(property="author_email", type="string", format="email", nullable=true, example="ivan@example.com"),
+     *       @OA\Property(property="author_email", type="string", format="email", nullable=true),
      *       @OA\Property(property="image", type="string", nullable=true, example="images/post.jpg"),
-     *       @OA\Property(property="tags", type="array", nullable=true, @OA\Items(type="string"), example={"php","laravel"}),
+     *       @OA\Property(property="tags", type="array", nullable=true, @OA\Items(type="string")),
      *       @OA\Property(property="tags_text", type="string", nullable=true, example="php, laravel")
      *     )
      *   ),
@@ -84,24 +102,6 @@ class PostController extends Controller
      *   @OA\Response(response=201, description="Пост создан")
      * )
      */
-    private const STRING_REQUIRED_255 = 'required|string|max:255';
-
-    private const STRING_OPTIONAL_255 = 'nullable|string|max:255';
-
-    private const TAGS_TEXT_500 = 'nullable|string|max:500';
-
-    private const EMAIL_STRING_255 = 'nullable|email|max:255';
-
-    private const CONTENT_REQUIRED_STRING = 'required|string';
-
-    private const CATEGORIES_ID_REQUIRED = 'required|exists:categories,id';
-
-    private const USER_ID = 'nullable|exists:users,id';
-
-    private const TAGS_ARRAY = 'nullable|array';
-
-    private const TAGS_STRING_30 = 'string|max:30';
-
     public function store(Request $request)
     {
         try {
@@ -137,6 +137,18 @@ class PostController extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     *   path="/api/v1/posts/{post}",
+     *   summary="Получить пост по ID",
+     *   tags={"Posts"},
+     *
+     *   @OA\Parameter(name="post", in="path", required=true, @OA\Schema(type="integer")),
+     *
+     *   @OA\Response(response=200, description="Пост найден"),
+     *   @OA\Response(response=404, description="Пост не найден")
+     * )
+     */
     public function show(Request $request, Post $post)
     {
         try {

@@ -276,8 +276,12 @@ trait FormatsResponse
     /**
      * Форматирует ответ об ошибке
      */
-    protected function formatErrorResponse(string $message, Request $request, int $statusCode = 400, array $additionalData = [])
-    {
+    protected function formatErrorResponse(
+        string $message,
+        Request $request,
+        int $statusCode = 400,
+        array $additionalData = []
+    ) {
         $data = array_merge([
             'message' => $message,
             'status' => $statusCode,
@@ -287,8 +291,12 @@ trait FormatsResponse
         return $this->formatResponse($data, $request, $statusCode);
     }
 
-    protected function formatSuccessResponse(string $message, Request $request, int $statusCode = 200, array $additionalData = [])
-    {
+    protected function formatSuccessResponse(
+        string $message,
+        Request $request,
+        int $statusCode = 200,
+        array $additionalData = []
+    ) {
         $data = array_merge([
             'message' => $message,
             'status' => $statusCode,

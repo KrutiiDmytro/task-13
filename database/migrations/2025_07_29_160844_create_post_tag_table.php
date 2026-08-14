@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('post_tag', function (Blueprint $table) {
             // foreignId() создает UNSIGNED BIGINT, который соответствует id() в Laravel
-            $table->foreignId('post_id')->constrained()->onDelete('cascade'); // FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
-            $table->foreignId('tag_id')->constrained()->onDelete('cascade');   // FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
+            // FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+            $table->foreignId('post_id')->constrained()->onDelete('cascade');
+            // FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
+            $table->foreignId('tag_id')->constrained()->onDelete('cascade');
 
             $table->primary(['post_id', 'tag_id']); // PRIMARY KEY (post_id, tag_id)
             // Индексы для post_id и tag_id создаются автоматически методом constrained()

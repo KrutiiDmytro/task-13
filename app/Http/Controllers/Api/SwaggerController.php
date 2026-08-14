@@ -9,7 +9,7 @@ use App\Http\Controllers\Controller;
  *
  *     @OA\Info(
  *         title="Blog API Documentation",
- *         description="Полная документация REST API для системы управления блогом. API поддерживает форматы JSON и XML.",
+ *         description="Документация REST API системы управления блогом. Форматы: JSON и XML.",
  *         version="1.0.0",
  *
  *         @OA\Contact(
