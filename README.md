@@ -1,5 +1,7 @@
 # Task-13: Laravel Blog — Якість коду та тестування
 
+[![CI](https://github.com/KrutiiDmytro/task-13/actions/workflows/ci.yml/badge.svg)](https://github.com/KrutiiDmytro/task-13/actions/workflows/ci.yml)
+
 ## 📋 Опис проекту
 
 Laravel-застосунок блогу з повною інтеграцією інструментів аналізу коду та тестування.
@@ -11,12 +13,12 @@ Laravel-застосунок блогу з повною інтеграцією �
 - 📊 **API endpoints** з підтримкою JSON та XML
 - 🧪 **Повне тестування** (PHPUnit)
 - 📈 **Аналіз якості коду** (SonarCloud, PHPCS)
-- 🔄 **CI/CD pipeline** (GitLab CI)
+- 🔄 **CI/CD pipeline** (GitHub Actions)
 
 ## 🛠️ Технологічний стек
 
-- **PHP**: 8.3
-- **Framework**: Laravel 11
+- **PHP**: 8.2
+- **Framework**: Laravel 12
 - **Database**: SQLite/MySQL
 - **Testing**: PHPUnit
 - **Code Quality**: 
@@ -24,33 +26,30 @@ Laravel-застосунок блогу з повною інтеграцією �
   - PHPCS
   - Laravel Pint
   - PHP-CS-Fixer
-- **CI/CD**: GitLab CI/CD
+- **CI/CD**: GitHub Actions
 
 ## 📊 Метрики якості коду
 
 | Метрика | Значення |
 |---------|----------|
-| **Coverage** | 91.1% |
-| **Security** | 🟢 A (0 issues) |
-| **Reliability** | 🟢 A (0 issues) |
-| **Maintainability** | 🟢 A (3 issues) |
-| **Duplications** | 1.9% |
-| **Security Hotspots** | 0 |
-
-📊 **[SonarCloud Dashboard](https://sonarcloud.io/project/overview?id=task-13)**
+| **Тести** | 580 passed (1921 assertions) |
+| **Coverage (statements)** | 99.2% |
+| **Coverage (methods)** | 97.3% |
+| **PHPCS** | 🟢 0 порушень |
+| **Laravel Pint** | 🟢 PASS (165 файлів) |
 
 ## 🚀 Швидкий старт
 
 ### Вимоги
-- PHP 8.3+
+- PHP 8.2+
 - Composer
-- Node.js & npm
+- Node.js 22+ & npm
 
 ### Встановлення
 
 ```bash
 # Клонуємо репозиторій
-git clone https://git.foxminded.ua/foxmidedteam/task-13.git
+git clone https://github.com/KrutiiDmytro/task-13.git
 cd task-13
 
 # Встановлення залежностей
@@ -99,14 +98,13 @@ php artisan test tests/Feature/PostControllerTest.php
 
 ## 🔄 CI/CD Pipeline
 
-GitLab CI автоматично запускається при кожному push:
+GitHub Actions (`.github/workflows/ci.yml`) запускається на push у `master` і на кожен pull request:
 
-1. **phpunit** — запуск тестів з coverage
-2. **phpcs** — перевірка стандартів коду
-3. **pint** — перевірка форматування
-4. **sonarcloud** — аналіз якості коду
+1. **tests** — PHPUnit з coverage (xdebug), звіт вивантажується як артефакт
+2. **quality** — PHPCS і Laravel Pint
+3. **sonar** — аналіз SonarCloud (пропускається, поки не додано `SONAR_TOKEN` у Secrets)
 
-✅ **[Статус pipeline](https://git.foxminded.ua/foxmidedteam/task-13/-/pipelines)**
+✅ **[Статус pipeline](https://github.com/KrutiiDmytro/task-13/actions)**
 
 ## 📂 Структура проекту
 app/
@@ -198,18 +196,17 @@ Accept: application/xml
 | Завдання | Статус |
 |--------|--------|
 | PHPCS + PHP-CS-Fixer | ✅ |
-| GitLab CI/CD pipeline | ✅ |
+| GitHub Actions pipeline | ✅ |
 | SonarCloud інтеграція | ✅ |
 | Code quality improvements | ✅ |
-| Test coverage 90%+ | ✅ |
+| Test coverage 90%+ | ✅ (99.2%) |
 | Ітератори та генератори | ✅ |
 | Документація коду | ✅ |
 
 ## 🤝 Автор
 
 **Дмитро Крутий**
-- GitHub: [foxminded](https://github.com/foxminded)
-- GitLab: [foxmidedteam](https://git.foxminded.ua/foxmidedteam)
+- GitHub: [KrutiiDmytro](https://github.com/KrutiiDmytro)
 
 ## 📄 Ліцензія
 
@@ -219,11 +216,11 @@ MIT License
 
 ## 🔗 Корисні посилання
 
-- 📊 [SonarCloud Dashboard](https://sonarcloud.io/project/overview?id=task-13)
-- 📦 [GitLab Repository](https://git.foxminded.ua/foxmidedteam/task-13)
+- 📦 [GitHub Repository](https://github.com/KrutiiDmytro/task-13)
+- 🔄 [GitHub Actions](https://github.com/KrutiiDmytro/task-13/actions)
 - 📝 [Laravel Documentation](https://laravel.com/docs)
 - 🧪 [PHPUnit Documentation](https://phpunit.de)
 
 ---
 
-**Останнє оновлення:** 2025-10-25
+**Останнє оновлення:** 2026-08-14
