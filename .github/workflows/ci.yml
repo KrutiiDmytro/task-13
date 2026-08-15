@@ -93,7 +93,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: tests
     env:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      # Сам сканер читає саме SONAR_TOKEN; ліворуч — імʼя змінної, праворуч — імʼя секрета в репозиторії
+      SONAR_TOKEN: ${{ secrets.ACTIONS_TASK_13 }}
 
     steps:
       - uses: actions/checkout@v5
