@@ -365,8 +365,12 @@ class PostsApiTest extends ApiTestCase
 
         $response = $this->postJson($this->getResourceUrl(), $payload);
 
+        // Наружу отдаётся только общее сообщение: путь к файлу и номер
+        // строки не должны утекать в ответ API
         $response->assertStatus(500)
-            ->assertJsonStructure(['error', 'file', 'line']);
+            ->assertJsonStructure(['message', 'status', 'success'])
+            ->assertJsonMissingPath('file')
+            ->assertJsonMissingPath('line');
     }
 
     #[Test]
@@ -417,7 +421,9 @@ class PostsApiTest extends ApiTestCase
         $response = $this->getJson($this->getResourceUrl());
 
         $response->assertStatus(500)
-            ->assertJsonStructure(['error', 'file', 'line']);
+            ->assertJsonStructure(['message', 'status', 'success'])
+            ->assertJsonMissingPath('file')
+            ->assertJsonMissingPath('line');
     }
 
     #[Test]

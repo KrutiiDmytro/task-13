@@ -9,6 +9,7 @@ use App\Http\Traits\FormatsResponse;
 use App\Models\Post;
 use App\Services\PostService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -65,12 +66,9 @@ class PostController extends Controller
 
             return $this->formatResponse(new PostCollection($posts), $request);
         } catch (\Exception $e) {
-            // Временно выводим реальную ошибку для отладки
-            return response()->json([
-                'error' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-            ], 500);
+            Log::error('Ошибка при получении списка постов', ['exception' => $e]);
+
+            return $this->formatErrorResponse('Ошибка при получении списка постов', $request, 500);
         }
     }
 
@@ -128,12 +126,9 @@ class PostController extends Controller
         } catch (ValidationException $e) {
             return $this->formatValidationErrors($e->errors(), $request);
         } catch (\Exception $e) {
-            // Временно выводим реальную ошибку для отладки
-            return response()->json([
-                'error' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-            ], 500);
+            Log::error('Ошибка при создании поста', ['exception' => $e]);
+
+            return $this->formatErrorResponse('Ошибка при создании поста', $request, 500);
         }
     }
 
