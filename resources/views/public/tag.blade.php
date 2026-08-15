@@ -7,7 +7,7 @@
         <div class="row">
             <div class="col-md-12">
                 <h1 class="mb-4">Тег: {{ $tag->name }}</h1>
-                
+
                 @if($posts->count() > 0)
                     <div class="row">
                         @foreach($posts as $post)
@@ -19,10 +19,10 @@
                                     <div class="card-body d-flex flex-column">
                                         <h5 class="card-title">{{ $post->title }}</h5>
                                         <p class="card-text">{{ \Illuminate\Support\Str::limit($post->content, 100) }}</p>
-                                        
+
                                         <div class="mt-auto">
                                             <small class="text-muted">
-                                                Категория: 
+                                                Категория:
                                                 <a href="{{ route('public.category', $post->category->slug) }}" class="text-decoration-none">
                                                     {{ $post->category->name }}
                                                 </a>
@@ -30,7 +30,7 @@
                                             <br>
                                             @if($post->tags->count() > 1)
                                                 <small class="text-muted">
-                                                    Другие теги: 
+                                                    Другие теги:
                                                     @foreach($post->tags as $postTag)
                                                         @if($postTag->id !== $tag->id)
                                                             <a href="{{ route('public.tag', $postTag->slug) }}" class="badge bg-secondary text-decoration-none me-1">
@@ -43,7 +43,7 @@
                                             @endif
                                             <small class="text-muted">{{ $post->published_at?->format('d.m.Y') }}</small>
                                         </div>
-                                        
+
                                         <div class="mt-2">
                                             <a href="{{ route('public.post', $post->slug) }}" class="btn btn-primary btn-sm">Читать далее</a>
                                         </div>
@@ -52,7 +52,7 @@
                             </div>
                         @endforeach
                     </div>
-                    
+
                     <div class="d-flex justify-content-center">
                         {{ $posts->links() }}
                     </div>

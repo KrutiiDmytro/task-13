@@ -23,17 +23,17 @@
 
                     <form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        
+
                         <!-- Поля для неавторизованных пользователей -->
                         @guest
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="author_name" class="form-label">Ваше имя <span class="text-danger">*</span></label>
-                                <input type="text" 
-                                       class="form-control @error('author_name') is-invalid @enderror" 
-                                       id="author_name" 
-                                       name="author_name" 
-                                       value="{{ old('author_name') }}" 
+                                <input type="text"
+                                       class="form-control @error('author_name') is-invalid @enderror"
+                                       id="author_name"
+                                       name="author_name"
+                                       value="{{ old('author_name') }}"
                                        required
                                        placeholder="Введите ваше имя">
                                 @error('author_name')
@@ -42,10 +42,10 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="author_email" class="form-label">Email (необязательно)</label>
-                                <input type="email" 
-                                       class="form-control @error('author_email') is-invalid @enderror" 
-                                       id="author_email" 
-                                       name="author_email" 
+                                <input type="email"
+                                       class="form-control @error('author_email') is-invalid @enderror"
+                                       id="author_email"
+                                       name="author_email"
                                        value="{{ old('author_email') }}"
                                        placeholder="email@example.com">
                                 @error('author_email')
@@ -54,15 +54,15 @@
                             </div>
                         </div>
                         @endguest
-                        
+
                         <!-- Заголовок поста -->
                         <div class="mb-3">
                             <label for="title" class="form-label">Заголовок <span class="text-danger">*</span></label>
-                            <input type="text" 
-                                   class="form-control @error('title') is-invalid @enderror" 
-                                   id="title" 
-                                   name="title" 
-                                   value="{{ old('title') }}" 
+                            <input type="text"
+                                   class="form-control @error('title') is-invalid @enderror"
+                                   id="title"
+                                   name="title"
+                                   value="{{ old('title') }}"
                                    required
                                    placeholder="Введите заголовок поста">
                             @error('title')
@@ -101,10 +101,10 @@
                         <!-- Содержание -->
                         <div class="mb-3">
                             <label for="content" class="form-label">Содержание <span class="text-danger">*</span></label>
-                            <textarea class="form-control @error('content') is-invalid @enderror" 
-                                      id="content" 
-                                      name="content" 
-                                      rows="10" 
+                            <textarea class="form-control @error('content') is-invalid @enderror"
+                                      id="content"
+                                      name="content"
+                                      rows="10"
                                       required
                                       placeholder="Напишите содержание поста...">{{ old('content') }}</textarea>
                             @error('content')

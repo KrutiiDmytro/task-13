@@ -38,7 +38,7 @@
                                     <td>{{ \Illuminate\Support\Str::limit($comment->content, 50) }}</td>
                                     <td>
                                         @if($comment->post)
-                                            <a href="{{ route('admin.posts.show', $comment->post) }}" 
+                                            <a href="{{ route('admin.posts.show', $comment->post) }}"
                                                class="text-primary">
                                                 {{ \Illuminate\Support\Str::limit($comment->post->title, 30) }}
                                             </a>
@@ -51,15 +51,15 @@
                                     <td>{{ $comment->created_at->format('d.m.Y H:i') }}</td>
                                     <td>
                                         <div class="btn-group" role="group">
-                                            <a href="{{ route('admin.comments.show', $comment) }}" 
+                                            <a href="{{ route('admin.comments.show', $comment) }}"
                                                class="btn btn-info btn-sm" title="Просмотр">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <a href="{{ route('admin.comments.edit', $comment) }}" 
+                                            <a href="{{ route('admin.comments.edit', $comment) }}"
                                                class="btn btn-warning btn-sm" title="Редактировать">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <form action="{{ route('admin.comments.destroy', $comment) }}" 
+                                            <form action="{{ route('admin.comments.destroy', $comment) }}"
                                                   method="POST" class="d-inline"
                                                   onsubmit="return confirm('Вы уверены, что хотите удалить этот комментарий?')">
                                                 @csrf
@@ -75,7 +75,7 @@
                         </tbody>
                     </table>
                 </div>
-                
+
                 <!-- Пагинация -->
                 <div class="d-flex justify-content-center">
                     {{ $comments->links() }}

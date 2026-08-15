@@ -19,7 +19,7 @@
                 </a>
             </div>
         </div>
-        
+
         <form action="{{ route('admin.posts.update', $post) }}" method="POST">
             @csrf
             @method('PUT')
@@ -37,11 +37,11 @@
                 <!-- Заголовок -->
                 <div class="form-group">
                     <label for="title">Заголовок <span class="text-danger">*</span></label>
-                    <input type="text" 
-                           name="title" 
-                           id="title" 
-                           class="form-control @error('title') is-invalid @enderror" 
-                           value="{{ old('title', $post->title) }}" 
+                    <input type="text"
+                           name="title"
+                           id="title"
+                           class="form-control @error('title') is-invalid @enderror"
+                           value="{{ old('title', $post->title) }}"
                            required>
                     @error('title')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -56,7 +56,7 @@
                             <select name="category_id" id="category_id" class="form-control">
                                 <option value="">Без категории</option>
                                 @foreach($categories as $category)
-                                    <option value="{{ $category->id }}" 
+                                    <option value="{{ $category->id }}"
                                             {{ old('category_id', $post->category_id) == $category->id ? 'selected' : '' }}>
                                         {{ $category->name }}
                                     </option>
@@ -70,7 +70,7 @@
                             <label for="tags">Теги</label>
                             <select name="tags[]" id="tags" class="form-control" multiple>
                                 @foreach($tags as $tag)
-                                    <option value="{{ $tag->id }}" 
+                                    <option value="{{ $tag->id }}"
                                             {{ in_array($tag->id, old('tags', $post->tags->pluck('id')->toArray())) ? 'selected' : '' }}>
                                         {{ $tag->name }}
                                     </option>
@@ -86,10 +86,10 @@
                 <!-- Содержание -->
                 <div class="form-group">
                     <label for="content">Содержание <span class="text-danger">*</span></label>
-                    <textarea name="content" 
-                              id="content" 
-                              class="form-control @error('content') is-invalid @enderror" 
-                              rows="15" 
+                    <textarea name="content"
+                              id="content"
+                              class="form-control @error('content') is-invalid @enderror"
+                              rows="15"
                               required>{{ old('content', $post->content) }}</textarea>
                     @error('content')
                         <div class="invalid-feedback">{{ $message }}</div>

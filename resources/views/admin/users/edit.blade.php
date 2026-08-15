@@ -19,7 +19,7 @@
                 </a>
             </div>
         </div>
-        
+
         <form action="{{ route('admin.users.update', $user) }}" method="POST">
             @csrf
             @method('PUT')
@@ -39,11 +39,11 @@
                         <!-- Имя -->
                         <div class="form-group">
                             <label for="name">Имя <span class="text-danger">*</span></label>
-                            <input type="text" 
-                                   name="name" 
-                                   id="name" 
-                                   class="form-control @error('name') is-invalid @enderror" 
-                                   value="{{ old('name', $user->name) }}" 
+                            <input type="text"
+                                   name="name"
+                                   id="name"
+                                   class="form-control @error('name') is-invalid @enderror"
+                                   value="{{ old('name', $user->name) }}"
                                    required>
                             @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -54,11 +54,11 @@
                         <!-- Email -->
                         <div class="form-group">
                             <label for="email">Email <span class="text-danger">*</span></label>
-                            <input type="email" 
-                                   name="email" 
-                                   id="email" 
-                                   class="form-control @error('email') is-invalid @enderror" 
-                                   value="{{ old('email', $user->email) }}" 
+                            <input type="email"
+                                   name="email"
+                                   id="email"
+                                   class="form-control @error('email') is-invalid @enderror"
+                                   value="{{ old('email', $user->email) }}"
                                    required>
                             @error('email')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -72,10 +72,10 @@
                         <!-- Пароль -->
                         <div class="form-group">
                             <label for="password">Новый пароль</label>
-                            <input type="password" 
-                                   name="password" 
-                                   id="password" 
-                                   class="form-control @error('password') is-invalid @enderror" 
+                            <input type="password"
+                                   name="password"
+                                   id="password"
+                                   class="form-control @error('password') is-invalid @enderror"
                                    placeholder="Оставьте пустым, чтобы не менять">
                             @error('password')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -89,10 +89,10 @@
                         <!-- Подтверждение пароля -->
                         <div class="form-group">
                             <label for="password_confirmation">Подтвердите пароль</label>
-                            <input type="password" 
-                                   name="password_confirmation" 
-                                   id="password_confirmation" 
-                                   class="form-control" 
+                            <input type="password"
+                                   name="password_confirmation"
+                                   id="password_confirmation"
+                                   class="form-control"
                                    placeholder="Повторите новый пароль">
                         </div>
                     </div>
@@ -103,7 +103,7 @@
                     <label for="roles">Роли</label>
                     <select name="roles[]" id="roles" class="form-control" multiple>
                         @foreach($roles as $role)
-                            <option value="{{ $role->name }}" 
+                            <option value="{{ $role->name }}"
                                     {{ in_array($role->name, old('roles', $user->roles->pluck('name')->toArray())) ? 'selected' : '' }}>
                                 {{ ucfirst($role->name) }}
                             </option>

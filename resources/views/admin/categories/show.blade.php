@@ -26,18 +26,18 @@
                     <dl class="row">
                         <dt class="col-sm-4">ID:</dt>
                         <dd class="col-sm-8">{{ $category->id }}</dd>
-                        
+
                         <dt class="col-sm-4">Название:</dt>
                         <dd class="col-sm-8"><strong>{{ $category->name }}</strong></dd>
-                        
+
                         <dt class="col-sm-4">Количество постов:</dt>
                         <dd class="col-sm-8">
                             <span class="badge badge-primary">{{ $category->posts->count() }}</span>
                         </dd>
-                        
+
                         <dt class="col-sm-4">Создана:</dt>
                         <dd class="col-sm-8">{{ $category->created_at->format('d.m.Y H:i:s') }}</dd>
-                        
+
                         <dt class="col-sm-4">Изменена:</dt>
                         <dd class="col-sm-8">{{ $category->updated_at->format('d.m.Y H:i:s') }}</dd>
                     </dl>

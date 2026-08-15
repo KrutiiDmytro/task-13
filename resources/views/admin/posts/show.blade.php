@@ -83,9 +83,9 @@
                     <div class="form-group">
                         <label><strong>Изображение:</strong></label>
                         <div>
-                           <x-post-image :post="$post" 
-                                        class="img-fluid" 
-                                        style="max-width: 400px;" 
+                           <x-post-image :post="$post"
+                                        class="img-fluid"
+                                        style="max-width: 400px;"
                                         :clickable="false"
                                         :showPlaceholder="false" />
                     </div>

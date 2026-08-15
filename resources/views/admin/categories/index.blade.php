@@ -42,16 +42,16 @@
                                     <td>{{ $category->created_at->format('d.m.Y H:i') }}</td>
                                     <td>
                                         <div class="btn-group" role="group">
-                                            <a href="{{ route('admin.categories.show', $category) }}" 
+                                            <a href="{{ route('admin.categories.show', $category) }}"
                                                class="btn btn-info btn-sm" title="Просмотр">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <a href="{{ route('admin.categories.edit', $category) }}" 
+                                            <a href="{{ route('admin.categories.edit', $category) }}"
                                                class="btn btn-warning btn-sm" title="Редактировать">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                             @if(($category->posts_count ?? 0) == 0)
-                                                <form action="{{ route('admin.categories.destroy', $category) }}" 
+                                                <form action="{{ route('admin.categories.destroy', $category) }}"
                                                       method="POST" class="d-inline"
                                                       onsubmit="return confirm('Вы уверены, что хотите удалить эту категорию?')">
                                                     @csrf
@@ -61,7 +61,7 @@
                                                     </button>
                                                 </form>
                                             @else
-                                                <button class="btn btn-danger btn-sm" disabled 
+                                                <button class="btn btn-danger btn-sm" disabled
                                                         title="Нельзя удалить категорию с постами">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
@@ -73,7 +73,7 @@
                         </tbody>
                     </table>
                 </div>
-                
+
                 <!-- Пагинация (если есть) -->
                 @if(method_exists($categories, 'links'))
                     <div class="d-flex justify-content-center">

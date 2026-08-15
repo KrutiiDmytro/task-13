@@ -11,10 +11,10 @@
         <div class="card-header">
             <h3 class="card-title">Форма создания поста</h3>
         </div>
-        
+
         <form action="{{ route('admin.posts.store') }}" method="POST">
             @csrf
-            
+
             <div class="card-body">
                 {{-- Заголовок --}}
                 <div class="form-group">
@@ -23,8 +23,8 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-heading"></i></span>
                         </div>
-                        <input type="text" class="form-control @error('title') is-invalid @enderror" 
-                               id="title" name="title" placeholder="Введите заголовок поста" 
+                        <input type="text" class="form-control @error('title') is-invalid @enderror"
+                               id="title" name="title" placeholder="Введите заголовок поста"
                                value="{{ old('title') }}" required>
                         @error('title')
                             <span class="invalid-feedback">{{ $message }}</span>
@@ -35,8 +35,8 @@
                 {{-- Содержимое --}}
                 <div class="form-group">
                     <label for="content">Содержимое</label>
-                    <textarea class="form-control @error('content') is-invalid @enderror" 
-                              id="content" name="content" rows="10" 
+                    <textarea class="form-control @error('content') is-invalid @enderror"
+                              id="content" name="content" rows="10"
                               placeholder="Введите содержимое поста" required>{{ old('content') }}</textarea>
                     @error('content')
                         <span class="invalid-feedback">{{ $message }}</span>
@@ -46,11 +46,11 @@
                 {{-- Категория --}}
                 <div class="form-group">
                     <label for="category_id">Категория</label>
-                    <select class="form-control @error('category_id') is-invalid @enderror" 
+                    <select class="form-control @error('category_id') is-invalid @enderror"
                             id="category_id" name="category_id">
                         <option value="">-- Выберите категорию --</option>
                         @foreach($categories as $category)
-                            <option value="{{ $category->id }}" 
+                            <option value="{{ $category->id }}"
                                     @selected(old('category_id') == $category->id)>
                                 {{ $category->name }}
                             </option>
@@ -104,7 +104,7 @@
                 {{-- Теги --}}
                 <div class="form-group">
                     <label for="tags">Теги</label>
-                    <select class="form-control @error('tags') is-invalid @enderror" 
+                    <select class="form-control @error('tags') is-invalid @enderror"
                             id="tags" name="tags[]" multiple>
                         @foreach($tags as $tag)
                             <option value="{{ $tag->id }}">{{ $tag->name }}</option>

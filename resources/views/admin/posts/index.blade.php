@@ -21,7 +21,7 @@
                                     {{ $post->title }}
                                 </a>
                             </h5>
-                            <p class="card-text">{{ \Illuminate\Support\Str::limit($post->content, 200) }}</p>                            
+                            <p class="card-text">{{ \Illuminate\Support\Str::limit($post->content, 200) }}</p>
                             {{-- Теги поста (клікабельні для фільтрації) --}}
                             @if($post->tags->count() > 0)
                                 <div class="mt-2 mb-2">
@@ -35,16 +35,16 @@
                                     @endforeach
                                 </div>
                             @endif
-                            
+
                             <div class="d-flex justify-content-between align-items-center">
                                 <small class="text-muted">
-                                    {{ $post->date->format('d.m.Y') }} | 
+                                    {{ $post->date->format('d.m.Y') }} |
                                     Автор: {{ $post->user->name ?? $post->author_name ?? 'Аноним' }}
                                     @if($post->category)
                                         | <a href="{{ route('posts.index', ['category' => $post->category->id]) }}">{{ $post->category->name }}</a>
                                     @endif
                                 </small>
-                                
+
                                 <!-- Кнопки управления - только для авторизованных владельцев -->
                                 @auth
                                     @if(auth()->id() === $post->user_id || auth()->user()->is_admin ?? false)
@@ -55,7 +55,7 @@
                                             <form action="{{ route('posts.destroy', $post) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-delete btn-sm" 
+                                                <button type="submit" class="btn btn-delete btn-sm"
                                                         onclick="return confirm('Вы уверены?')">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
@@ -66,14 +66,14 @@
                             </div>
                         </div>
                         {{-- Изображение --}}
-                        <x-post-image :post="$post" 
-                                    class="card-img-bottom" 
-                                    style="max-height:200px; object-fit:cover;" 
+                        <x-post-image :post="$post"
+                                    class="card-img-bottom"
+                                    style="max-height:200px; object-fit:cover;"
                                     :showPlaceholder="false" />
                     </div>
                 @endforeach
 
-                
+
 
                 <!-- Пагинация -->
                 <div class="d-flex justify-content-center">
@@ -116,9 +116,9 @@
                                     <label class="form-label">Категории</label>
                                     @foreach($categories as $category)
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" 
+                                            <input class="form-check-input" type="radio"
                                                    name="category"
-                                                   id="category_{{ $category->id }}" 
+                                                   id="category_{{ $category->id }}"
                                                    value="{{ $category->id }}"
                                                    {{ request('category') == $category->id ? 'checked' : '' }}>
                                             <label class="form-check-label" for="category_{{ $category->id }}">
@@ -135,9 +135,9 @@
                                     <label class="form-label">Теги</label>
                                     @foreach($tags as $tag)
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" 
+                                            <input class="form-check-input" type="radio"
                                                    name="tag"
-                                                   id="tag_{{ $tag->id }}" 
+                                                   id="tag_{{ $tag->id }}"
                                                    value="{{ $tag->id }}"
                                                    {{ request('tag') == $tag->id ? 'checked' : '' }}>
                                             <label class="form-check-label" for="tag_{{ $tag->id }}">

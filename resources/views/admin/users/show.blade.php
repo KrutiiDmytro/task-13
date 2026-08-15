@@ -26,13 +26,13 @@
                     <dl class="row">
                         <dt class="col-sm-4">ID:</dt>
                         <dd class="col-sm-8">{{ $user->id }}</dd>
-                        
+
                         <dt class="col-sm-4">Имя:</dt>
                         <dd class="col-sm-8"><strong>{{ $user->name }}</strong></dd>
-                        
+
                         <dt class="col-sm-4">Email:</dt>
                         <dd class="col-sm-8">{{ $user->email }}</dd>
-                        
+
                         <dt class="col-sm-4">Email подтвержден:</dt>
                         <dd class="col-sm-8">
                             @if($user->email_verified_at)
@@ -42,7 +42,7 @@
                                 <span class="badge badge-warning">Нет</span>
                             @endif
                         </dd>
-                        
+
                         <dt class="col-sm-4">Роли:</dt>
                         <dd class="col-sm-8">
                             @if($user->roles->count() > 0)
@@ -53,10 +53,10 @@
                                 <span class="badge badge-secondary">Нет ролей</span>
                             @endif
                         </dd>
-                        
+
                         <dt class="col-sm-4">Регистрация:</dt>
                         <dd class="col-sm-8">{{ $user->created_at->format('d.m.Y H:i:s') }}</dd>
-                        
+
                         <dt class="col-sm-4">Последнее изменение:</dt>
                         <dd class="col-sm-8">{{ $user->updated_at->format('d.m.Y H:i:s') }}</dd>
                     </dl>

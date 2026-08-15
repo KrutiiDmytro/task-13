@@ -16,7 +16,7 @@
                 </a>
             </div>
         </div>
-        
+
         <form action="{{ route('admin.comments.update', $comment) }}" method="POST">
             @csrf
             @method('PUT')
@@ -54,10 +54,10 @@
                         <!-- Имя автора -->
                         <div class="form-group">
                             <label for="author">Имя автора</label>
-                            <input type="text" 
-                                   name="author" 
-                                   id="author" 
-                                   class="form-control @error('author') is-invalid @enderror" 
+                            <input type="text"
+                                   name="author"
+                                   id="author"
+                                   class="form-control @error('author') is-invalid @enderror"
                                    value="{{ old('name', $comment->name) }}"
                                    placeholder="Имя (необязательно)">
                             @error('author')
@@ -70,10 +70,10 @@
                         <!-- Email автора -->
                         <div class="form-group">
                             <label for="email">Email автора</label>
-                            <input type="email" 
-                                   name="email" 
-                                   id="email" 
-                                   class="form-control @error('email') is-invalid @enderror" 
+                            <input type="email"
+                                   name="email"
+                                   id="email"
+                                   class="form-control @error('email') is-invalid @enderror"
                                    value="{{ old('email', $comment->email) }}"
                                    placeholder="email@example.com">
                             @error('email')
@@ -86,10 +86,10 @@
                 <!-- Содержание комментария -->
                 <div class="form-group">
                     <label for="content">Содержание комментария <span class="text-danger">*</span></label>
-                    <textarea name="content" 
-                              id="content" 
-                              class="form-control @error('content') is-invalid @enderror" 
-                              rows="6" 
+                    <textarea name="content"
+                              id="content"
+                              class="form-control @error('content') is-invalid @enderror"
+                              rows="6"
                               required
                               placeholder="Введите текст комментария...">{{ old('content', $comment->content) }}</textarea>
                     @error('content')

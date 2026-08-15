@@ -41,7 +41,7 @@
                         @endforeach
                     </select>
                 </div>
-                
+
                 <button type="submit" class="btn btn-primary">Обновить комментарий</button>
                 <a href="{{ route('comments.show', $comment) }}" class="btn btn-secondary">Отмена</a>
             </form>

@@ -71,16 +71,16 @@
                                     <td>{{ $user->created_at->format('d.m.Y') }}</td>
                                     <td>
                                         <div class="btn-group" role="group">
-                                            <a href="{{ route('admin.users.show', $user) }}" 
+                                            <a href="{{ route('admin.users.show', $user) }}"
                                                class="btn btn-info btn-sm" title="Просмотр">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <a href="{{ route('admin.users.edit', $user) }}" 
+                                            <a href="{{ route('admin.users.edit', $user) }}"
                                                class="btn btn-warning btn-sm" title="Редактировать">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                             @if($user->id !== auth()->id())
-                                                <form action="{{ route('admin.users.destroy', $user) }}" 
+                                                <form action="{{ route('admin.users.destroy', $user) }}"
                                                       method="POST" class="d-inline"
                                                       onsubmit="return confirm('Вы уверены, что хотите удалить этого пользователя?')">
                                                     @csrf
@@ -101,7 +101,7 @@
                         </tbody>
                     </table>
                 </div>
-                
+
                 <!-- Пагинация -->
                 <div class="d-flex justify-content-center">
                     {{ $users->links() }}

@@ -28,7 +28,7 @@
                     <strong>Дата создания:</strong> {{ $comment->created_at->format('d.m.Y H:i:s') }}<br>
                 </div>
                 <div class="col-md-6">
-                    <strong>Пост:</strong> 
+                    <strong>Пост:</strong>
                     @if($comment->post)
                         <a href="{{ route('admin.posts.show', $comment->post) }}">
                             {{ $comment->post->title }}

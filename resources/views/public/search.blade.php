@@ -13,7 +13,7 @@
                         Поиск
                     @endif
                 </h1>
-                
+
                 {{-- Форма поиска --}}
                 <form method="GET" action="{{ route('public.search') }}" class="mb-4">
                     <div class="input-group">
@@ -21,10 +21,10 @@
                         <button class="btn btn-primary" type="submit">Найти</button>
                     </div>
                 </form>
-                
+
                 @if($posts->count() > 0)
                     <p class="text-muted mb-3">Найдено {{ $posts->total() }} {{ Str::plural('результат', $posts->total(), ['результат', 'результата', 'результатов']) }}</p>
-                    
+
                     <div class="row">
                         @foreach($posts as $post)
                             <div class="col-md-6 col-lg-4 mb-4">
@@ -35,11 +35,11 @@
                                     <div class="card-body d-flex flex-column">
                                         <h5 class="card-title">{{ $post->title }}</h5>
                                         <p class="card-text">{{ \Illuminate\Support\Str::limit($post->content, 100) }}</p>
-                                        
+
                                         <div class="mt-auto">
                                             @if($post->category)
                                                 <small class="text-muted">
-                                                    Категория: 
+                                                    Категория:
                                                     <a href="{{ route('public.category', $post->category->slug ?? $post->category->id) }}" class="text-decoration-none">
                                                         {{ $post->category->name }}
                                                     </a>
@@ -48,7 +48,7 @@
                                             @endif
                                             @if($post->tags && $post->tags->count() > 0)
                                                 <small class="text-muted">
-                                                    Теги: 
+                                                    Теги:
                                                     @foreach($post->tags as $tag)
                                                         <a href="{{ route('public.tag', $tag->slug ?? $tag->id) }}" class="badge bg-secondary text-decoration-none me-1">
                                                             {{ $tag->name }}
@@ -59,7 +59,7 @@
                                             @endif
                                             <small class="text-muted">{{ $post->published_at?->format('d.m.Y') ?? $post->created_at->format('d.m.Y') }}</small>
                                         </div>
-                                        
+
                                         <div class="mt-2">
                                             <a href="{{ route('public.post', $post->slug ?? $post->id) }}" class="btn btn-primary btn-sm">Читать далее</a>
                                         </div>
@@ -68,7 +68,7 @@
                             </div>
                         @endforeach
                     </div>
-                    
+
                     <div class="d-flex justify-content-center">
                         {{ $posts->appends(request()->query())->links() }}
                     </div>

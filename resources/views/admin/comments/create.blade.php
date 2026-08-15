@@ -16,7 +16,7 @@
                 </a>
             </div>
         </div>
-        
+
         <form action="{{ route('admin.comments.store') }}" method="POST">
             @csrf
             <div class="card-body">
@@ -53,10 +53,10 @@
             <!-- Имя автора -->
             <div class="form-group">
                 <label for="author">Имя автора <span class="text-danger">*</span></label>
-                <input type="text" 
-                        name="author" 
-                        id="author" 
-                        class="form-control @error('author') is-invalid @enderror" 
+                <input type="text"
+                        name="author"
+                        id="author"
+                        class="form-control @error('author') is-invalid @enderror"
                         value="{{ old('author') }}"
                         required
                         placeholder="Введите имя автора">
@@ -70,10 +70,10 @@
                         <!-- Email автора -->
                         <div class="form-group">
                             <label for="email">Email автора</label>
-                            <input type="email" 
-                                   name="email" 
-                                   id="email" 
-                                   class="form-control @error('email') is-invalid @enderror" 
+                            <input type="email"
+                                   name="email"
+                                   id="email"
+                                   class="form-control @error('email') is-invalid @enderror"
                                    value="{{ old('email') }}"
                                    placeholder="email@example.com">
                             @error('email')
@@ -86,10 +86,10 @@
                 <!-- Содержание комментария -->
                 <div class="form-group">
                     <label for="content">Содержание комментария <span class="text-danger">*</span></label>
-                    <textarea name="content" 
-                              id="content" 
-                              class="form-control @error('content') is-invalid @enderror" 
-                              rows="6" 
+                    <textarea name="content"
+                              id="content"
+                              class="form-control @error('content') is-invalid @enderror"
+                              rows="6"
                               required
                               placeholder="Введите текст комментария...">{{ old('content') }}</textarea>
                     @error('content')
@@ -125,18 +125,18 @@
     <script>
         // Автофокус на поле выбора поста
         document.getElementById('post_id').focus();
-        
+
         // Валидация формы
         document.querySelector('form').addEventListener('submit', function(e) {
             const postId = document.getElementById('post_id').value;
             const content = document.getElementById('content').value.trim();
-            
+
             if (!postId) {
                 alert('Пожалуйста, выберите пост для комментария');
                 e.preventDefault();
                 return false;
             }
-            
+
             if (!content) {
                 alert('Пожалуйста, введите содержание комментария');
                 e.preventDefault();

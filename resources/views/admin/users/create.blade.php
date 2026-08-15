@@ -16,7 +16,7 @@
                 </a>
             </div>
         </div>
-        
+
         <form action="{{ route('admin.users.store') }}" method="POST">
             @csrf
             <div class="card-body">
@@ -35,11 +35,11 @@
                         <!-- Имя -->
                         <div class="form-group">
                             <label for="name">Имя <span class="text-danger">*</span></label>
-                            <input type="text" 
-                                   name="name" 
-                                   id="name" 
-                                   class="form-control @error('name') is-invalid @enderror" 
-                                   value="{{ old('name') }}" 
+                            <input type="text"
+                                   name="name"
+                                   id="name"
+                                   class="form-control @error('name') is-invalid @enderror"
+                                   value="{{ old('name') }}"
                                    required
                                    placeholder="Введите имя пользователя...">
                             @error('name')
@@ -51,11 +51,11 @@
                         <!-- Email -->
                         <div class="form-group">
                             <label for="email">Email <span class="text-danger">*</span></label>
-                            <input type="email" 
-                                   name="email" 
-                                   id="email" 
-                                   class="form-control @error('email') is-invalid @enderror" 
-                                   value="{{ old('email') }}" 
+                            <input type="email"
+                                   name="email"
+                                   id="email"
+                                   class="form-control @error('email') is-invalid @enderror"
+                                   value="{{ old('email') }}"
                                    required
                                    placeholder="email@example.com">
                             @error('email')
@@ -70,10 +70,10 @@
                         <!-- Пароль -->
                         <div class="form-group">
                             <label for="password">Пароль <span class="text-danger">*</span></label>
-                            <input type="password" 
-                                   name="password" 
-                                   id="password" 
-                                   class="form-control @error('password') is-invalid @enderror" 
+                            <input type="password"
+                                   name="password"
+                                   id="password"
+                                   class="form-control @error('password') is-invalid @enderror"
                                    required
                                    placeholder="Минимум 8 символов">
                             @error('password')
@@ -85,10 +85,10 @@
                         <!-- Подтверждение пароля -->
                         <div class="form-group">
                             <label for="password_confirmation">Подтвердите пароль <span class="text-danger">*</span></label>
-                            <input type="password" 
-                                   name="password_confirmation" 
-                                   id="password_confirmation" 
-                                   class="form-control" 
+                            <input type="password"
+                                   name="password_confirmation"
+                                   id="password_confirmation"
+                                   class="form-control"
                                    required
                                    placeholder="Повторите пароль">
                         </div>
@@ -100,7 +100,7 @@
                     <label for="roles">Роли</label>
                     <select name="roles[]" id="roles" class="form-control" multiple>
                         @foreach($roles as $role)
-                            <option value="{{ $role->name }}" 
+                            <option value="{{ $role->name }}"
                                     {{ in_array($role->name, old('roles', [])) ? 'selected' : '' }}>
                                 {{ ucfirst($role->name) }}
                             </option>
@@ -139,18 +139,18 @@
     <script>
         // Автофокус на поле имени
         document.getElementById('name').focus();
-        
+
         // Валидация паролей
         document.querySelector('form').addEventListener('submit', function(e) {
             const password = document.getElementById('password').value;
             const passwordConfirm = document.getElementById('password_confirmation').value;
-            
+
             if (password !== passwordConfirm) {
                 alert('Пароли не совпадают!');
                 e.preventDefault();
                 return false;
             }
-            
+
             if (password.length < 8) {
                 alert('Пароль должен содержать минимум 8 символов!');
                 e.preventDefault();

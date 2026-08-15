@@ -17,13 +17,13 @@
         <!-- Name -->
         <div class="mb-3">
             <label for="name" class="form-label">Имя</label>
-            <input id="name" 
-                   class="form-control @error('name') is-invalid @enderror" 
-                   type="text" 
-                   name="name" 
-                   value="{{ old('name') }}" 
-                   required 
-                   autofocus 
+            <input id="name"
+                   class="form-control @error('name') is-invalid @enderror"
+                   type="text"
+                   name="name"
+                   value="{{ old('name') }}"
+                   required
+                   autofocus
                    autocomplete="name">
             @error('name')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -33,12 +33,12 @@
         <!-- Email Address -->
         <div class="mb-3">
             <label for="email" class="form-label">Email</label>
-            <input id="email" 
-                   class="form-control @error('email') is-invalid @enderror" 
-                   type="email" 
-                   name="email" 
-                   value="{{ old('email') }}" 
-                   required 
+            <input id="email"
+                   class="form-control @error('email') is-invalid @enderror"
+                   type="email"
+                   name="email"
+                   value="{{ old('email') }}"
+                   required
                    autocomplete="username">
             @error('email')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -48,11 +48,11 @@
         <!-- Password -->
         <div class="mb-3">
             <label for="password" class="form-label">Пароль</label>
-            <input id="password" 
-                   class="form-control @error('password') is-invalid @enderror" 
-                   type="password" 
-                   name="password" 
-                   required 
+            <input id="password"
+                   class="form-control @error('password') is-invalid @enderror"
+                   type="password"
+                   name="password"
+                   required
                    autocomplete="new-password">
             @error('password')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -62,11 +62,11 @@
         <!-- Confirm Password -->
         <div class="mb-4">
             <label for="password_confirmation" class="form-label">Подтвердите пароль</label>
-            <input id="password_confirmation" 
-                   class="form-control" 
-                   type="password" 
-                   name="password_confirmation" 
-                   required 
+            <input id="password_confirmation"
+                   class="form-control"
+                   type="password"
+                   name="password_confirmation"
+                   required
                    autocomplete="new-password">
         </div>
 

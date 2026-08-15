@@ -19,7 +19,7 @@
                 </a>
             </div>
         </div>
-        
+
         <form action="{{ route('admin.categories.update', $category) }}" method="POST">
             @csrf
             @method('PUT')
@@ -37,11 +37,11 @@
                 <!-- Название категории -->
                 <div class="form-group">
                     <label for="name">Название категории <span class="text-danger">*</span></label>
-                    <input type="text" 
-                           name="name" 
-                           id="name" 
-                           class="form-control @error('name') is-invalid @enderror" 
-                           value="{{ old('name', $category->name) }}" 
+                    <input type="text"
+                           name="name"
+                           id="name"
+                           class="form-control @error('name') is-invalid @enderror"
+                           value="{{ old('name', $category->name) }}"
                            required>
                     @error('name')
                         <div class="invalid-feedback">{{ $message }}</div>

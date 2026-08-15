@@ -17,13 +17,13 @@
         <!-- Email Address -->
         <div class="mb-3">
             <label for="email" class="form-label">Email</label>
-            <input id="email" 
-                   class="form-control @error('email') is-invalid @enderror" 
-                   type="email" 
-                   name="email" 
-                   value="{{ old('email') }}" 
-                   required 
-                   autofocus 
+            <input id="email"
+                   class="form-control @error('email') is-invalid @enderror"
+                   type="email"
+                   name="email"
+                   value="{{ old('email') }}"
+                   required
+                   autofocus
                    autocomplete="username">
             @error('email')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -33,11 +33,11 @@
         <!-- Password -->
         <div class="mb-3">
             <label for="password" class="form-label">Пароль</label>
-            <input id="password" 
-                   class="form-control @error('password') is-invalid @enderror" 
-                   type="password" 
-                   name="password" 
-                   required 
+            <input id="password"
+                   class="form-control @error('password') is-invalid @enderror"
+                   type="password"
+                   name="password"
+                   required
                    autocomplete="current-password">
             @error('password')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -47,9 +47,9 @@
         <!-- Remember Me -->
         <div class="mb-3">
             <div class="form-check">
-                <input id="remember_me" 
-                       type="checkbox" 
-                       class="form-check-input" 
+                <input id="remember_me"
+                       type="checkbox"
+                       class="form-check-input"
                        name="remember">
                 <label class="form-check-label" for="remember_me">
                     Запомнить меня

@@ -40,13 +40,13 @@
 
                             <div class="d-flex justify-content-between align-items-center">
                                 <small class="text-muted">
-                                    {{ $post->date->format('d.m.Y') }} | 
+                                    {{ $post->date->format('d.m.Y') }} |
                                     Автор: {{ $post->user->name ?? $post->author_name ?? 'Аноним' }}
                                     @if($post->category)
                                         | <a href="{{ route('posts.index', ['category' => $post->category->id]) }}">{{ $post->category->name }}</a>
                                     @endif
                                 </small>
-                                
+
                                 <!-- Кнопки управления - только для авторизованных владельцев -->
                                 @auth
                                     @if(auth()->id() === $post->user_id || (method_exists(auth()->user(),'hasRole') ? auth()->user()->hasRole('admin') : (auth()->user()->is_admin ?? false)))
@@ -69,9 +69,9 @@
 
                         {{-- Изображение --}}
                         @if($post->image)
-                            <x-post-image :post="$post" 
-                                            class="card-img-bottom" 
-                                            style="max-height:260px; object-fit:cover;" 
+                            <x-post-image :post="$post"
+                                            class="card-img-bottom"
+                                            style="max-height:260px; object-fit:cover;"
                                             :showPlaceholder="false" />
                         @endif
                     </div>

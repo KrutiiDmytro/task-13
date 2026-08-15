@@ -24,16 +24,16 @@
                     <p><strong>Дата обновления:</strong> {{ $comment->updated_at->format('d.m.Y H:i') }}</p>
                 </div>
                 <div class="col-md-6">
-                    <p><strong>Пост:</strong> 
+                    <p><strong>Пост:</strong>
                         <a href="{{ route('posts.show', $comment->post) }}" class="text-decoration-none">
                             {{ $comment->post->title }}
                         </a>
                     </p>
                 </div>
             </div>
-            
+
             <hr>
-            
+
             <div class="mt-3">
                 <h6><strong>Содержание комментария:</strong></h6>
                 <div class="bg-light p-3 rounded">

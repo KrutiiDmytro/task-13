@@ -19,15 +19,15 @@
                         </div>
 
                         {{-- изображение --}}
-                        <x-post-image :post="$post" 
-                                    class="img-fluid rounded mb-4" 
+                        <x-post-image :post="$post"
+                                    class="img-fluid rounded mb-4"
                                     :showPlaceholder="false" />
                     </header>
-                    
+
                     <div class="content">
                         {!! nl2br(e($post->content)) !!}
                     </div>
-                    
+
                     <footer class="mt-4 pt-3 border-top">
                         <div class="row">
                             <div class="col-md-6">
@@ -36,7 +36,7 @@
                                     {{ $post->category->name }}
                                 </a>
                             </div>
-                            
+
                             @if($post->tags->count() > 0)
                                 <div class="col-md-6">
                                     <strong>Теги:</strong>
@@ -88,11 +88,11 @@
                                     <label for="author" class="form-label">
                                         Ваше имя <span class="text-danger">*</span>
                                     </label>
-                                    <input type="text" 
-                                           class="form-control @error('author') is-invalid @enderror" 
-                                           id="author" 
-                                           name="author" 
-                                           value="{{ old('author', auth()->user()->name ?? '') }}" 
+                                    <input type="text"
+                                           class="form-control @error('author') is-invalid @enderror"
+                                           id="author"
+                                           name="author"
+                                           value="{{ old('author', auth()->user()->name ?? '') }}"
                                            required>
                                     @error('author')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -103,10 +103,10 @@
                                     <label for="content" class="form-label">
                                         Комментарий <span class="text-danger">*</span>
                                     </label>
-                                    <textarea class="form-control @error('content') is-invalid @enderror" 
-                                              id="content" 
-                                              name="content" 
-                                              rows="4" 
+                                    <textarea class="form-control @error('content') is-invalid @enderror"
+                                              id="content"
+                                              name="content"
+                                              rows="4"
                                               required>{{ old('content') }}</textarea>
                                     @error('content')
                                         <div class="invalid-feedback">{{ $message }}</div>

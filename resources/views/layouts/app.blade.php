@@ -28,12 +28,12 @@
                 box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
                 transition: transform 0.18s ease, box-shadow 0.18s ease;
             }
-            
+
             .post-card:hover {
                 transform: translateY(-4px);
                 box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
             }
-            
+
             /* Кнопки */
             .btn-create {
                 font-weight: 600;
@@ -44,12 +44,12 @@
                 border-color: #ff5722;
                 color: white;
             }
-            
+
             .btn-create:hover {
                 background-color: #e64a19;
                 border-color: #e64a19;
             }
-            
+
             .btn-icon {
                 width: 34px;
                 height: 34px;
@@ -59,29 +59,29 @@
                 justify-content: center;
                 font-size: 0.875rem;
             }
-            
+
             .btn-edit {
                 background-color: #ffc107;
                 border-color: #ffc107;
                 color: #000;
             }
-            
+
             .btn-edit:hover {
                 background-color: #ffb300;
                 border-color: #ffb300;
             }
-            
+
             .btn-delete {
                 background-color: #dc3545;
                 border-color: #dc3545;
                 color: white;
             }
-            
+
             .btn-delete:hover {
                 background-color: #c82333;
                 border-color: #c82333;
             }
-            
+
             /* Фильтры (sidebar) */
             .sidebar-filter .card {
                 border: none;
@@ -90,25 +90,25 @@
                 position: sticky;
                 top: 6rem;
             }
-            
+
             /* Хедер */
             .header-bg {
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             }
-            
+
             /* Навбар логотип */
             .navbar-brand img,
             .navbar-brand svg {
                 height: 32px;
                 width: auto;
             }
-            
+
             /* Общие стили */
             body {
                 font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
                 background-color: #f5f7fa;
             }
-            
+
             /* Кастомная цветовая схема */
             :root {
                 --primary-color: #ff5722;
@@ -116,7 +116,7 @@
                 --bg-color: #f5f7fa;
             }
         </style>
-        
+
         @stack('styles')
     </head>
 
@@ -141,27 +141,27 @@
 
         <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        
+
         <!-- Инициализация dropdown -->
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 // Проверяем, что Bootstrap загружен
                 if (typeof bootstrap !== 'undefined') {
                     console.log('Bootstrap loaded successfully');
-                    
+
                     // Инициализируем все dropdown элементы
                     var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
                     var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
                         return new bootstrap.Dropdown(dropdownToggleEl);
                     });
-                    
+
                     console.log('Dropdowns initialized:', dropdownList.length);
                 } else {
                     console.error('Bootstrap not loaded!');
                 }
             });
         </script>
-        
+
         @stack('scripts')
     </body>
 </html>

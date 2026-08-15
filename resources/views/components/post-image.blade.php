@@ -8,13 +8,13 @@
 @if($hasRealImage || $showPlaceholder)
     @if($clickable && $hasRealImage)
         <a href="{{ $imageUrl }}" target="_blank" rel="noopener">
-            <img src="{{ $imageUrl }}" 
+            <img src="{{ $imageUrl }}"
                  alt="{{ $post->title }}"
                  class="{{ $class }}"
                  style="{{ $style }}">
         </a>
     @else
-        <img src="{{ $imageUrl }}" 
+        <img src="{{ $imageUrl }}"
              alt="{{ $post->title }}"
              class="{{ $class }}"
              style="{{ $style }}">
