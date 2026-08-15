@@ -2,14 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CommentRequest;
 use App\Models\Comment;
 use App\Models\Post;
+use App\Services\CommentService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class CommentController extends Controller
 {
+    protected CommentService $commentService;
+
+    public function __construct(CommentService $commentService)
+    {
+        $this->commentService = $commentService;
+    }
+
     public function index(): View
     {
         $comments = Comment::with('post')->latest()->paginate(20);
@@ -24,19 +32,11 @@ class CommentController extends Controller
         return view('comments.create', compact('posts'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(CommentRequest $request): RedirectResponse
     {
-        $data = $request->validate([
-            'author' => 'required|string|max:255',
-            'content' => 'required|string|max:1000',
-            'post_id' => 'required|exists:posts,id',
-        ]);
+        $data = $request->validated();
 
-        Comment::create([
-            'author_name' => $data['author'],
-            'content' => $data['content'],
-            'post_id' => $data['post_id'],
-        ]);
+        $this->commentService->create($data);
 
         return redirect()->route('posts.show', $data['post_id']);
     }
@@ -55,26 +55,16 @@ class CommentController extends Controller
         return view('comments.edit', compact('comment', 'posts'));
     }
 
-    public function update(Request $request, Comment $comment): RedirectResponse
+    public function update(CommentRequest $request, Comment $comment): RedirectResponse
     {
-        $data = $request->validate([
-            'author' => 'required|string|max:255',
-            'content' => 'required|string|max:1000',
-            'post_id' => 'required|exists:posts,id',
-        ]);
-
-        $comment->update([
-            'author_name' => $data['author'],
-            'content' => $data['content'],
-            'post_id' => $data['post_id'],
-        ]);
+        $this->commentService->update($comment, $request->validated());
 
         return redirect()->route('comments.show', $comment);
     }
 
     public function destroy(Comment $comment): RedirectResponse
     {
-        $comment->delete();
+        $this->commentService->delete($comment);
 
         return redirect()->route('comments.index');
     }
