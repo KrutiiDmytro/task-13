@@ -19,6 +19,10 @@ if (! defined('PROFILE_ROUTE')) {
     define('PROFILE_ROUTE', '/profile');
 }
 
+if (! defined('API_DOCS_ROUTE')) {
+    define('API_DOCS_ROUTE', '/api/documentation');
+}
+
 // Публичные роуты через PublicController
 Route::get('/', [PublicController::class, 'index'])->name('home');
 Route::get('/search', [PublicController::class, 'search'])->name('public.search');
@@ -51,7 +55,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Маршруты для Swagger UI
-Route::get('/api/documentation', function () {
+Route::get(API_DOCS_ROUTE, function () {
     return view('l5-swagger::index', [
         'documentation' => 'default',
         'documentationTitle' => 'Blog API Documentation',
@@ -86,7 +90,7 @@ Route::get('/api/oauth2-redirect.html', function () {
 
 // Маршрут для редиректа на API документацию
 Route::get('/docs', function () {
-    return redirect('/api/documentation');
+    return redirect(API_DOCS_ROUTE);
 })->name('api.docs');
 
 // Информация об API
@@ -95,7 +99,7 @@ Route::get('/api-info', function () {
         'api_name' => 'Blog API',
         'version' => '1.0.0',
         'description' => 'REST API для системы управления блогом',
-        'documentation_url' => url('/api/documentation'),
+        'documentation_url' => url(API_DOCS_ROUTE),
         'base_url' => url('/api/v1'),
         'supported_formats' => ['json', 'xml'],
         'authentication' => 'Laravel Sanctum',

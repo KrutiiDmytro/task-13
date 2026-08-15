@@ -10,6 +10,11 @@ use Illuminate\Database\Seeder;
 
 class PostSeeder extends Seeder
 {
+    /** Названия тем: используются и как категории, и как теги */
+    private const TOPIC_WEB = 'Веб-разработка';
+
+    private const TOPIC_SECURITY = 'Безопасность';
+
     public function run(): void // NOSONAR
     {
         $posts = [
@@ -25,22 +30,22 @@ class PostSeeder extends Seeder
                 'title' => 'Создание REST API с Laravel',
                 'content' => 'Laravel предоставляет мощные инструменты для создания REST API.',
                 'date' => '2024-01-20',
-                'category_name' => 'Веб-разработка',
-                'tags' => ['PHP', 'Laravel', 'API', 'Веб-разработка'],
+                'category_name' => self::TOPIC_WEB,
+                'tags' => ['PHP', 'Laravel', 'API', self::TOPIC_WEB],
             ],
             [
                 'title' => 'Основы JavaScript ES6+',
                 'content' => 'Современный JavaScript предлагает множество возможностей.',
                 'date' => '2024-01-25',
                 'category_name' => 'JavaScript',
-                'tags' => ['JavaScript', 'Веб-разработка'],
+                'tags' => ['JavaScript', self::TOPIC_WEB],
             ],
             [
                 'title' => 'Безопасность веб-приложений',
                 'content' => 'Защита от SQL-инъекций, XSS атак, CSRF токенов.',
                 'date' => '2024-02-01',
-                'category_name' => 'Безопасность',
-                'tags' => ['Безопасность', 'Веб-разработка'],
+                'category_name' => self::TOPIC_SECURITY,
+                'tags' => [self::TOPIC_SECURITY, self::TOPIC_WEB],
             ],
             [
                 'title' => 'Основи JavaScript для початківців',
@@ -55,8 +60,8 @@ class PostSeeder extends Seeder
                 'content' => 'SQL-ін\'єкція - це один з найпоширеніших видів атак на веб-додатки. '
                     .'Дізнайтеся, як вона працює і які методи захисту існують в Laravel.',
                 'date' => '2024-03-05',
-                'category_name' => 'Безопасность',
-                'tags' => ['Безопасность', 'Базы данных', 'Laravel'],
+                'category_name' => self::TOPIC_SECURITY,
+                'tags' => [self::TOPIC_SECURITY, 'Базы данных', 'Laravel'],
             ],
             [
                 'title' => 'Корисні інструменти для розробника у 2024 році',
