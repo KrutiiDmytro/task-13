@@ -502,26 +502,35 @@ a:hover {
 
 /* ---------- Edge pulse (home page only) ---------------------------------- */
 /* Rendered by public/index.blade.php, so it never appears on other pages.
-   Sits above the page background but below the sticky header (z-index 1030),
-   and never intercepts clicks. */
+   Never intercepts clicks. */
 
+/* Same purple as the PixelPulse logo (--accent), written out as rgba because a
+   custom property holding color-mix() fails at substitution time on browsers
+   without it, which would drop the gradient entirely rather than fall back. */
 :root {
   --pulse-size: 0.5cm;
-  --pulse-edge: rgba(255, 72, 0, 0.38);  /* #ff4800 at the very edge */
-  --pulse-fade: rgba(255, 154, 0, 0.12); /* #ff9a00 fading inward */
+  --pulse-edge: rgba(109, 40, 217, 0.30); /* #6d28d9 at the very edge */
+  --pulse-fade: rgba(109, 40, 217, 0.10); /* fading inward */
 }
 
-/* Three separate strips — top, left, right. No bottom edge.
-   Sits above the sticky header (1030) so the top strip is not hidden by it;
-   pointer-events stay off, so nothing underneath becomes unclickable. */
+/* The lighter accent carries better on the dark background */
+[data-theme="dark"] {
+  --pulse-edge: rgba(124, 92, 255, 0.42); /* #7c5cff */
+  --pulse-fade: rgba(124, 92, 255, 0.14);
+}
+
+/* Two side strips only — left and right, no top or bottom edge.
+   Starts below the sticky header and sits under its z-index (1030), so the
+   glow neither crosses the header nor bleeds through its translucent bar. */
 .edge-pulse {
   position: fixed;
-  inset: 0;
-  z-index: 1040;
+  top: var(--header-h);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1020;
   pointer-events: none;
   background:
-    linear-gradient(to bottom, var(--pulse-edge), var(--pulse-fade) 40%, transparent)
-      top / 100% var(--pulse-size) no-repeat,
     linear-gradient(to right, var(--pulse-edge), var(--pulse-fade) 40%, transparent)
       left / var(--pulse-size) 100% no-repeat,
     linear-gradient(to left, var(--pulse-edge), var(--pulse-fade) 40%, transparent)
@@ -538,12 +547,6 @@ a:hover {
   50% {
     opacity: 0.7;
   }
-}
-
-/* The glow reads much stronger against white — pull it back in light mode */
-[data-theme="light"] .edge-pulse {
-  --pulse-edge: rgba(255, 72, 0, 0.26);
-  --pulse-fade: rgba(255, 154, 0, 0.08);
 }
 
 /* Hold a calm, steady glow instead of freezing mid-animation */
