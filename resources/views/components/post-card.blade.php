@@ -18,13 +18,13 @@
                 </span>
             @endif
         </a>
-
-        @if($post->category)
-            <x-category-badge :category="$post->category" />
-        @endif
     </div>
 
     <div class="post-card__body">
+        @if($post->category)
+            <x-category-badge :category="$post->category" />
+        @endif
+
         <h3 class="post-card__title">
             <a href="{{ $url }}">{{ $post->title }}</a>
         </h3>

@@ -7,9 +7,13 @@ use App\Models\Post;
 use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Storage;
 
 class PostSeeder extends Seeder
 {
+    /** Куда складываются обложки на диске public */
+    private const COVER_DIR = 'images/posts';
+
     /** Названия категорий: вынесены, чтобы не дублировать литералы */
     private const CAT_NEWS = 'News';
 
@@ -31,6 +35,7 @@ class PostSeeder extends Seeder
                 'date' => '2026-08-12',
                 'category_name' => self::CAT_NEWS,
                 'tags' => ['Steam Deck', 'PC', 'Performance'],
+                'image' => 'images/posts/01-steam-deck.jpg',
             ],
             [
                 'title' => 'Five settings to change before you start any open-world game',
@@ -42,6 +47,7 @@ class PostSeeder extends Seeder
                 'date' => '2026-08-09',
                 'category_name' => self::CAT_TIPS,
                 'tags' => ['Open World', 'Performance', 'PC', 'Beginner'],
+                'image' => 'images/posts/02-gaming-pc-rgb.jpg',
             ],
             [
                 'title' => 'How to build an unkillable mage in a first playthrough',
@@ -52,6 +58,7 @@ class PostSeeder extends Seeder
                 'date' => '2026-08-05',
                 'category_name' => self::CAT_TUTORIALS,
                 'tags' => ['RPG', 'Beginner', 'Boss Fight'],
+                'image' => 'images/posts/03-aurora-magic.jpg',
             ],
             [
                 'title' => 'Hollow echoes: a roguelike that respects your time',
@@ -62,6 +69,7 @@ class PostSeeder extends Seeder
                 'date' => '2026-08-02',
                 'category_name' => self::CAT_GAMES,
                 'tags' => ['Roguelike', 'Indie', 'Review'],
+                'image' => 'images/posts/04-neon-joysticks.jpg',
             ],
             [
                 'title' => 'The co-op patch everyone asked for finally landed',
@@ -71,6 +79,7 @@ class PostSeeder extends Seeder
                 'date' => '2026-07-28',
                 'category_name' => self::CAT_NEWS,
                 'tags' => ['Co-op', 'Multiplayer', 'Patch Notes'],
+                'image' => 'images/posts/05-esports-stage.jpg',
             ],
             [
                 'title' => 'Stop aiming with your wrist',
@@ -81,6 +90,7 @@ class PostSeeder extends Seeder
                 'date' => '2026-07-24',
                 'category_name' => self::CAT_TIPS,
                 'tags' => ['FPS', 'Esports', 'PC'],
+                'image' => 'images/posts/06-rgb-keyboard.jpg',
             ],
             [
                 'title' => 'Modding for absolute beginners: your first texture swap',
@@ -92,6 +102,7 @@ class PostSeeder extends Seeder
                 'date' => '2026-07-19',
                 'category_name' => self::CAT_TUTORIALS,
                 'tags' => ['Modding', 'Beginner', 'PC'],
+                'image' => 'images/posts/07-colorful-code.jpg',
             ],
             [
                 'title' => 'A strategy game that finally understands the late game',
@@ -102,6 +113,7 @@ class PostSeeder extends Seeder
                 'date' => '2026-07-14',
                 'category_name' => self::CAT_GAMES,
                 'tags' => ['Strategy', 'Review', 'PC'],
+                'image' => 'images/posts/08-arcade-cabinets.jpg',
             ],
             [
                 'title' => 'Handheld VR is closer than the headlines suggest',
@@ -112,8 +124,11 @@ class PostSeeder extends Seeder
                 'date' => '2026-07-08',
                 'category_name' => self::CAT_NEWS,
                 'tags' => ['VR', 'Nintendo Switch', 'Performance'],
+                'image' => 'images/posts/09-vr-headset.jpg',
             ],
         ];
+
+        $this->publishCoverImages();
 
         // Один автор на все посты сидера
         $user = User::first() ?? User::factory()->create();
@@ -127,6 +142,8 @@ class PostSeeder extends Seeder
                 'date' => $postData['date'],
                 // Без published_at пост не проходит scopePublished и не виден на публичных страницах
                 'published_at' => $postData['date'].' 10:00:00',
+                // Обложки лежат в storage/app/public, отдаются через симлинк public/storage
+                'image' => $postData['image'],
                 'category_id' => $category?->id,
                 'user_id' => $user->id,
                 'author_name' => $user->name,
@@ -135,6 +152,34 @@ class PostSeeder extends Seeder
 
             $tags = Tag::whereIn('name', $postData['tags'])->get();
             $post->tags()->attach($tags);
+        }
+    }
+
+    /**
+     * Копирует обложки из репозитория на диск public.
+     *
+     * Содержимое storage/app/public целиком в .gitignore, поэтому оригиналы
+     * лежат в database/seeders/assets/posts и публикуются при сидировании.
+     * Авторы и лицензии перечислены в IMAGE-CREDITS.md.
+     */
+    private function publishCoverImages(): void
+    {
+        $sourceDir = __DIR__.'/assets/posts';
+
+        if (! is_dir($sourceDir)) {
+            $this->command?->warn("Обложки не найдены: {$sourceDir}");
+
+            return;
+        }
+
+        $disk = Storage::disk('public');
+
+        foreach (glob($sourceDir.'/*.jpg') as $file) {
+            $target = self::COVER_DIR.'/'.basename($file);
+
+            if (! $disk->exists($target)) {
+                $disk->put($target, file_get_contents($file));
+            }
         }
     }
 }
