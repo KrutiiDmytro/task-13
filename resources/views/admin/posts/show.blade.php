@@ -28,7 +28,7 @@
                 <div class="card-body">
                     <!-- Заголовок -->
                     <div class="form-group">
-                        <label><strong>Заголовок:</strong></label>
+                        <strong>Заголовок:</strong>
                         <h3>{{ $post->title }}</h3>
                     </div>
 
@@ -50,7 +50,7 @@
 
                     <!-- Категория -->
                     <div class="form-group">
-                        <label><strong>Категория:</strong></label>
+                        <strong>Категория:</strong>
                         @if($post->category)
                             <span class="badge badge-info badge-lg">{{ $post->category->name }}</span>
                         @else
@@ -60,7 +60,7 @@
 
                     <!-- Теги -->
                     <div class="form-group">
-                        <label><strong>Теги:</strong></label>
+                        <strong>Теги:</strong>
                         @if($post->tags->count() > 0)
                             @foreach($post->tags as $tag)
                                 <span class="badge badge-success">{{ $tag->name }}</span>
@@ -72,7 +72,7 @@
 
                     <!-- Содержание -->
                     <div class="form-group">
-                        <label><strong>Содержание:</strong></label>
+                        <strong>Содержание:</strong>
                         <div class="border p-3 mt-2" style="background-color: #f8f9fa; min-height: 200px;">
                             {!! nl2br(e($post->content)) !!}
                         </div>
@@ -81,7 +81,7 @@
                     <!-- Изображение (если есть) -->
                     @if($post->image)
                     <div class="form-group">
-                        <label><strong>Изображение:</strong></label>
+                        <strong>Изображение:</strong>
                         <div>
                            <x-post-image :post="$post"
                                         class="img-fluid"

@@ -70,7 +70,7 @@
                                     </td>
                                     <td>{{ $user->created_at->format('d.m.Y') }}</td>
                                     <td>
-                                        <div class="btn-group" role="group">
+                                        <div class="btn-group" role="group" aria-label="Действия с пользователем: {{ $user->name }}">
                                             <a href="{{ route('admin.users.show', $user) }}"
                                                class="btn btn-info btn-sm" title="Просмотр">
                                                 <i class="fas fa-eye"></i>

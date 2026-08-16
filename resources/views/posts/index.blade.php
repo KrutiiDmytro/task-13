@@ -50,15 +50,17 @@
                                 <!-- Кнопки управления - только для авторизованных владельцев -->
                                 @auth
                                     @if(auth()->id() === $post->user_id || (method_exists(auth()->user(),'hasRole') ? auth()->user()->hasRole('admin') : (auth()->user()->is_admin ?? false)))
-                                        <div class="btn-group" role="group">
-                                            <a href="{{ route('posts.edit', $post) }}" class="btn btn-edit btn-sm">
-                                                <i class="fas fa-edit"></i>
+                                        <div class="btn-group" role="group" aria-label="Действия с постом: {{ $post->title }}">
+                                            <a href="{{ route('posts.edit', $post) }}" class="btn btn-edit btn-sm"
+                                               aria-label="Редактировать пост: {{ $post->title }}">
+                                                <i class="fas fa-edit" aria-hidden="true"></i>
                                             </a>
                                             <form action="{{ route('posts.destroy', $post) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-delete btn-sm" onclick="return confirm('Вы уверены?')">
-                                                    <i class="fas fa-trash"></i>
+                                                <button type="submit" class="btn btn-delete btn-sm" onclick="return confirm('Вы уверены?')"
+                                                        aria-label="Удалить пост: {{ $post->title }}">
+                                                    <i class="fas fa-trash" aria-hidden="true"></i>
                                                 </button>
                                             </form>
                                         </div>
@@ -106,14 +108,14 @@
                         <form action="{{ route('posts.index') }}" method="GET">
                             <!-- Поиск -->
                             <div class="mb-3">
-                                <label class="form-label">Поиск по названию</label>
-                                <input type="text" name="search" class="form-control" value="{{ request('search') }}" placeholder="Введите текст...">
+                                <label class="form-label" for="search">Поиск по названию</label>
+                                <input type="text" name="search" id="search" class="form-control" value="{{ request('search') }}" placeholder="Введите текст...">
                             </div>
 
                             <!-- Фильтр по категориям -->
                             @if($categories->count() > 0)
-                                <div class="mb-3">
-                                    <label class="form-label">Категории</label>
+                                <fieldset class="mb-3">
+                                    <legend class="form-label fs-6">Категории</legend>
                                     @foreach($categories as $category)
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="category" id="category_{{ $category->id }}" value="{{ $category->id }}" {{ request('category') == $category->id ? 'checked' : '' }}>
@@ -122,13 +124,13 @@
                                             </label>
                                         </div>
                                     @endforeach
-                                </div>
+                                </fieldset>
                             @endif
 
                             <!-- Фильтр по тегам -->
                             @if($tags->count() > 0)
-                                <div class="mb-3">
-                                    <label class="form-label">Теги</label>
+                                <fieldset class="mb-3">
+                                    <legend class="form-label fs-6">Теги</legend>
                                     @foreach($tags as $tag)
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="tag" id="tag_{{ $tag->id }}" value="{{ $tag->id }}" {{ request('tag') == $tag->id ? 'checked' : '' }}>
@@ -137,7 +139,7 @@
                                             </label>
                                         </div>
                                     @endforeach
-                                </div>
+                                </fieldset>
                             @endif
 
                             <!-- Кнопка поиска -->

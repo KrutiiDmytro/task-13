@@ -50,7 +50,7 @@
                                     <td>{{ $comment->author_email ?: 'Не указан' }}</td>
                                     <td>{{ $comment->created_at->format('d.m.Y H:i') }}</td>
                                     <td>
-                                        <div class="btn-group" role="group">
+                                        <div class="btn-group" role="group" aria-label="Действия с комментарием #{{ $comment->id }}">
                                             <a href="{{ route('admin.comments.show', $comment) }}"
                                                class="btn btn-info btn-sm" title="Просмотр">
                                                 <i class="fas fa-eye"></i>

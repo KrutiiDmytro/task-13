@@ -74,7 +74,7 @@
 
                         @if($post->image)
                             <div class="mb-3">
-                                <label class="form-label">Текущее изображение</label>
+                                <p class="form-label">Текущее изображение</p>
                                 <div>
                                     <a href="{{ Storage::url($post->image) }}" target="_blank" rel="noopener">
                                         <img src="{{ Storage::url($post->image) }}"

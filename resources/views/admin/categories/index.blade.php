@@ -41,7 +41,7 @@
                                     </td>
                                     <td>{{ $category->created_at->format('d.m.Y H:i') }}</td>
                                     <td>
-                                        <div class="btn-group" role="group">
+                                        <div class="btn-group" role="group" aria-label="Действия с категорией: {{ $category->name }}">
                                             <a href="{{ route('admin.categories.show', $category) }}"
                                                class="btn btn-info btn-sm" title="Просмотр">
                                                 <i class="fas fa-eye"></i>
