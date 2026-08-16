@@ -3,6 +3,9 @@
 @section('title', 'Home')
 
 @section('content')
+    {{-- Fire-coloured glow pulsing around the viewport edges, home page only --}}
+    <div class="edge-pulse" aria-hidden="true"></div>
+
     <div class="app-container page">
 
         @php
