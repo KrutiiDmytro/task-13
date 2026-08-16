@@ -14,8 +14,11 @@
     <env name="APP_MAINTENANCE_DRIVER" value="file"/>
     <env name="BCRYPT_ROUNDS" value="4"/>
     <env name="CACHE_STORE" value="array"/>
-    <env name="DB_CONNECTION" value="sqlite"/>
-    <env name="DB_DATABASE" value=":memory:"/>
+    <!-- Тести працюють на тому ж рушії, що й застосунок: розбіжність MySQL/SQLite
+         ховає саме ті помилки, заради яких і переходили на MySQL.
+         Хост, користувач і пароль беруться з .env (локально) або з env кроку CI. -->
+    <env name="DB_CONNECTION" value="mysql"/>
+    <env name="DB_DATABASE" value="pixelpulse_test"/>
     <env name="MAIL_MAILER" value="array"/>
     <env name="QUEUE_CONNECTION" value="sync"/>
     <env name="SESSION_DRIVER" value="array"/>

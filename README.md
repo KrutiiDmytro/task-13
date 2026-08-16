@@ -30,7 +30,7 @@ Written as a learning project with the emphasis on code quality: tests, static a
 |---|---|
 | PHP | 8.2 |
 | Framework | Laravel 12 |
-| Database | SQLite (default) or MySQL |
+| Database | MySQL 8 (tests run against it too) |
 | Frontend | Vite 7, Bootstrap 5.3, custom CSS theme |
 | Authentication | Laravel Breeze, Sanctum for the API |
 | Roles | spatie/laravel-permission |
@@ -42,7 +42,14 @@ Written as a learning project with the emphasis on code quality: tests, static a
 
 ## Getting started
 
-Requires PHP 8.2+, Composer and Node.js 20.19+ (Vite 7 needs it).
+Requires PHP 8.2+, Composer, Node.js 20.19+ (Vite 7 needs it) and MySQL 8.
+
+Create two schemas up front — the second one is what the test suite uses:
+
+```sql
+CREATE DATABASE pixelpulse      CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE pixelpulse_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
 
 ```bash
 git clone https://github.com/KrutiiDmytro/pixelpulse.git
@@ -54,7 +61,7 @@ npm install
 cp .env.example .env
 php artisan key:generate
 
-# Database and demo content
+# Put your own DB_USERNAME and DB_PASSWORD in .env before this step
 php artisan migrate --seed
 
 # Cover images live in storage/app/public and are not served without this symlink
@@ -79,6 +86,10 @@ php artisan test tests/Feature/PostControllerTest.php   # a single file
 # With coverage (needs Xdebug)
 XDEBUG_MODE=coverage php artisan test --coverage-html reports/coverage
 ```
+
+Tests run against the `pixelpulse_test` schema on MySQL, not an in-memory SQLite
+database. Running them on a different engine than the app uses would hide exactly the
+class of bugs — strict mode, collation, date handling — that MySQL is there to catch.
 
 ## Code quality
 
