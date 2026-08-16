@@ -1,88 +1,64 @@
 @extends('layouts.app')
 
-@section('title', 'Поиск' . ($q ? ': ' . $q : ''))
+@section('title', $q ? 'Search: ' . $q : 'Search')
 
 @section('content')
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h1 class="mb-4">
-                    @if($q)
-                        Результаты поиска по запросу: "{{ $q }}"
-                    @else
-                        Поиск
-                    @endif
-                </h1>
+    <div class="app-container page">
+        <div class="layout-with-sidebar">
+            <div>
+                <div class="page-head">
+                    <span class="page-head__eyebrow">Search</span>
+                    <h1 class="page-head__title">
+                        @if($q)
+                            Results for “{{ $q }}”
+                        @else
+                            Search the blog
+                        @endif
+                    </h1>
 
-                {{-- Форма поиска --}}
-                <form method="GET" action="{{ route('public.search') }}" class="mb-4">
-                    <div class="input-group">
-                        <input type="text" name="q" class="form-control" placeholder="Введите поисковый запрос..." value="{{ $q }}">
-                        <button class="btn btn-primary" type="submit">Найти</button>
-                    </div>
+                    @if($q)
+                        <p class="page-head__sub">
+                            {{ $posts->total() }} {{ \Illuminate\Support\Str::plural('article', $posts->total()) }} found.
+                        </p>
+                    @endif
+                </div>
+
+                <form class="search-form" method="GET" action="{{ route('public.search') }}">
+                    <label class="visually-hidden" for="searchQuery">Search query</label>
+                    <input type="search"
+                           class="form-control"
+                           id="searchQuery"
+                           name="q"
+                           placeholder="Type a game, a guide, a keyword…"
+                           value="{{ $q }}">
+                    <button class="btn-accent" type="submit">Search</button>
                 </form>
 
                 @if($posts->count() > 0)
-                    <p class="text-muted mb-3">Найдено {{ $posts->total() }} {{ Str::plural('результат', $posts->total(), ['результат', 'результата', 'результатов']) }}</p>
-
-                    <div class="row">
+                    <div class="post-grid">
                         @foreach($posts as $post)
-                            <div class="col-md-6 col-lg-4 mb-4">
-                                <div class="card h-100">
-                                    @if($post->image)
-                                        <img src="{{ asset('storage/' . $post->image) }}" class="card-img-top" alt="{{ $post->title }}">
-                                    @endif
-                                    <div class="card-body d-flex flex-column">
-                                        <h5 class="card-title">{{ $post->title }}</h5>
-                                        <p class="card-text">{{ \Illuminate\Support\Str::limit($post->content, 100) }}</p>
-
-                                        <div class="mt-auto">
-                                            @if($post->category)
-                                                <small class="text-muted">
-                                                    Категория:
-                                                    <a href="{{ route('public.category', $post->category->slug ?? $post->category->id) }}" class="text-decoration-none">
-                                                        {{ $post->category->name }}
-                                                    </a>
-                                                </small>
-                                                <br>
-                                            @endif
-                                            @if($post->tags && $post->tags->count() > 0)
-                                                <small class="text-muted">
-                                                    Теги:
-                                                    @foreach($post->tags as $tag)
-                                                        <a href="{{ route('public.tag', $tag->slug ?? $tag->id) }}" class="badge bg-secondary text-decoration-none me-1">
-                                                            {{ $tag->name }}
-                                                        </a>
-                                                    @endforeach
-                                                </small>
-                                                <br>
-                                            @endif
-                                            <small class="text-muted">{{ $post->published_at?->format('d.m.Y') ?? $post->created_at->format('d.m.Y') }}</small>
-                                        </div>
-
-                                        <div class="mt-2">
-                                            <a href="{{ route('public.post', $post->slug ?? $post->id) }}" class="btn btn-primary btn-sm">Читать далее</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <x-post-card :post="$post" />
                         @endforeach
                     </div>
 
-                    <div class="d-flex justify-content-center">
+                    <div class="d-flex justify-content-center mt-5">
                         {{ $posts->appends(request()->query())->links() }}
                     </div>
                 @else
-                    <div class="alert alert-info">
-                        <h4>Ничего не найдено</h4>
+                    <div class="empty-state">
+                        <div class="empty-state__icon"><i class="fas fa-magnifying-glass" aria-hidden="true"></i></div>
                         @if($q)
-                            <p>По запросу "{{ $q }}" ничего не найдено. Попробуйте изменить критерии поиска.</p>
+                            <h2>No matches for “{{ $q }}”</h2>
+                            <p>Try a different keyword or browse the categories.</p>
                         @else
-                            <p>Введите поисковый запрос выше для поиска по сайту.</p>
+                            <h2>What are you looking for?</h2>
+                            <p>Enter a keyword above to search across every article.</p>
                         @endif
                     </div>
                 @endif
             </div>
+
+            @include('partials.sidebar')
         </div>
     </div>
 @endsection
