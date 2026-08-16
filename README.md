@@ -1,226 +1,186 @@
-# Task-13: Laravel Blog — Якість коду та тестування
+# PixelPulse
 
 [![CI](https://github.com/KrutiiDmytro/task-13/actions/workflows/ci.yml/badge.svg)](https://github.com/KrutiiDmytro/task-13/actions/workflows/ci.yml)
 
-## 📋 Опис проекту
+Блог про ігри на Laravel 12 — з публічною частиною, адмінкою, REST API та ролями.
+Написаний як навчальний проєкт із наголосом на якість коду: тести, статичний аналіз і CI.
 
-Laravel-застосунок блогу з повною інтеграцією інструментів аналізу коду та тестування.
+> Репозиторій історично називається `task-13`, тому посилання для клонування та значок CI
+> містять цю назву. Сам застосунок називається **PixelPulse** (`APP_NAME` у `.env`).
 
-## ✨ Основні можливості
+## Можливості
 
-- 📝 **CRUD операції** для постів, категорій, тегів і коментарів
-- 🔐 **Аутентифікація та авторизація** користувачів
-- 📊 **API endpoints** з підтримкою JSON та XML
-- 🧪 **Повне тестування** (PHPUnit)
-- 📈 **Аналіз якості коду** (SonarCloud, PHPCS)
-- 🔄 **CI/CD pipeline** (GitHub Actions)
+**Публічна частина**
+- Стрічка статей із виділеним матеріалом, сторінки категорій і тегів
+- Пошук по заголовках і тексту
+- Коментарі, зокрема від незареєстрованих читачів
+- Світла й темна теми з перемикачем
 
-## 🛠️ Технологічний стек
+**Адмінка та CRUD**
+- Керування статтями, категоріями, тегами й коментарями
+- Ролі та дозволи через `spatie/laravel-permission`
+- Завантаження обкладинок на диск `public`
 
-- **PHP**: 8.2
-- **Framework**: Laravel 12
-- **Database**: SQLite/MySQL
-- **Testing**: PHPUnit
-- **Code Quality**: 
-  - SonarCloud
-  - PHPCS
-  - Laravel Pint
-  - PHP-CS-Fixer
-- **CI/CD**: GitHub Actions
+**API**
+- REST-ендпоїнти під `/api/v1`
+- Відповіді у JSON або XML — формат обирається заголовком `Accept`
+- Токени через Laravel Sanctum
+- Документація OpenAPI на `/api/documentation`
 
-## 📊 Метрики якості коду
+## Стек
 
-| Метрика | Значення |
-|---------|----------|
-| **Тести** | 580 passed (1921 assertions) |
-| **Coverage (statements)** | 99.2% |
-| **Coverage (methods)** | 97.3% |
-| **PHPCS** | 🟢 0 порушень |
-| **Laravel Pint** | 🟢 PASS (165 файлів) |
+| | |
+|---|---|
+| PHP | 8.2 |
+| Framework | Laravel 12 |
+| БД | SQLite (за замовчуванням) або MySQL |
+| Фронтенд | Vite 7, Bootstrap 5.3, власна CSS-тема |
+| Автентифікація | Laravel Breeze, Sanctum для API |
+| Ролі | spatie/laravel-permission |
+| API-документація | L5 Swagger (`zircote/swagger-php`) |
+| Адмін-шаблон | jeroennoten/laravel-adminlte |
+| Тести | PHPUnit |
+| Стиль коду | PHPCS, Laravel Pint, PHP-CS-Fixer |
+| CI | GitHub Actions, SonarCloud |
 
-## 🚀 Швидкий старт
+## Швидкий старт
 
-### Вимоги
-- PHP 8.2+
-- Composer
-- Node.js 22+ & npm
-
-### Встановлення
+Потрібні PHP 8.2+, Composer і Node.js 20.19+ (вимога Vite 7).
 
 ```bash
-# Клонуємо репозиторій
 git clone https://github.com/KrutiiDmytro/task-13.git
 cd task-13
 
-# Встановлення залежностей
 composer install
 npm install
 
-# Налаштування середовища
 cp .env.example .env
 php artisan key:generate
 
-# Міграція БД
-php artisan migrate
+# База даних і демонстраційні дані
+php artisan migrate --seed
 
-# Запуск Vite
-npm run dev
-
-# Запуск застосунку
-php artisan serve
+# Обкладинки статей лежать у storage/app/public — без цього симлінка вони не віддаються
+php artisan storage:link
 ```
 
-## 🧪 Тестування
+Далі два процеси в окремих терміналах:
 
 ```bash
-# Запуск усіх тестів
-php artisan test
+npm run dev        # Vite з hot reload на :5173
+php artisan serve  # застосунок на :8000
+```
 
-# Запуск тестів з покриттям
+Якщо збираєте фронтенд один раз замість дев-сервера — `npm run build`.
+
+## Тести
+
+```bash
+php artisan test                                    # усі тести
+php artisan test tests/Feature/PostControllerTest.php   # окремий файл
+
+# З покриттям (потрібен Xdebug)
 XDEBUG_MODE=coverage php artisan test --coverage-html reports/coverage
-
-# Конкретний тест
-php artisan test tests/Feature/PostControllerTest.php
 ```
 
-## 📝 Перевірка якості коду
+## Якість коду
 
 ```bash
-# PHPCS — перевірка стандартів
-./vendor/bin/phpcs
-
-# PHP-CS-Fixer — автоматичне виправлення
-./vendor/bin/php-cs-fixer fix
-
-# Laravel Pint
-./vendor/bin/pint
+./vendor/bin/phpcs              # перевірка стандартів
+./vendor/bin/pint               # форматування за пресетом Laravel
+./vendor/bin/pint --test        # перевірка без змін
+./vendor/bin/php-cs-fixer fix   # автовиправлення
 ```
 
-## 🔄 CI/CD Pipeline
+### Поточні метрики
 
-GitHub Actions (`.github/workflows/ci.yml`) запускається на push у `master` і на кожен pull request:
+Заміряно локально 16.08.2026 — актуальний стан завжди показує значок CI угорі.
 
-1. **tests** — PHPUnit з coverage (xdebug), звіт вивантажується як артефакт
+| Метрика | Значення |
+|---|---|
+| Тести | 580 пройдено, 1925 перевірок |
+| Покриття рядків | 99.2% (1271 з 1281) |
+| Покриття методів | 96.8% (184 з 190) |
+| Покриття класів | 93.9% (46 з 49) |
+| PHPCS | 0 помилок, 1 попередження |
+| Laravel Pint | PASS, 166 файлів |
+
+## CI
+
+`.github/workflows/ci.yml` запускається на push у `master` і на кожен pull request:
+
+1. **tests** — PHPUnit із покриттям через Xdebug, звіт вивантажується як артефакт
 2. **quality** — PHPCS і Laravel Pint
-3. **sonar** — аналіз SonarCloud (пропускається, поки не додано `SONAR_TOKEN` у Secrets)
+3. **sonar** — аналіз SonarCloud (пропускається, поки в Secrets немає `SONAR_TOKEN`)
 
-✅ **[Статус pipeline](https://github.com/KrutiiDmytro/task-13/actions)**
+## Структура
 
-## 📂 Структура проекту
+```
 app/
 ├── Http/
-│ ├── Controllers/
-│ │ ├── Api/ # API контролери
-│ │ ├── Admin/ # Адмін контролери
-│ │ └── PostController.php
-│ ├── Traits/
-│ │ └── FormatsResponse.php
-│ └── Middleware/
-├── Services/ # Бізнес-логіка
-├── Models/ # Eloquent моделі
-├── Collections/ # Користувацькі колекції
-├── Generators/ # Генератори даних
-└── Policies/ # Авторизація
-tests/
-├── Feature/ # Інтеграційні тести
-├── Unit/ # Юніт-тести
-└── TestCase.php
+│   ├── Controllers/
+│   │   ├── Admin/          # адмін-панель
+│   │   ├── Api/V1/         # REST API
+│   │   └── Auth/           # автентифікація
+│   ├── Requests/           # валідація форм
+│   ├── Resources/          # трансформація відповідей API
+│   ├── Traits/             # FormatsResponse — вибір JSON/XML
+│   └── Middleware/
+├── Models/                 # Eloquent-моделі
+├── Services/               # бізнес-логіка (Post, Category, Tag, Comment)
+├── Policies/               # авторизація
+└── View/                   # компоненти Blade
+
 database/
-├── migrations/ # Міграції БД
-└── seeders/ # Seeder'и
+├── migrations/
+└── seeders/
+    └── assets/posts/       # обкладинки статей під версійним контролем
+
+resources/
+├── css/app.css             # тема PixelPulse поверх Bootstrap
+└── views/
+    ├── components/         # post-card, category-badge тощо
+    ├── public/             # публічні сторінки
+    └── admin/              # адмінка
+
 routes/
-├── api.php # API маршрути
-└── web.php # Веб маршрути
-
-## 🔧 Ключові реалізовані можливості
-
-### ✅ Розширені функції PHP
-
-- **Namespaces & PSR-4** — організація коду
-- **Interfaces & Traits** — контракти та повторне використання коду
-- **Iterators & Generators** — ефективна обробка даних
-- **Abstract Classes** — загальна функціональність
-- **Magic Methods** — гнучкий доступ до властивостей
-- **Type Declarations** — сувора типізація
-
-### ✅ Оптимізація та рефакторинг
-
-- **Зменшення cyclomatic complexity** у `PostService` та `FormatsResponse`
-- **DRY принцип** — базовий `BaseApiController`
-- **Query optimization** — eager loading з `->with()`
-- **Code duplication** — усунено через `sonar-project.properties`
-
-### ✅ Безпека
-
-- **Password hashing** — використання `bcrypt` у Laravel
-- **Input validation** — перевірка та очищення всіх даних
-- **Authorization policies** — `PostPolicy` для доступу
-- **CSRF protection** — вбудована в Laravel
-
-### ✅ Тестування
-
-- **98%+ code coverage** — майже всі функції покриті
-- **Mocks & Stubs** — ізоляція компонентів
-- **Feature & Unit tests** — обидва типи тестів
-- **Test factories** — швидке створення тестових даних
-
-## 📝 API Documentation
-
-API підтримує:
-- **JSON** (за замовчуванням)
-- **XML** (через `Accept: application/xml` header)
-
-### Приклади запитів
-
-```bash
-# Отримати всі пости
-GET /api/v1/posts
-
-# Створити пост
-POST /api/v1/posts
-Content-Type: application/json
-
-{
-  "title": "Новий пост",
-  "content": "Зміст...",
-  "category_id": 1
-}
-
-# Отримати у XML
-GET /api/v1/posts
-Accept: application/xml
+├── web.php
+└── api.php
 ```
 
-## 📈 Що було покращено
+## API
 
-| Завдання | Статус |
-|--------|--------|
-| PHPCS + PHP-CS-Fixer | ✅ |
-| GitHub Actions pipeline | ✅ |
-| SonarCloud інтеграція | ✅ |
-| Code quality improvements | ✅ |
-| Test coverage 90%+ | ✅ (99.2%) |
-| Ітератори та генератори | ✅ |
-| Документація коду | ✅ |
+Формат відповіді залежить від заголовка `Accept` — за замовчуванням JSON.
 
-## 🤝 Автор
+```bash
+# Список статей
+curl http://localhost:8000/api/v1/posts
 
-**Дмитро Крутий**
-- GitHub: [KrutiiDmytro](https://github.com/KrutiiDmytro)
+# Те саме у XML
+curl -H "Accept: application/xml" http://localhost:8000/api/v1/posts
 
-## 📄 Ліцензія
+# Створення статті
+curl -X POST http://localhost:8000/api/v1/posts \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <token>" \
+  -d '{"title":"Заголовок","content":"Текст","category_id":1}'
+```
 
-MIT License
+Повний перелік ендпоїнтів — на `/api/documentation`.
 
----
+## Контент і зображення
 
-## 🔗 Корисні посилання
+Демонстраційні статті переказують реальні публікації ігрових видань своїми словами
+й посилаються на першоджерело. Дослівних цитат немає — чужі тексти захищені авторським правом.
 
-- 📦 [GitHub Repository](https://github.com/KrutiiDmytro/task-13)
-- 🔄 [GitHub Actions](https://github.com/KrutiiDmytro/task-13/actions)
-- 📝 [Laravel Documentation](https://laravel.com/docs)
-- 🧪 [PHPUnit Documentation](https://phpunit.de)
+Обкладинки взяті з Wikimedia Commons. Автори й ліцензії перелічені в
+[IMAGE-CREDITS.md](IMAGE-CREDITS.md). Частина зображень поширюється під CC BY та CC BY-SA,
+які **вимагають видимого зазначення авторства** там, де зображення опубліковане.
 
----
+## Автор
 
-**Останнє оновлення:** 2026-08-14
+**Дмитро Крутий** — [GitHub](https://github.com/KrutiiDmytro)
+
+## Ліцензія
+
+MIT
