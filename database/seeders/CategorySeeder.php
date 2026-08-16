@@ -11,7 +11,10 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            ['name' => 'News', 'description' => 'Release dates, patches and everything else happening in gaming right now.'],
+            [
+                'name' => 'News',
+                'description' => 'Release dates, patches and everything else happening in gaming right now.',
+            ],
             ['name' => 'Tips', 'description' => 'Short, practical advice to help you play better today.'],
             ['name' => 'Tutorials', 'description' => 'Step-by-step guides, builds and walkthroughs.'],
             ['name' => 'Games', 'description' => 'In-depth reviews and first impressions.'],

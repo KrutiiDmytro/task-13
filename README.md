@@ -99,7 +99,7 @@ XDEBUG_MODE=coverage php artisan test --coverage-html reports/coverage
 | Покриття рядків | 99.2% (1271 з 1281) |
 | Покриття методів | 96.8% (184 з 190) |
 | Покриття класів | 93.9% (46 з 49) |
-| PHPCS | 0 помилок, 1 попередження |
+| PHPCS | 0 помилок, 0 попереджень |
 | Laravel Pint | PASS, 166 файлів |
 
 ## CI
