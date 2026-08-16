@@ -1,30 +1,30 @@
 @extends('adminlte::page')
 
-@section('title', 'Создать пост')
+@section('title', 'New post')
 
 @section('content_header')
-    <h1>Создать новый пост</h1>
+    <h1>Create a new post</h1>
 @stop
 
 @section('content')
     <div class="card card-primary">
         <div class="card-header">
-            <h3 class="card-title">Форма создания поста</h3>
+            <h3 class="card-title">Post creation form</h3>
         </div>
 
         <form action="{{ route('admin.posts.store') }}" method="POST">
             @csrf
 
             <div class="card-body">
-                {{-- Заголовок --}}
+                {{-- Title --}}
                 <div class="form-group">
-                    <label for="title">Заголовок</label>
+                    <label for="title">Title</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-heading"></i></span>
                         </div>
                         <input type="text" class="form-control @error('title') is-invalid @enderror"
-                               id="title" name="title" placeholder="Введите заголовок поста"
+                               id="title" name="title" placeholder="Enter the post title"
                                value="{{ old('title') }}" required>
                         @error('title')
                             <span class="invalid-feedback">{{ $message }}</span>
@@ -32,23 +32,23 @@
                     </div>
                 </div>
 
-                {{-- Содержимое --}}
+                {{-- Content --}}
                 <div class="form-group">
-                    <label for="content">Содержимое</label>
+                    <label for="content">Content</label>
                     <textarea class="form-control @error('content') is-invalid @enderror"
                               id="content" name="content" rows="10"
-                              placeholder="Введите содержимое поста" required>{{ old('content') }}</textarea>
+                              placeholder="Enter the post content" required>{{ old('content') }}</textarea>
                     @error('content')
                         <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
                 </div>
 
-                {{-- Категория --}}
+                {{-- Category --}}
                 <div class="form-group">
-                    <label for="category_id">Категория</label>
+                    <label for="category_id">Category</label>
                     <select class="form-control @error('category_id') is-invalid @enderror"
                             id="category_id" name="category_id">
-                        <option value="">-- Выберите категорию --</option>
+                        <option value="">-- Choose a category --</option>
                         @foreach($categories as $category)
                             <option value="{{ $category->id }}"
                                     @selected(old('category_id') == $category->id)>
@@ -61,12 +61,12 @@
                     @enderror
                 </div>
 
-                {{-- Автор --}}
+                {{-- Author --}}
                 <div class="form-group">
-                    <label for="user_id">Автор (пользователь, необязательно)</label>
+                    <label for="user_id">Author (registered user, optional)</label>
                         <select class="form-control @error('user_id') is-invalid @enderror"
                                 id="user_id" name="user_id">
-                        <option value="">— Оставить пустым (будет текущий пользователь) —</option>
+                        <option value="">— Leave empty (you become the author) —</option>
                         @foreach($users as $user)
                             <option value="{{ $user->id }}" @selected(old('user_id') == $user->id)>
                                 {{ $user->name }} ({{ $user->email }})
@@ -77,22 +77,22 @@
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
                         <small class="form-text text-muted">
-                            Если не выберете пользователя — автором станет текущий. Либо заполните поля ниже для гостевого автора.
+                            If you do not pick a user, you become the author. Otherwise fill in the guest author fields below.
                         </small>
                 </div>
 
 <div class="form-group">
-    <label for="author_name">Автор (гость, имя)</label>
+    <label for="author_name">Author (guest name)</label>
     <input type="text" class="form-control @error('author_name') is-invalid @enderror"
            id="author_name" name="author_name" value="{{ old('author_name') }}"
-           placeholder="Имя гостевого автора">
+           placeholder="Guest author name">
     @error('author_name')
         <span class="invalid-feedback">{{ $message }}</span>
     @enderror
 </div>
 
 <div class="form-group">
-    <label for="author_email">Email гостевого автора</label>
+    <label for="author_email">Guest author email</label>
     <input type="email" class="form-control @error('author_email') is-invalid @enderror"
            id="author_email" name="author_email" value="{{ old('author_email') }}"
            placeholder="email@example.com">
@@ -101,16 +101,16 @@
     @enderror
 </div>
 
-                {{-- Теги --}}
+                {{-- Tags --}}
                 <div class="form-group">
-                    <label for="tags">Теги</label>
+                    <label for="tags">Tags</label>
                     <select class="form-control @error('tags') is-invalid @enderror"
                             id="tags" name="tags[]" multiple>
                         @foreach($tags as $tag)
                             <option value="{{ $tag->id }}">{{ $tag->name }}</option>
                         @endforeach
                     </select>
-                    <small class="form-text text-muted">Выберите существующие теги или введите новые</small>
+                    <small class="form-text text-muted">Pick existing tags or type new ones</small>
                     @error('tags')
                         <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
@@ -119,10 +119,10 @@
 
             <div class="card-footer">
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Создать пост
+                    <i class="fas fa-save"></i> New post
                 </button>
                 <a href="{{ route('admin.posts.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-times"></i> Отмена
+                    <i class="fas fa-times"></i> Cancel
                 </a>
             </div>
         </form>
@@ -141,7 +141,7 @@
             $('#tags').select2({
                 tags: true,
                 tokenSeparators: [','],
-                placeholder: 'Выберите или введите теги',
+                placeholder: 'Pick or type tags',
                 theme: 'bootstrap'
             });
         });

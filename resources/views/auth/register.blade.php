@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="auth-header">
-        <h1>Регистрация</h1>
-        <p class="text-muted">Создайте новый аккаунт</p>
+        <h1>Sign up</h1>
+        <p class="text-muted">Create a new account</p>
     </div>
 
     <!-- Session Status -->
@@ -16,7 +16,7 @@
 
         <!-- Name -->
         <div class="mb-3">
-            <label for="name" class="form-label">Имя</label>
+            <label for="name" class="form-label">Name</label>
             <input id="name"
                    class="form-control @error('name') is-invalid @enderror"
                    type="text"
@@ -47,7 +47,7 @@
 
         <!-- Password -->
         <div class="mb-3">
-            <label for="password" class="form-label">Пароль</label>
+            <label for="password" class="form-label">Password</label>
             <input id="password"
                    class="form-control @error('password') is-invalid @enderror"
                    type="password"
@@ -61,7 +61,7 @@
 
         <!-- Confirm Password -->
         <div class="mb-4">
-            <label for="password_confirmation" class="form-label">Подтвердите пароль</label>
+            <label for="password_confirmation" class="form-label">Confirm password</label>
             <input id="password_confirmation"
                    class="form-control"
                    type="password"
@@ -72,14 +72,14 @@
 
         <div class="d-grid gap-2">
             <button type="submit" class="btn btn-primary">
-                Зарегистрироваться
+                Sign up
             </button>
         </div>
 
         <div class="text-center mt-3">
-            <span class="text-muted">Уже есть аккаунт?</span>
+            <span class="text-muted">Already have an account?</span>
             <a href="{{ route('login') }}" class="text-decoration-none ms-1">
-                Войти
+                Log in
             </a>
         </div>
     </form>

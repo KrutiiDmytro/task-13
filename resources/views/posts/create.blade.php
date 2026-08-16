@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Создать пост')
+@section('title', 'New post')
 
 @section('content')
 <div class="container py-4">
@@ -8,7 +8,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="mb-0">Создать новый пост</h4>
+                    <h4 class="mb-0">Create a new post</h4>
                 </div>
                 <div class="card-body">
                     @if ($errors->any())
@@ -28,20 +28,20 @@
                         @guest
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="author_name" class="form-label">Ваше имя <span class="text-danger">*</span></label>
+                                <label for="author_name" class="form-label">Your name <span class="text-danger">*</span></label>
                                 <input type="text"
                                        class="form-control @error('author_name') is-invalid @enderror"
                                        id="author_name"
                                        name="author_name"
                                        value="{{ old('author_name') }}"
                                        required
-                                       placeholder="Введите ваше имя">
+                                       placeholder="Enter your name">
                                 @error('author_name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-md-6">
-                                <label for="author_email" class="form-label">Email (необязательно)</label>
+                                <label for="author_email" class="form-label">Email (optional)</label>
                                 <input type="email"
                                        class="form-control @error('author_email') is-invalid @enderror"
                                        id="author_email"
@@ -55,26 +55,26 @@
                         </div>
                         @endguest
 
-                        <!-- Заголовок поста -->
+                        <!-- Post title -->
                         <div class="mb-3">
-                            <label for="title" class="form-label">Заголовок <span class="text-danger">*</span></label>
+                            <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
                             <input type="text"
                                    class="form-control @error('title') is-invalid @enderror"
                                    id="title"
                                    name="title"
                                    value="{{ old('title') }}"
                                    required
-                                   placeholder="Введите заголовок поста">
+                                   placeholder="Enter the post title">
                             @error('title')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <!-- Категория -->
+                        <!-- Category -->
                         <div class="mb-3">
-                            <label for="category_id" class="form-label">Категория</label>
+                            <label for="category_id" class="form-label">Category</label>
                             <select class="form-control" id="category_id" name="category_id">
-                                <option value="">Выберите категорию</option>
+                                <option value="">Choose a category</option>
                                 @foreach($categories as $category)
                                     <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
                                         {{ $category->name }}
@@ -83,9 +83,9 @@
                             </select>
                         </div>
 
-                        <!-- Теги -->
+                        <!-- Tags -->
                         <div class="mb-3">
-                            <label for="tags" class="form-label">Теги</label>
+                            <label for="tags" class="form-label">Tags</label>
                             <select class="form-control" id="tags" name="tags[]" multiple>
                                 @foreach($tags as $tag)
                                     <option value="{{ $tag->id }}" {{ in_array($tag->id, old('tags', [])) ? 'selected' : '' }}>
@@ -94,19 +94,19 @@
                                 @endforeach
                             </select>
                             <small class="form-text text-muted">
-                                Держите Ctrl для выбора нескольких тегов или введите новые через запятую
+                                Hold Ctrl to pick several tags, or type new ones separated by commas
                             </small>
                         </div>
 
-                        <!-- Содержание -->
+                        <!-- Content -->
                         <div class="mb-3">
-                            <label for="content" class="form-label">Содержание <span class="text-danger">*</span></label>
+                            <label for="content" class="form-label">Content <span class="text-danger">*</span></label>
                             <textarea class="form-control @error('content') is-invalid @enderror"
                                       id="content"
                                       name="content"
                                       rows="10"
                                       required
-                                      placeholder="Напишите содержание поста...">{{ old('content') }}</textarea>
+                                      placeholder="Write the post content...">{{ old('content') }}</textarea>
                             @error('content')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -114,15 +114,15 @@
 
                         <div class="d-flex justify-content-between">
                             <a href="{{ route('posts.index') }}" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left"></i> Назад
+                                <i class="fas fa-arrow-left"></i> Back
                             </a>
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save"></i> Создать пост
+                                <i class="fas fa-save"></i> Create post
                             </button>
                         </div>
 
                         <div class="form-group">
-                            <label for="image">Изображение</label>
+                            <label for="image">Image</label>
                             <input type="file" class="form-control @error('image') is-invalid @enderror"
                                 id="image" name="image" accept=".jpg,.jpeg,.png,.webp,.gif">
                             @error('image')
@@ -145,7 +145,7 @@ $(document).ready(function() {
     $('#tags').select2({
         tags: true,
         tokenSeparators: [','],
-        placeholder: 'Выберите или введите теги...'
+        placeholder: 'Choose or type tags...'
     });
 });
 </script>

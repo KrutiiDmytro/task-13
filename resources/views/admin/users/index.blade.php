@@ -1,18 +1,18 @@
 @extends('adminlte::page')
 
-@section('title', 'Управление пользователями')
+@section('title', 'User management')
 
 @section('content_header')
-    <h1>Управление пользователями</h1>
+    <h1>User management</h1>
 @stop
 
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Список пользователей</h3>
+            <h3 class="card-title">Users</h3>
             <div class="card-tools">
                 <a href="{{ route('admin.users.create') }}" class="btn btn-primary btn-sm">
-                    <i class="fas fa-plus"></i> Создать пользователя
+                    <i class="fas fa-plus"></i> Create user
                 </a>
             </div>
         </div>
@@ -37,12 +37,12 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Имя</th>
+                                <th>Name</th>
                                 <th>Email</th>
-                                <th>Роли</th>
-                                <th>Постов</th>
-                                <th>Регистрация</th>
-                                <th>Действия</th>
+                                <th>Roles</th>
+                                <th>Posts</th>
+                                <th>Sign up</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -52,7 +52,7 @@
                                     <td>
                                         <strong>{{ $user->name }}</strong>
                                         @if($user->id === auth()->id())
-                                            <span class="badge badge-success">Вы</span>
+                                            <span class="badge badge-success">You</span>
                                         @endif
                                     </td>
                                     <td>{{ $user->email }}</td>
@@ -62,7 +62,7 @@
                                                 <span class="badge badge-info">{{ $role->name }}</span>
                                             @endforeach
                                         @else
-                                            <span class="badge badge-secondary">Нет ролей</span>
+                                            <span class="badge badge-secondary">No roles</span>
                                         @endif
                                     </td>
                                     <td>
@@ -70,27 +70,27 @@
                                     </td>
                                     <td>{{ $user->created_at->format('d.m.Y') }}</td>
                                     <td>
-                                        <div class="btn-group" role="group" aria-label="Действия с пользователем: {{ $user->name }}">
+                                        <div class="btn-group" role="group" aria-label="Actions for user: {{ $user->name }}">
                                             <a href="{{ route('admin.users.show', $user) }}"
-                                               class="btn btn-info btn-sm" title="Просмотр">
+                                               class="btn btn-info btn-sm" title="View">
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             <a href="{{ route('admin.users.edit', $user) }}"
-                                               class="btn btn-warning btn-sm" title="Редактировать">
+                                               class="btn btn-warning btn-sm" title="Edit">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                             @if($user->id !== auth()->id())
                                                 <form action="{{ route('admin.users.destroy', $user) }}"
                                                       method="POST" class="d-inline"
-                                                      onsubmit="return confirm('Вы уверены, что хотите удалить этого пользователя?')">
+                                                      onsubmit="return confirm('Are you sure you want to delete this user?')">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm" title="Удалить">
+                                                    <button type="submit" class="btn btn-danger btn-sm" title="Delete">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </form>
                                             @else
-                                                <button class="btn btn-danger btn-sm" disabled title="Нельзя удалить себя">
+                                                <button class="btn btn-danger btn-sm" disabled title="You cannot delete yourself">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             @endif
@@ -109,10 +109,10 @@
             @else
                 <div class="text-center">
                     <div class="alert alert-info">
-                        <h4><i class="fas fa-info-circle"></i> Пользователей пока нет</h4>
-                        <p>Создайте первого пользователя.</p>
+                        <h4><i class="fas fa-info-circle"></i> No users yet</h4>
+                        <p>Create the first user.</p>
                         <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> Создать первого пользователя
+                            <i class="fas fa-plus"></i> Create the first user
                         </a>
                     </div>
                 </div>

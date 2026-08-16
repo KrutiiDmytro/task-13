@@ -1,18 +1,18 @@
 @extends('adminlte::page')
 
-@section('title', 'Управление категориями')
+@section('title', 'Category management')
 
 @section('content_header')
-    <h1>Управление категориями</h1>
+    <h1>Category management</h1>
 @stop
 
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Список категорий</h3>
+            <h3 class="card-title">Categories</h3>
             <div class="card-tools">
                 <a href="{{ route('admin.categories.create') }}" class="btn btn-primary btn-sm">
-                    <i class="fas fa-plus"></i> Создать категорию
+                    <i class="fas fa-plus"></i> Create category
                 </a>
             </div>
         </div>
@@ -23,10 +23,10 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Название</th>
-                                <th>Количество постов</th>
-                                <th>Дата создания</th>
-                                <th>Действия</th>
+                                <th>Name</th>
+                                <th>Post count</th>
+                                <th>Created</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -41,28 +41,28 @@
                                     </td>
                                     <td>{{ $category->created_at->format('d.m.Y H:i') }}</td>
                                     <td>
-                                        <div class="btn-group" role="group" aria-label="Действия с категорией: {{ $category->name }}">
+                                        <div class="btn-group" role="group" aria-label="Actions for category: {{ $category->name }}">
                                             <a href="{{ route('admin.categories.show', $category) }}"
-                                               class="btn btn-info btn-sm" title="Просмотр">
+                                               class="btn btn-info btn-sm" title="View">
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             <a href="{{ route('admin.categories.edit', $category) }}"
-                                               class="btn btn-warning btn-sm" title="Редактировать">
+                                               class="btn btn-warning btn-sm" title="Edit">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                             @if(($category->posts_count ?? 0) == 0)
                                                 <form action="{{ route('admin.categories.destroy', $category) }}"
                                                       method="POST" class="d-inline"
-                                                      onsubmit="return confirm('Вы уверены, что хотите удалить эту категорию?')">
+                                                      onsubmit="return confirm('Are you sure you want to delete this category?')">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm" title="Удалить">
+                                                    <button type="submit" class="btn btn-danger btn-sm" title="Delete">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </form>
                                             @else
                                                 <button class="btn btn-danger btn-sm" disabled
-                                                        title="Нельзя удалить категорию с постами">
+                                                        title="Cannot delete a category that still has posts">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             @endif
@@ -83,10 +83,10 @@
             @else
                 <div class="text-center">
                     <div class="alert alert-info">
-                        <h4><i class="fas fa-info-circle"></i> Категорий пока нет</h4>
-                        <p>Создайте первую категорию для группировки постов.</p>
+                        <h4><i class="fas fa-info-circle"></i> No categories yet</h4>
+                        <p>Create the first category to group posts.</p>
                         <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> Создать первую категорию
+                            <i class="fas fa-plus"></i> Create the first category
                         </a>
                     </div>
                 </div>

@@ -1,18 +1,18 @@
 @extends('adminlte::page')
 
-@section('title', 'Создать категорию')
+@section('title', 'Create category')
 
 @section('content_header')
-    <h1>Создать категорию</h1>
+    <h1>Create category</h1>
 @stop
 
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Новая категория</h3>
+            <h3 class="card-title">New category</h3>
             <div class="card-tools">
                 <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary btn-sm">
-                    <i class="fas fa-arrow-left"></i> Назад к списку
+                    <i class="fas fa-arrow-left"></i> Back to list
                 </a>
             </div>
         </div>
@@ -30,32 +30,32 @@
                     </div>
                 @endif
 
-                <!-- Название категории -->
+                <!-- Category name -->
                 <div class="form-group">
-                    <label for="name">Название категории <span class="text-danger">*</span></label>
+                    <label for="name">Category name <span class="text-danger">*</span></label>
                     <input type="text"
                            name="name"
                            id="name"
                            class="form-control @error('name') is-invalid @enderror"
                            value="{{ old('name') }}"
                            required
-                           placeholder="Введите название категории...">
+                           placeholder="Enter a category name...">
                     @error('name')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                     <small class="form-text text-muted">
-                        Название должно быть уникальным и понятным для пользователей.
+                        The name must be unique and easy for readers to understand.
                     </small>
                 </div>
 
                 <!-- Описание категории (если в модели есть поле description) -->
                 <div class="form-group">
-                    <label for="description">Описание (необязательно)</label>
+                    <label for="description">Description (optional)</label>
                     <textarea name="description"
                               id="description"
                               class="form-control @error('description') is-invalid @enderror"
                               rows="4"
-                              placeholder="Краткое описание категории...">{{ old('description') }}</textarea>
+                              placeholder="Short category description...">{{ old('description') }}</textarea>
                     @error('description')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -64,10 +64,10 @@
 
             <div class="card-footer">
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Создать категорию
+                    <i class="fas fa-save"></i> Create category
                 </button>
                 <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-times"></i> Отмена
+                    <i class="fas fa-times"></i> Cancel
                 </a>
             </div>
         </form>
@@ -95,7 +95,7 @@
             const name = document.getElementById('name').value.trim();
 
             if (!name) {
-                alert('Пожалуйста, введите название категории');
+                alert('Please enter a category name');
                 e.preventDefault();
                 return false;
             }

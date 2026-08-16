@@ -1,21 +1,21 @@
 @extends('adminlte::page')
 
-@section('title', 'Редактировать пост')
+@section('title', 'Edit post')
 
 @section('content_header')
-    <h1>Редактировать пост</h1>
+    <h1>Edit post</h1>
 @stop
 
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Редактирование поста: {{ $post->title }}</h3>
+            <h3 class="card-title">Editing post: {{ $post->title }}</h3>
             <div class="card-tools">
                 <a href="{{ route('admin.posts.index') }}" class="btn btn-secondary btn-sm">
-                    <i class="fas fa-arrow-left"></i> Назад к списку
+                    <i class="fas fa-arrow-left"></i> Back to list
                 </a>
                 <a href="{{ route('admin.posts.show', $post) }}" class="btn btn-info btn-sm">
-                    <i class="fas fa-eye"></i> Просмотр
+                    <i class="fas fa-eye"></i> View
                 </a>
             </div>
         </div>
@@ -34,9 +34,9 @@
                     </div>
                 @endif
 
-                <!-- Заголовок -->
+                <!-- Title -->
                 <div class="form-group">
-                    <label for="title">Заголовок <span class="text-danger">*</span></label>
+                    <label for="title">Title <span class="text-danger">*</span></label>
                     <input type="text"
                            name="title"
                            id="title"
@@ -50,11 +50,11 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <!-- Категория -->
+                        <!-- Category -->
                         <div class="form-group">
-                            <label for="category_id">Категория</label>
+                            <label for="category_id">Category</label>
                             <select name="category_id" id="category_id" class="form-control">
-                                <option value="">Без категории</option>
+                                <option value="">No category</option>
                                 @foreach($categories as $category)
                                     <option value="{{ $category->id }}"
                                             {{ old('category_id', $post->category_id) == $category->id ? 'selected' : '' }}>
@@ -65,9 +65,9 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <!-- Теги -->
+                        <!-- Tags -->
                         <div class="form-group">
-                            <label for="tags">Теги</label>
+                            <label for="tags">Tags</label>
                             <select name="tags[]" id="tags" class="form-control" multiple>
                                 @foreach($tags as $tag)
                                     <option value="{{ $tag->id }}"
@@ -77,15 +77,15 @@
                                 @endforeach
                             </select>
                             <small class="form-text text-muted">
-                                Держите Ctrl (Cmd на Mac) для выбора нескольких тегов, или введите новые теги через запятую
+                                Hold Ctrl (Cmd on Mac) to select several tags, or type new ones separated by commas
                             </small>
                         </div>
                     </div>
                 </div>
 
-                <!-- Содержание -->
+                <!-- Content -->
                 <div class="form-group">
-                    <label for="content">Содержание <span class="text-danger">*</span></label>
+                    <label for="content">Content <span class="text-danger">*</span></label>
                     <textarea name="content"
                               id="content"
                               class="form-control @error('content') is-invalid @enderror"
@@ -99,10 +99,10 @@
 
             <div class="card-footer">
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Сохранить изменения
+                    <i class="fas fa-save"></i> Save changes
                 </button>
                 <a href="{{ route('admin.posts.show', $post) }}" class="btn btn-secondary">
-                    <i class="fas fa-times"></i> Отмена
+                    <i class="fas fa-times"></i> Cancel
                 </a>
             </div>
         </form>
@@ -121,7 +121,7 @@
             $('#tags').select2({
                 tags: true,
                 tokenSeparators: [','],
-                placeholder: 'Выберите теги или введите новые...'
+                placeholder: 'Pick tags or type new ones...'
             });
         });
     </script>

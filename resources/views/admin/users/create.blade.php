@@ -1,18 +1,18 @@
 @extends('adminlte::page')
 
-@section('title', 'Создать пользователя')
+@section('title', 'Create user')
 
 @section('content_header')
-    <h1>Создать пользователя</h1>
+    <h1>Create user</h1>
 @stop
 
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Новый пользователь</h3>
+            <h3 class="card-title">New user</h3>
             <div class="card-tools">
                 <a href="{{ route('admin.users.index') }}" class="btn btn-secondary btn-sm">
-                    <i class="fas fa-arrow-left"></i> Назад к списку
+                    <i class="fas fa-arrow-left"></i> Back to list
                 </a>
             </div>
         </div>
@@ -32,16 +32,16 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <!-- Имя -->
+                        <!-- Name -->
                         <div class="form-group">
-                            <label for="name">Имя <span class="text-danger">*</span></label>
+                            <label for="name">Name <span class="text-danger">*</span></label>
                             <input type="text"
                                    name="name"
                                    id="name"
                                    class="form-control @error('name') is-invalid @enderror"
                                    value="{{ old('name') }}"
                                    required
-                                   placeholder="Введите имя пользователя...">
+                                   placeholder="Enter a user name...">
                             @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -67,15 +67,15 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <!-- Пароль -->
+                        <!-- Password -->
                         <div class="form-group">
-                            <label for="password">Пароль <span class="text-danger">*</span></label>
+                            <label for="password">Password <span class="text-danger">*</span></label>
                             <input type="password"
                                    name="password"
                                    id="password"
                                    class="form-control @error('password') is-invalid @enderror"
                                    required
-                                   placeholder="Минимум 8 символов">
+                                   placeholder="At least 8 characters">
                             @error('password')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -84,20 +84,20 @@
                     <div class="col-md-6">
                         <!-- Подтверждение пароля -->
                         <div class="form-group">
-                            <label for="password_confirmation">Подтвердите пароль <span class="text-danger">*</span></label>
+                            <label for="password_confirmation">Confirm password <span class="text-danger">*</span></label>
                             <input type="password"
                                    name="password_confirmation"
                                    id="password_confirmation"
                                    class="form-control"
                                    required
-                                   placeholder="Повторите пароль">
+                                   placeholder="Confirm password">
                         </div>
                     </div>
                 </div>
 
-                <!-- Роли -->
+                <!-- Roles -->
                 <div class="form-group">
-                    <label for="roles">Роли</label>
+                    <label for="roles">Roles</label>
                     <select name="roles[]" id="roles" class="form-control" multiple>
                         @foreach($roles as $role)
                             <option value="{{ $role->name }}"
@@ -107,17 +107,17 @@
                         @endforeach
                     </select>
                     <small class="form-text text-muted">
-                        Держите Ctrl (Cmd на Mac) для выбора нескольких ролей
+                        Hold Ctrl (Cmd on Mac) to select several roles
                     </small>
                 </div>
             </div>
 
             <div class="card-footer">
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Создать пользователя
+                    <i class="fas fa-save"></i> Create user
                 </button>
                 <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-times"></i> Отмена
+                    <i class="fas fa-times"></i> Cancel
                 </a>
             </div>
         </form>
@@ -146,13 +146,13 @@
             const passwordConfirm = document.getElementById('password_confirmation').value;
 
             if (password !== passwordConfirm) {
-                alert('Пароли не совпадают!');
+                alert('Passwords do not match!');
                 e.preventDefault();
                 return false;
             }
 
             if (password.length < 8) {
-                alert('Пароль должен содержать минимум 8 символов!');
+                alert('The password must be at least 8 characters!');
                 e.preventDefault();
                 return false;
             }

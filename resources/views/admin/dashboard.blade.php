@@ -1,9 +1,9 @@
 @extends('adminlte::page')
 
-@section('title', 'Панель управления')
+@section('title', 'Dashboard')
 
 @section('content_header')
-    <h1>Панель управления</h1>
+    <h1>Dashboard</h1>
 @stop
 
 @section('content')
@@ -13,13 +13,13 @@
             <div class="small-box bg-info">
                 <div class="inner">
                     <h3>{{ $stats['posts_count'] }}</h3>
-                    <p>Постов</p>
+                    <p>Posts</p>
                 </div>
                 <div class="icon">
                     <i class="fas fa-file-alt"></i>
                 </div>
                 <a href="{{ route('admin.posts.index') }}" class="small-box-footer">
-                    Подробнее <i class="fas fa-arrow-circle-right"></i>
+                    Read more <i class="fas fa-arrow-circle-right"></i>
                 </a>
             </div>
         </div>
@@ -28,13 +28,13 @@
             <div class="small-box bg-success">
                 <div class="inner">
                     <h3>{{ $stats['categories_count'] }}</h3>
-                    <p>Категорий</p>
+                    <p>Categories</p>
                 </div>
                 <div class="icon">
                     <i class="fas fa-tags"></i>
                 </div>
                 <a href="{{ route('admin.categories.index') }}" class="small-box-footer">
-                    Подробнее <i class="fas fa-arrow-circle-right"></i>
+                    Read more <i class="fas fa-arrow-circle-right"></i>
                 </a>
             </div>
         </div>
@@ -43,13 +43,13 @@
             <div class="small-box bg-warning">
                 <div class="inner">
                     <h3>{{ $stats['comments_count'] }}</h3>
-                    <p>Комментариев</p>
+                    <p>Comments</p>
                 </div>
                 <div class="icon">
                     <i class="fas fa-comments"></i>
                 </div>
                 <a href="{{ route('admin.comments.index') }}" class="small-box-footer">
-                    Подробнее <i class="fas fa-arrow-circle-right"></i>
+                    Read more <i class="fas fa-arrow-circle-right"></i>
                 </a>
             </div>
         </div>
@@ -58,33 +58,33 @@
             <div class="small-box bg-danger">
                 <div class="inner">
                     <h3>{{ $stats['users_count'] }}</h3>
-                    <p>Пользователей</p>
+                    <p>Users</p>
                 </div>
                 <div class="icon">
                     <i class="fas fa-users"></i>
                 </div>
                 <a href="{{ route('admin.users.index') }}" class="small-box-footer">
-                    Подробнее <i class="fas fa-arrow-circle-right"></i>
+                    Read more <i class="fas fa-arrow-circle-right"></i>
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- Недавние посты и комментарии -->
+    <!-- Recent posts and comments -->
     <div class="row">
-        <!-- Недавние посты -->
+        <!-- Recent posts -->
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Недавние посты</h3>
+                    <h3 class="card-title">Recent posts</h3>
                 </div>
                 <div class="card-body p-0">
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>Заголовок</th>
-                                <th>Автор</th>
-                                <th>Дата</th>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Date</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -95,12 +95,12 @@
                                             {{ \Illuminate\Support\Str::limit($post->title, 30) }}
                                         </a>
                                     </td>
-                                    <td>{{ $post->user->name ?? 'Неизвестно' }}</td>
+                                    <td>{{ $post->user->name ?? 'Unknown' }}</td>
                                     <td>{{ $post->created_at->format('d.m.Y') }}</td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="text-center">Нет постов</td>
+                                    <td colspan="3" class="text-center">No posts</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -109,19 +109,19 @@
             </div>
         </div>
 
-        <!-- Недавние комментарии -->
+        <!-- Recent comments -->
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Недавние комментарии</h3>
+                    <h3 class="card-title">Recent comments</h3>
                 </div>
                 <div class="card-body p-0">
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>Комментарий</th>
-                                <th>Пост</th>
-                                <th>Дата</th>
+                                <th>Comment</th>
+                                <th>Post</th>
+                                <th>Date</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -136,7 +136,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="text-center">Нет комментариев</td>
+                                    <td colspan="3" class="text-center">No comments</td>
                                 </tr>
                             @endforelse
                         </tbody>

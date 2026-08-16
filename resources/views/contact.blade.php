@@ -3,6 +3,6 @@
 @section('content')
 <div class="container py-4">
     <h1>Contact</h1>
-    <p>Контакты.</p>
+    <p>Contacts.</p>
 </div>
 @endsection

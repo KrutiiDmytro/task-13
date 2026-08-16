@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Редактировать пост')
+@section('title', 'Edit post')
 
 @section('content')
 <div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-lg-9">
-            <h1 class="h4 mb-3">Редактировать пост: {{ $post->title }}</h1>
+            <h1 class="h4 mb-3">Edit post: {{ $post->title }}</h1>
 
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -25,7 +25,7 @@
                         @method('PUT')
 
                         <div class="mb-3">
-                            <label for="title" class="form-label">Заголовок</label>
+                            <label for="title" class="form-label">Title</label>
                             <input type="text"
                                    id="title"
                                    name="title"
@@ -36,7 +36,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="content" class="form-label">Содержание</label>
+                            <label for="content" class="form-label">Content</label>
                             <textarea id="content"
                                       name="content"
                                       rows="10"
@@ -46,9 +46,9 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="category_id" class="form-label">Категория</label>
+                            <label for="category_id" class="form-label">Category</label>
                             <select id="category_id" name="category_id" class="form-control @error('category_id') is-invalid @enderror">
-                                <option value="">Без категории</option>
+                                <option value="">No category</option>
                                 @foreach($categories as $category)
                                     <option value="{{ $category->id }}" {{ old('category_id', $post->category_id) == $category->id ? 'selected' : '' }}>
                                         {{ $category->name }}
@@ -59,7 +59,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="tags" class="form-label">Теги</label>
+                            <label for="tags" class="form-label">Tags</label>
                             <select id="tags" name="tags[]" class="form-control @error('tags') is-invalid @enderror" multiple>
                                 @php($selected = old('tags', $post->tags->pluck('id')->toArray()))
                                 @foreach($tags as $tag)
@@ -69,12 +69,12 @@
                                 @endforeach
                             </select>
                             @error('tags') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            <small class="text-muted">Удерживайте Ctrl (Cmd на Mac) для выбора нескольких тегов.</small>
+                            <small class="text-muted">Hold Ctrl (Cmd on Mac) to select several tags.</small>
                         </div>
 
                         @if($post->image)
                             <div class="mb-3">
-                                <p class="form-label">Текущее изображение</p>
+                                <p class="form-label">Current image</p>
                                 <div>
                                     <a href="{{ Storage::url($post->image) }}" target="_blank" rel="noopener">
                                         <img src="{{ Storage::url($post->image) }}"
@@ -87,19 +87,19 @@
                         @endif
 
                         <div class="mb-3">
-                            <label for="image" class="form-label">Заменить изображение</label>
+                            <label for="image" class="form-label">Replace image</label>
                             <input type="file"
                                    id="image"
                                    name="image"
                                    class="form-control @error('image') is-invalid @enderror"
                                    accept=".jpg,.jpeg,.png,.webp,.gif">
                             @error('image') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            <small class="text-muted">Если файл не выбрать — останется текущее изображение.</small>
+                            <small class="text-muted">Leave empty to keep the current image.</small>
                         </div>
 
                         <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary">Обновить пост</button>
-                            <a href="{{ route('posts.show', $post) }}" class="btn btn-secondary">Отмена</a>
+                            <button type="submit" class="btn btn-primary">Update post</button>
+                            <a href="{{ route('posts.show', $post) }}" class="btn btn-secondary">Cancel</a>
                         </div>
                     </form>
                 </div>

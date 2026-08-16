@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'Редактировать тег')
+@section('title', 'Edit tag')
 
 @section('content')
-    <h1>Редактировать тег: {{ $tag->name }}</h1>
+    <h1>Edit tag: {{ $tag->name }}</h1>
 
     @if ($errors->any())
         <div class="alert alert-danger">
@@ -21,11 +21,11 @@
                 @csrf
                 @method('PUT')
                 <div class="mb-3">
-                    <label for="name" class="form-label">Название тега</label>
+                    <label for="name" class="form-label">Tag name</label>
                     <input type="text" id="name" name="name" class="form-control" value="{{ old('name', $tag->name) }}" required>
                 </div>
-                <button type="submit" class="btn btn-primary">Обновить тег</button>
-                <a href="{{ route('tags.index') }}" class="btn btn-secondary">Отмена</a>
+                <button type="submit" class="btn btn-primary">Update tag</button>
+                <a href="{{ route('tags.index') }}" class="btn btn-secondary">Cancel</a>
             </form>
         </div>
     </div>

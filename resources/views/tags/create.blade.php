@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'Создать тег')
+@section('title', 'Create tag')
 
 @section('content')
-    <h1>Создать новый тег</h1>
+    <h1>Create a new tag</h1>
 
     @if ($errors->any())
         <div class="alert alert-danger">
@@ -20,11 +20,11 @@
             <form action="{{ route('tags.store') }}" method="POST">
                 @csrf
                 <div class="mb-3">
-                    <label for="name" class="form-label">Название тега</label>
+                    <label for="name" class="form-label">Tag name</label>
                     <input type="text" id="name" name="name" class="form-control" value="{{ old('name') }}" required>
                 </div>
-                <button type="submit" class="btn btn-primary">Создать тег</button>
-                <a href="{{ route('tags.index') }}" class="btn btn-secondary">Отмена</a>
+                <button type="submit" class="btn btn-primary">Create tag</button>
+                <a href="{{ route('tags.index') }}" class="btn btn-secondary">Cancel</a>
             </form>
         </div>
     </div>

@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="auth-header">
-        <h1>Вход</h1>
-        <p class="text-muted">Войдите в свой аккаунт</p>
+        <h1>Log in</h1>
+        <p class="text-muted">Log in to your account</p>
     </div>
 
     <!-- Session Status -->
@@ -32,7 +32,7 @@
 
         <!-- Password -->
         <div class="mb-3">
-            <label for="password" class="form-label">Пароль</label>
+            <label for="password" class="form-label">Password</label>
             <input id="password"
                    class="form-control @error('password') is-invalid @enderror"
                    type="password"
@@ -52,7 +52,7 @@
                        class="form-check-input"
                        name="remember">
                 <label class="form-check-label" for="remember_me">
-                    Запомнить меня
+                    Remember me
                 </label>
             </div>
         </div>
@@ -60,19 +60,19 @@
         <div class="d-flex justify-content-between align-items-center">
             @if (Route::has('password.request'))
                 <a href="{{ route('password.request') }}" class="text-decoration-none">
-                    Забыли пароль?
+                    Forgot your password?
                 </a>
             @endif
 
             <button type="submit" class="btn btn-primary">
-                Войти
+                Log in
             </button>
         </div>
 
         <div class="text-center mt-3">
-            <span class="text-muted">Нет аккаунта?</span>
+            <span class="text-muted">No account yet?</span>
             <a href="{{ route('register') }}" class="text-decoration-none ms-1">
-                Зарегистрироваться
+                Sign up
             </a>
         </div>
     </form>

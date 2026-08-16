@@ -3,20 +3,20 @@
 @section('title', $tag->name)
 
 @section('content')
-    <h1>Тег: {{ $tag->name }}</h1>
+    <h1>Tag: {{ $tag->name }}</h1>
 
     <div class="mb-4">
-        <a href="{{ route('tags.index') }}" class="btn btn-secondary">&larr; Назад к тегам</a>
-        <a href="{{ route('tags.edit', $tag) }}" class="btn btn-warning">Редактировать</a>
+        <a href="{{ route('tags.index') }}" class="btn btn-secondary">&larr; Back to tags</a>
+        <a href="{{ route('tags.edit', $tag) }}" class="btn btn-warning">Edit</a>
     </div>
 
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">Информация о теге</h5>
+            <h5 class="card-title">Tag details</h5>
             <p><strong>ID:</strong> {{ $tag->id }}</p>
-            <p><strong>Название:</strong> {{ $tag->name }}</p>
-            <p><strong>Создан:</strong> {{ $tag->created_at->format('d.m.Y H:i') }}</p>
-            <p><strong>Обновлен:</strong> {{ $tag->updated_at->format('d.m.Y H:i') }}</p>
+            <p><strong>Name:</strong> {{ $tag->name }}</p>
+            <p><strong>Created:</strong> {{ $tag->created_at->format('d.m.Y H:i') }}</p>
+            <p><strong>Updated:</strong> {{ $tag->updated_at->format('d.m.Y H:i') }}</p>
         </div>
     </div>
 
@@ -33,7 +33,7 @@
         <div class="card-body">
             <h5 class="card-title">
                 {{--  Рахуємо кількість з урахуванням пагінації (total) або колекції (count) --}}
-                Посты с этим тегом ({{ $isPaginated ? $list->total() : $list->count() }})
+                Posts with this tag ({{ $isPaginated ? $list->total() : $list->count() }})
             </h5>
             <div class="row">
                 @foreach($list as $post)
@@ -51,14 +51,14 @@
                                     {{ \Illuminate\Support\Str::limit(strip_tags($post->content ?? ''), 100) }}
                                 </p>
 
-                                {{--  Дата, якщо є атрибут date --}}
+                                {{--  Date, when the post has one --}}
                                 @if(!empty($post->date))
                                     <small class="text-muted d-block mb-2">
                                         {{ $post->date->format('d.m.Y') }}
                                     </small>
                                 @endif
 
-                                {{--  Теги цього поста як бейджі --}}
+                                {{--  Tags of this post, rendered as badges --}}
                                 @if($post->relationLoaded('tags') ? $post->tags->isNotEmpty() : $post->tags()->exists())
                                     <div class="d-flex flex-wrap gap-2 mt-1">
                                         @foreach($post->tags as $t)
@@ -84,7 +84,7 @@
     </div>
 @else
     <div class="alert alert-info mt-4">
-        Пока нет постов с этим тегом.
+        No posts with this tag yet.
     </div>
 @endif
 

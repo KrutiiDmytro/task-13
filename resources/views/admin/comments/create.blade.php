@@ -1,18 +1,18 @@
 @extends('adminlte::page')
 
-@section('title', 'Создать комментарий')
+@section('title', 'Create comment')
 
 @section('content_header')
-    <h1>Создать комментарий</h1>
+    <h1>Create comment</h1>
 @stop
 
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Новый комментарий</h3>
+            <h3 class="card-title">New comment</h3>
             <div class="card-tools">
                 <a href="{{ route('admin.comments.index') }}" class="btn btn-secondary btn-sm">
-                    <i class="fas fa-arrow-left"></i> Назад к списку
+                    <i class="fas fa-arrow-left"></i> Back to list
                 </a>
             </div>
         </div>
@@ -34,9 +34,9 @@
                     <div class="col-md-6">
                         <!-- Выбор поста -->
                         <div class="form-group">
-                            <label for="post_id">Пост <span class="text-danger">*</span></label>
+                            <label for="post_id">Post <span class="text-danger">*</span></label>
                             <select name="post_id" id="post_id" class="form-control @error('post_id') is-invalid @enderror" required>
-                                <option value="">Выберите пост...</option>
+                                <option value="">Choose a post...</option>
                                 @foreach($posts as $post)
                                     <option value="{{ $post->id }}" {{ old('post_id') == $post->id ? 'selected' : '' }}>
                                         {{ $post->title }}
@@ -50,16 +50,16 @@
                     </div>
 
         <div class="col-md-3">
-            <!-- Имя автора -->
+            <!-- Author name -->
             <div class="form-group">
-                <label for="author">Имя автора <span class="text-danger">*</span></label>
+                <label for="author">Author name <span class="text-danger">*</span></label>
                 <input type="text"
                         name="author"
                         id="author"
                         class="form-control @error('author') is-invalid @enderror"
                         value="{{ old('author') }}"
                         required
-                        placeholder="Введите имя автора">
+                        placeholder="Enter the author name">
                 @error('author')
                      <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -67,9 +67,9 @@
         </div>
 
                     <div class="col-md-3">
-                        <!-- Email автора -->
+                        <!-- Author email -->
                         <div class="form-group">
-                            <label for="email">Email автора</label>
+                            <label for="email">Author email</label>
                             <input type="email"
                                    name="email"
                                    id="email"
@@ -83,15 +83,15 @@
                     </div>
                 </div>
 
-                <!-- Содержание комментария -->
+                <!-- Comment content -->
                 <div class="form-group">
-                    <label for="content">Содержание комментария <span class="text-danger">*</span></label>
+                    <label for="content">Comment content <span class="text-danger">*</span></label>
                     <textarea name="content"
                               id="content"
                               class="form-control @error('content') is-invalid @enderror"
                               rows="6"
                               required
-                              placeholder="Введите текст комментария...">{{ old('content') }}</textarea>
+                              placeholder="Enter the comment text...">{{ old('content') }}</textarea>
                     @error('content')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -100,10 +100,10 @@
 
             <div class="card-footer">
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Создать комментарий
+                    <i class="fas fa-save"></i> Create comment
                 </button>
                 <a href="{{ route('admin.comments.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-times"></i> Отмена
+                    <i class="fas fa-times"></i> Cancel
                 </a>
             </div>
         </form>
@@ -132,13 +132,13 @@
             const content = document.getElementById('content').value.trim();
 
             if (!postId) {
-                alert('Пожалуйста, выберите пост для комментария');
+                alert('Please choose a post for the comment');
                 e.preventDefault();
                 return false;
             }
 
             if (!content) {
-                alert('Пожалуйста, введите содержание комментария');
+                alert('Please enter the comment content');
                 e.preventDefault();
                 return false;
             }

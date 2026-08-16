@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'Создать комментарий')
+@section('title', 'Create comment')
 
 @section('content')
-    <h1>Создать новый комментарий</h1>
+    <h1>Create a new comment</h1>
 
     @if ($errors->any())
         <div class="alert alert-danger">
@@ -21,7 +21,7 @@
             <form action="{{ route('comments.store') }}" method="POST">
                 @csrf
                 <div class="mb-3">
-                    <label for="author" class="form-label">Автор</label>
+                    <label for="author" class="form-label">Author</label>
                     <input type="text"
                            id="author"
                            name="author"
@@ -31,7 +31,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="content" class="form-label">Комментарий</label>
+                    <label for="content" class="form-label">Comment</label>
                     <textarea id="content"
                               name="content"
                               class="form-control"
@@ -40,9 +40,9 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="post_id" class="form-label">К какому посту?</label>
+                    <label for="post_id" class="form-label">Which post?</label>
                     <select id="post_id" name="post_id" class="form-select" required>
-                        <option value="">Выберите пост</option>
+                        <option value="">Choose a post</option>
                         @foreach($posts as $post)
                             <option value="{{ $post->id }}"
                                     @selected(old('post_id') == $post->id)>
@@ -52,8 +52,8 @@
                     </select>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Создать комментарий</button>
-                <a href="{{ route('comments.index') }}" class="btn btn-secondary">Отмена</a>
+                <button type="submit" class="btn btn-primary">Create comment</button>
+                <a href="{{ route('comments.index') }}" class="btn btn-secondary">Cancel</a>
             </form>
         </div>
     </div>

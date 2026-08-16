@@ -1,18 +1,18 @@
 @extends('adminlte::page')
 
-@section('title', 'Управление комментариями')
+@section('title', 'Comment management')
 
 @section('content_header')
-    <h1>Управление комментариями</h1>
+    <h1>Comment management</h1>
 @stop
 
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Список комментариев</h3>
+            <h3 class="card-title">Comments</h3>
             <div class="card-tools">
                 <a href="{{ route('admin.comments.create') }}" class="btn btn-primary btn-sm">
-                    <i class="fas fa-plus"></i> Создать комментарий
+                    <i class="fas fa-plus"></i> Create comment
                 </a>
             </div>
         </div>
@@ -23,12 +23,12 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Содержание</th>
-                                <th>Пост</th>
-                                <th>Автор</th>
+                                <th>Content</th>
+                                <th>Post</th>
+                                <th>Author</th>
                                 <th>Email</th>
-                                <th>Дата</th>
-                                <th>Действия</th>
+                                <th>Date</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -43,28 +43,28 @@
                                                 {{ \Illuminate\Support\Str::limit($comment->post->title, 30) }}
                                             </a>
                                         @else
-                                            <span class="text-muted">Пост удален</span>
+                                            <span class="text-muted">Post deleted</span>
                                         @endif
                                     </td>
-                                    <td>{{ $comment->author_name ?: 'Аноним' }}</td>
-                                    <td>{{ $comment->author_email ?: 'Не указан' }}</td>
+                                    <td>{{ $comment->author_name ?: 'Anonymous' }}</td>
+                                    <td>{{ $comment->author_email ?: 'Not specified' }}</td>
                                     <td>{{ $comment->created_at->format('d.m.Y H:i') }}</td>
                                     <td>
-                                        <div class="btn-group" role="group" aria-label="Действия с комментарием #{{ $comment->id }}">
+                                        <div class="btn-group" role="group" aria-label="Actions for comment #{{ $comment->id }}">
                                             <a href="{{ route('admin.comments.show', $comment) }}"
-                                               class="btn btn-info btn-sm" title="Просмотр">
+                                               class="btn btn-info btn-sm" title="View">
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             <a href="{{ route('admin.comments.edit', $comment) }}"
-                                               class="btn btn-warning btn-sm" title="Редактировать">
+                                               class="btn btn-warning btn-sm" title="Edit">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                             <form action="{{ route('admin.comments.destroy', $comment) }}"
                                                   method="POST" class="d-inline"
-                                                  onsubmit="return confirm('Вы уверены, что хотите удалить этот комментарий?')">
+                                                  onsubmit="return confirm('Are you sure you want to delete this comment?')">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm" title="Удалить">
+                                                <button type="submit" class="btn btn-danger btn-sm" title="Delete">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
@@ -82,9 +82,9 @@
                 </div>
             @else
                 <div class="text-center">
-                    <p>Комментариев пока нет.</p>
+                    <p>No comments yet.</p>
                     <a href="{{ route('admin.comments.create') }}" class="btn btn-primary">
-                        Создать первый комментарий
+                        Create the first comment
                     </a>
                 </div>
             @endif

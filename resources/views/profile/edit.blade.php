@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Профиль')
+@section('title', 'Profile')
 
 @section('content')
 <div class="container py-4">
@@ -8,7 +8,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="mb-0">Профиль пользователя</h4>
+                    <h4 class="mb-0">User profile</h4>
                 </div>
                 <div class="card-body">
                     <!-- Форма обновления профиля -->
@@ -18,14 +18,14 @@
 
                         @if (session('status') === 'profile-updated')
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                Профиль успешно обновлен!
+                                Profile updated successfully.
                                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                             </div>
                         @endif
 
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="name" class="form-label">Имя</label>
+                                <label for="name" class="form-label">Name</label>
                                 <input type="text"
                                        class="form-control @error('name') is-invalid @enderror"
                                        id="name"
@@ -52,11 +52,11 @@
 
                         @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
                             <div class="alert alert-warning">
-                                <p class="mb-2">Ваш email адрес не подтвержден.</p>
+                                <p class="mb-2">Your email address is not verified.</p>
                                 <form method="POST" action="{{ route('verification.send') }}" class="d-inline">
                                     @csrf
                                     <button type="submit" class="btn btn-link p-0">
-                                        Нажмите здесь, чтобы повторно отправить письмо с подтверждением.
+                                        Click here to request another verification email.
                                     </button>
                                 </form>
                             </div>
@@ -64,7 +64,7 @@
 
                         <div class="d-flex justify-content-between">
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save"></i> Сохранить
+                                <i class="fas fa-save"></i> Save
                             </button>
                         </div>
                     </form>
@@ -74,7 +74,7 @@
             <!-- Изменение пароля -->
             <div class="card mt-4">
                 <div class="card-header">
-                    <h5 class="mb-0">Изменить пароль</h5>
+                    <h5 class="mb-0">Change password</h5>
                 </div>
                 <div class="card-body">
                     <form method="POST" action="{{ route('password.update') }}">
@@ -83,13 +83,13 @@
 
                         @if (session('status') === 'password-updated')
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                Пароль успешно изменен!
+                                Password changed successfully.
                                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                             </div>
                         @endif
 
                         <div class="mb-3">
-                            <label for="current_password" class="form-label">Текущий пароль</label>
+                            <label for="current_password" class="form-label">Current password</label>
                             <input type="password"
                                    class="form-control @error('current_password') is-invalid @enderror"
                                    id="current_password"
@@ -101,7 +101,7 @@
 
                         <div class="row">
                             <div class="col-md-6">
-                                <label for="password" class="form-label">Новый пароль</label>
+                                <label for="password" class="form-label">New password</label>
                                 <input type="password"
                                        class="form-control @error('password') is-invalid @enderror"
                                        id="password"
@@ -111,7 +111,7 @@
                                 @enderror
                             </div>
                             <div class="col-md-6">
-                                <label for="password_confirmation" class="form-label">Подтвердите пароль</label>
+                                <label for="password_confirmation" class="form-label">Confirm password</label>
                                 <input type="password"
                                        class="form-control"
                                        id="password_confirmation"
@@ -121,26 +121,26 @@
 
                         <div class="mt-3">
                             <button type="submit" class="btn btn-warning">
-                                <i class="fas fa-key"></i> Изменить пароль
+                                <i class="fas fa-key"></i> Change password
                             </button>
                         </div>
                     </form>
                 </div>
             </div>
 
-            <!-- Удаление аккаунта -->
+            <!-- Delete account -->
             <div class="card mt-4 border-danger">
                 <div class="card-header bg-danger text-white">
-                    <h5 class="mb-0">Опасная зона</h5>
+                    <h5 class="mb-0">Danger zone</h5>
                 </div>
                 <div class="card-body">
                     <p class="text-muted">
-                        После удаления вашего аккаунта все его ресурсы и данные будут удалены безвозвратно.
-                        Пожалуйста, введите ваш пароль для подтверждения удаления аккаунта.
+                        Once your account is deleted, all of its resources and data will be permanently removed.
+                        Please enter your password to confirm you want to permanently delete your account.
                     </p>
 
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
-                        <i class="fas fa-trash"></i> Удалить аккаунт
+                        <i class="fas fa-trash"></i> Delete account
                     </button>
                 </div>
             </div>
@@ -153,34 +153,34 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Удаление аккаунта</h5>
+                <h5 class="modal-title">Delete account</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST" action="{{ route('profile.destroy') }}">
                 @csrf
                 @method('delete')
                 <div class="modal-body">
-                    <p>Вы уверены, что хотите удалить свой аккаунт?</p>
+                    <p>Are you sure you want to delete your account?</p>
                     <p class="text-muted">
-                        Після видалення вашого акаунта всі його ресурси і дані будуть видалені безповоротно.
-                        Будь ласка, введіть ваш пароль для підтвердження видалення акаунта.
+                        Once your account is deleted, all of its resources and data will be permanently removed.
+                        Please enter your password to confirm you want to permanently delete your account.
                     </p>
 
                     <div class="mb-3">
-                        <label for="delete_password" class="form-label">Пароль</label>
+                        <label for="delete_password" class="form-label">Password</label>
                         <input type="password"
                                class="form-control @error('password', 'userDeletion') is-invalid @enderror"
                                id="delete_password"
                                name="password"
-                               placeholder="Введите ваш пароль">
+                               placeholder="Enter your password">
                         @error('password', 'userDeletion')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                    <button type="submit" class="btn btn-danger">Удалить аккаунт</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Delete account</button>
                 </div>
             </form>
         </div>

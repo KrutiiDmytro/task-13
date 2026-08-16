@@ -32,11 +32,11 @@
                 <div class="col-lg-8 mx-auto text-center">
                     <h1 class="display-4 fw-bold mb-4">Blog API Documentation</h1>
                     <p class="lead mb-4">
-                        Полная REST API для системы управления блогом с поддержкой JSON и XML форматов
+                        A complete REST API for the blog management system, with JSON and XML support
                     </p>
                     <div class="d-grid gap-2 d-md-flex justify-content-md-center">
                         <a href="{{ url('/api/documentation') }}" class="btn btn-light btn-lg px-4 me-md-2">
-                            📚 Открыть Swagger UI
+                            📚 Open Swagger UI
                         </a>
                         <a href="{{ url('/api-info') }}" class="btn btn-outline-light btn-lg px-4">
                             ℹ️ API Info
@@ -56,7 +56,7 @@
                             📝 Posts API
                         </h5>
                         <p class="card-text">
-                            Управление постами блога: создание, чтение, обновление и удаление.
+                            Manage blog posts: create, read, update and delete.
                         </p>
                         <div class="mb-3">
                             <span class="badge bg-success endpoint-badge">GET /api/v1/posts</span><br>
@@ -75,7 +75,7 @@
                             📁 Categories API
                         </h5>
                         <p class="card-text">
-                            Управление категориями постов с подсчетом количества постов.
+                            Manage post categories, including the post count for each.
                         </p>
                         <div class="mb-3">
                             <span class="badge bg-success endpoint-badge">GET /api/v1/categories</span><br>
@@ -93,25 +93,25 @@
                 <div class="card">
                     <div class="card-header">
                         <h5 class="card-title mb-0">
-                            🚀 Быстрый старт
+                            🚀 Quick start
                         </h5>
                     </div>
                     <div class="card-body">
-                        <h6>1. Получение списка постов (JSON):</h6>
+                        <h6>1. Fetch the list of posts (JSON):</h6>
                         <pre class="bg-light p-3 rounded"><code>curl -X GET "{{ url('/api/v1/posts?format=json') }}" \
      -H "Accept: application/json"</code></pre>
 
-                        <h6>2. Получение списка постов (XML):</h6>
+                        <h6>2. Fetch the list of posts (XML):</h6>
                         <pre class="bg-light p-3 rounded"><code>curl -X GET "{{ url('/api/v1/posts?format=xml') }}" \
      -H "Accept: application/xml"</code></pre>
 
-                        <h6>3. Создание поста (с аутентификацией):</h6>
+                        <h6>3. Create a post (authenticated):</h6>
                         <pre class="bg-light p-3 rounded"><code>curl -X POST "{{ url('/api/v1/posts') }}" \
      -H "Authorization: Bearer YOUR_TOKEN" \
      -H "Content-Type: application/json" \
      -d '{
-       "title": "Новый пост",
-       "content": "Содержание поста",
+       "title": "New post",
+       "content": "Post content",
        "category_id": 1
      }'</code></pre>
                     </div>
@@ -122,7 +122,7 @@
         <div class="row mt-5">
             <div class="col-lg-12">
                 <div class="text-center">
-                    <h3>Полезные ссылки</h3>
+                    <h3>Useful links</h3>
                     <div class="d-flex justify-content-center gap-3 flex-wrap">
                         <a href="{{ url('/api/documentation') }}" class="btn btn-primary">
                             📚 Swagger UI
