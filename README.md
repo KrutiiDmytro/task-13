@@ -2,47 +2,47 @@
 
 [![CI](https://github.com/KrutiiDmytro/pixelpulse/actions/workflows/ci.yml/badge.svg)](https://github.com/KrutiiDmytro/pixelpulse/actions/workflows/ci.yml)
 
-Блог про ігри на Laravel 12 — з публічною частиною, адмінкою, REST API та ролями.
-Написаний як навчальний проєкт із наголосом на якість коду: тести, статичний аналіз і CI.
+A gaming blog built on Laravel 12 — public site, admin panel, REST API and role-based access.
+Written as a learning project with the emphasis on code quality: tests, static analysis and CI.
 
-## Можливості
+## Features
 
-**Публічна частина**
-- Стрічка статей із виділеним матеріалом, сторінки категорій і тегів
-- Пошук по заголовках і тексту
-- Коментарі, зокрема від незареєстрованих читачів
-- Світла й темна теми з перемикачем
+**Public site**
+- Article feed with a featured post, plus category and tag pages
+- Search across titles and body text
+- Comments, including from readers who are not signed in
+- Light and dark themes with a toggle
 
-**Адмінка та CRUD**
-- Керування статтями, категоріями, тегами й коментарями
-- Ролі та дозволи через `spatie/laravel-permission`
-- Завантаження обкладинок на диск `public`
+**Admin and CRUD**
+- Manage posts, categories, tags and comments
+- Roles and permissions via `spatie/laravel-permission`
+- Cover image uploads to the `public` disk
 
 **API**
-- REST-ендпоїнти під `/api/v1`
-- Відповіді у JSON або XML — формат обирається заголовком `Accept`
-- Токени через Laravel Sanctum
-- Документація OpenAPI на `/api/documentation`
+- REST endpoints under `/api/v1`
+- JSON or XML responses, selected by the `Accept` header
+- Token auth through Laravel Sanctum
+- OpenAPI documentation at `/api/documentation`
 
-## Стек
+## Stack
 
 | | |
 |---|---|
 | PHP | 8.2 |
 | Framework | Laravel 12 |
-| БД | SQLite (за замовчуванням) або MySQL |
-| Фронтенд | Vite 7, Bootstrap 5.3, власна CSS-тема |
-| Автентифікація | Laravel Breeze, Sanctum для API |
-| Ролі | spatie/laravel-permission |
-| API-документація | L5 Swagger (`zircote/swagger-php`) |
-| Адмін-шаблон | jeroennoten/laravel-adminlte |
-| Тести | PHPUnit |
-| Стиль коду | PHPCS, Laravel Pint, PHP-CS-Fixer |
+| Database | SQLite (default) or MySQL |
+| Frontend | Vite 7, Bootstrap 5.3, custom CSS theme |
+| Authentication | Laravel Breeze, Sanctum for the API |
+| Roles | spatie/laravel-permission |
+| API docs | L5 Swagger (`zircote/swagger-php`) |
+| Admin template | jeroennoten/laravel-adminlte |
+| Tests | PHPUnit |
+| Code style | PHPCS, Laravel Pint, PHP-CS-Fixer |
 | CI | GitHub Actions, SonarCloud |
 
-## Швидкий старт
+## Getting started
 
-Потрібні PHP 8.2+, Composer і Node.js 20.19+ (вимога Vite 7).
+Requires PHP 8.2+, Composer and Node.js 20.19+ (Vite 7 needs it).
 
 ```bash
 git clone https://github.com/KrutiiDmytro/pixelpulse.git
@@ -54,91 +54,94 @@ npm install
 cp .env.example .env
 php artisan key:generate
 
-# База даних і демонстраційні дані
+# Database and demo content
 php artisan migrate --seed
 
-# Обкладинки статей лежать у storage/app/public — без цього симлінка вони не віддаються
+# Cover images live in storage/app/public and are not served without this symlink
 php artisan storage:link
 ```
 
-Далі два процеси в окремих терміналах:
+Then run two processes in separate terminals:
 
 ```bash
-npm run dev        # Vite з hot reload на :5173
-php artisan serve  # застосунок на :8000
+npm run dev        # Vite with hot reload on :5173
+php artisan serve  # the app on :8000
 ```
 
-Якщо збираєте фронтенд один раз замість дев-сервера — `npm run build`.
+To build the frontend once instead of running the dev server, use `npm run build`.
 
-## Тести
+## Tests
 
 ```bash
-php artisan test                                    # усі тести
-php artisan test tests/Feature/PostControllerTest.php   # окремий файл
+php artisan test                                        # everything
+php artisan test tests/Feature/PostControllerTest.php   # a single file
 
-# З покриттям (потрібен Xdebug)
+# With coverage (needs Xdebug)
 XDEBUG_MODE=coverage php artisan test --coverage-html reports/coverage
 ```
 
-## Якість коду
+## Code quality
 
 ```bash
-./vendor/bin/phpcs              # перевірка стандартів
-./vendor/bin/pint               # форматування за пресетом Laravel
-./vendor/bin/pint --test        # перевірка без змін
-./vendor/bin/php-cs-fixer fix   # автовиправлення
+./vendor/bin/phpcs              # check against the standard
+./vendor/bin/pint               # format using the Laravel preset
+./vendor/bin/pint --test        # check without writing changes
+./vendor/bin/php-cs-fixer fix   # apply fixes
 ```
 
-### Поточні метрики
+### Current metrics
 
-Заміряно локально 16.08.2026 — актуальний стан завжди показує значок CI угорі.
+Measured locally on 2026-08-16 — the CI badge above always reflects the current state.
 
-| Метрика | Значення |
+| Metric | Value |
 |---|---|
-| Тести | 580 пройдено, 1925 перевірок |
-| Покриття рядків | 99.2% (1271 з 1281) |
-| Покриття методів | 96.8% (184 з 190) |
-| Покриття класів | 93.9% (46 з 49) |
-| PHPCS | 0 помилок, 0 попереджень |
-| Laravel Pint | PASS, 166 файлів |
+| Tests | 580 passed, 1925 assertions |
+| Line coverage | 99.2% (1271 of 1281) |
+| Method coverage | 96.8% (184 of 190) |
+| Class coverage | 93.9% (46 of 49) |
+| PHPCS | 0 errors, 0 warnings |
+| Laravel Pint | PASS, 166 files |
 
 ## CI
 
-`.github/workflows/ci.yml` запускається на push у `master` і на кожен pull request:
+`.github/workflows/ci.yml` runs on every push to `master` and on every pull request:
 
-1. **tests** — PHPUnit із покриттям через Xdebug, звіт вивантажується як артефакт
-2. **quality** — PHPCS і Laravel Pint
-3. **sonar** — аналіз SonarCloud (пропускається, поки в Secrets немає `SONAR_TOKEN`)
+1. **tests** — PHPUnit with Xdebug coverage; the report is uploaded as an artifact
+2. **quality** — PHPCS and Laravel Pint
+3. **sonar** — SonarCloud analysis (skipped until `SONAR_TOKEN` is added to Secrets)
 
-## Структура
+Note that PHPCS exits non-zero on warnings as well as errors, so a line over the
+120-character limit is enough to fail the build.
+
+## Project layout
 
 ```
 app/
 ├── Http/
 │   ├── Controllers/
-│   │   ├── Admin/          # адмін-панель
+│   │   ├── Admin/          # admin panel
 │   │   ├── Api/V1/         # REST API
-│   │   └── Auth/           # автентифікація
-│   ├── Requests/           # валідація форм
-│   ├── Resources/          # трансформація відповідей API
-│   ├── Traits/             # FormatsResponse — вибір JSON/XML
+│   │   └── Auth/           # authentication
+│   ├── Requests/           # form validation
+│   ├── Resources/          # API response transformation
+│   ├── Traits/             # FormatsResponse — JSON/XML negotiation
 │   └── Middleware/
-├── Models/                 # Eloquent-моделі
-├── Services/               # бізнес-логіка (Post, Category, Tag, Comment)
-├── Policies/               # авторизація
-└── View/                   # компоненти Blade
+├── Models/                 # Eloquent models
+├── Services/               # business logic (Post, Category, Tag, Comment)
+├── Policies/               # authorization
+└── View/                   # Blade components
 
 database/
 ├── migrations/
 └── seeders/
-    └── assets/posts/       # обкладинки статей під версійним контролем
+    └── assets/posts/       # cover images kept under version control
 
 resources/
-├── css/app.css             # тема PixelPulse поверх Bootstrap
+├── css/app.css             # the PixelPulse theme, layered over Bootstrap
 └── views/
-    ├── components/         # post-card, category-badge тощо
-    ├── public/             # публічні сторінки
-    └── admin/              # адмінка
+    ├── components/         # post-card, category-badge and friends
+    ├── public/             # public pages
+    └── admin/              # admin panel
 
 routes/
 ├── web.php
@@ -147,37 +150,37 @@ routes/
 
 ## API
 
-Формат відповіді залежить від заголовка `Accept` — за замовчуванням JSON.
+The response format follows the `Accept` header and defaults to JSON.
 
 ```bash
-# Список статей
+# List posts
 curl http://localhost:8000/api/v1/posts
 
-# Те саме у XML
+# The same, as XML
 curl -H "Accept: application/xml" http://localhost:8000/api/v1/posts
 
-# Створення статті
+# Create a post
 curl -X POST http://localhost:8000/api/v1/posts \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <token>" \
-  -d '{"title":"Заголовок","content":"Текст","category_id":1}'
+  -d '{"title":"Title","content":"Body","category_id":1}'
 ```
 
-Повний перелік ендпоїнтів — на `/api/documentation`.
+The full endpoint list lives at `/api/documentation`.
 
-## Контент і зображення
+## Content and images
 
-Демонстраційні статті переказують реальні публікації ігрових видань своїми словами
-й посилаються на першоджерело. Дослівних цитат немає — чужі тексти захищені авторським правом.
+The demo articles paraphrase real coverage from gaming publications in our own words and
+link to the original. There are no verbatim quotes — that text belongs to its authors.
 
-Обкладинки взяті з Wikimedia Commons. Автори й ліцензії перелічені в
-[IMAGE-CREDITS.md](IMAGE-CREDITS.md). Частина зображень поширюється під CC BY та CC BY-SA,
-які **вимагають видимого зазначення авторства** там, де зображення опубліковане.
+Cover images come from Wikimedia Commons. Authors and licences are listed in
+[IMAGE-CREDITS.md](IMAGE-CREDITS.md). Several of them are CC BY or CC BY-SA, which
+**require visible attribution** wherever the image is published.
 
-## Автор
+## Author
 
-**Дмитро Крутий** — [GitHub](https://github.com/KrutiiDmytro)
+**Dmytro Krutyi** — [GitHub](https://github.com/KrutiiDmytro)
 
-## Ліцензія
+## Licence
 
 MIT
