@@ -11,14 +11,10 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            ['name' => 'Программирование', 'description' => 'Статьи о программировании'],
-            ['name' => 'Веб-разработка', 'description' => 'Создание веб-сайтов'],
-            ['name' => 'Безопасность', 'description' => 'Кибербезопасность'],
-            ['name' => 'Инструменты', 'description' => 'Обзоры инструментов'],
-            ['name' => 'Обучение', 'description' => 'Учебные материалы'],
-            ['name' => 'PHP', 'description' => 'Все о PHP'],
-            ['name' => 'JavaScript', 'description' => 'Frontend-разработка'],
-            ['name' => 'Базы данных', 'description' => 'Работа с СУБД'],
+            ['name' => 'News', 'description' => 'Release dates, patches and everything else happening in gaming right now.'],
+            ['name' => 'Tips', 'description' => 'Short, practical advice to help you play better today.'],
+            ['name' => 'Tutorials', 'description' => 'Step-by-step guides, builds and walkthroughs.'],
+            ['name' => 'Games', 'description' => 'In-depth reviews and first impressions.'],
         ];
 
         foreach ($categories as $category) {

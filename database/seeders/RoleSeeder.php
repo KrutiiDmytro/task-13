@@ -47,7 +47,7 @@ class RoleSeeder extends Seeder
         $admin = User::firstOrCreate(
             ['email' => 'admin@example.com'],
             [
-                'name' => 'Администратор',
+                'name' => 'PixelPulse Editor',
                 'password' => bcrypt('password123'),
             ]
         );

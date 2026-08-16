@@ -12,28 +12,34 @@ class CommentSeeder extends Seeder
     {
         $comments = [
             [
-                'post_title' => 'Введение в PHP 8.1',
-                'author_name' => 'Алексей',
-                'author_email' => 'alexey@example.com',
-                'content' => 'Отличная статья!',
+                'post_title' => 'Steam Deck gets a 90 Hz display in the next hardware revision',
+                'author_name' => 'Marcus',
+                'author_email' => 'marcus@example.com',
+                'content' => 'If battery life really is unchanged, this is an instant upgrade for me.',
             ],
             [
-                'post_title' => 'Введение в PHP 8.1',
-                'author_name' => 'Мария',
-                'author_email' => 'maria@example.com',
-                'content' => 'Спасибо за объяснение.',
+                'post_title' => 'Steam Deck gets a 90 Hz display in the next hardware revision',
+                'author_name' => 'Lena',
+                'author_email' => 'lena@example.com',
+                'content' => 'Waiting for independent benchmarks before I believe the battery claim.',
             ],
             [
-                'post_title' => 'Создание REST API с Laravel',
-                'author_name' => 'Петр',
-                'author_email' => 'petr@example.com',
-                'content' => 'Отличный пример!',
+                'post_title' => 'Five settings to change before you start any open-world game',
+                'author_name' => 'Priya',
+                'author_email' => 'priya@example.com',
+                'content' => 'The motion blur tip alone made the game playable for me. Thank you.',
             ],
             [
-                'post_title' => 'Основы JavaScript ES6+',
-                'author_name' => 'Анна',
-                'author_email' => 'anna@example.com',
-                'content' => 'Полезная информация.',
+                'post_title' => 'Stop aiming with your wrist',
+                'author_name' => 'Dan',
+                'author_email' => 'dan@example.com',
+                'content' => 'Two days of pain, then everything clicked. Can confirm this works.',
+            ],
+            [
+                'post_title' => 'Hollow echoes: a roguelike that respects your time',
+                'author_name' => 'Sofia',
+                'author_email' => 'sofia@example.com',
+                'content' => 'Eight minute runs are exactly what I need with a toddler in the house.',
             ],
         ];
 

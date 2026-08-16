@@ -72,7 +72,7 @@ class SeederTest extends TestCase
 
         $admin = User::where('email', 'admin@example.com')->first();
         $this->assertNotNull($admin);
-        $this->assertEquals('Администратор', $admin->name);
+        $this->assertEquals('PixelPulse Editor', $admin->name);
         $this->assertTrue($admin->hasRole('admin'));
     }
 

@@ -11,14 +11,14 @@ class TagSeeder extends Seeder
     public function run(): void
     {
         $tags = [
-            ['name' => 'PHP'], ['name' => 'JavaScript'], ['name' => 'MySQL'],
-            ['name' => 'Git'], ['name' => 'Docker'], ['name' => 'API'],
-            ['name' => 'Безопасность'], ['name' => 'Тестирование'],
-            ['name' => 'Веб-разработка'], ['name' => 'Программирование'],
-            ['name' => 'Laravel'], ['name' => 'Symfony'], ['name' => 'React'],
-            ['name' => 'Vue.js'], ['name' => 'Node.js'], ['name' => 'Python'],
-            ['name' => 'CSS'], ['name' => 'HTML'], ['name' => 'JSON'],
-            ['name' => 'REST'], ['name' => 'GraphQL'], ['name' => 'Microservices'],
+            ['name' => 'RPG'], ['name' => 'FPS'], ['name' => 'Indie'],
+            ['name' => 'Strategy'], ['name' => 'Roguelike'], ['name' => 'Speedrun'],
+            ['name' => 'Multiplayer'], ['name' => 'Co-op'], ['name' => 'Esports'],
+            ['name' => 'PC'], ['name' => 'PlayStation'], ['name' => 'Xbox'],
+            ['name' => 'Nintendo Switch'], ['name' => 'Steam Deck'], ['name' => 'VR'],
+            ['name' => 'Modding'], ['name' => 'Patch Notes'], ['name' => 'Beginner'],
+            ['name' => 'Boss Fight'], ['name' => 'Open World'], ['name' => 'Performance'],
+            ['name' => 'Review'],
         ];
 
         foreach ($tags as $tag) {
