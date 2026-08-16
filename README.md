@@ -1,12 +1,9 @@
 # PixelPulse
 
-[![CI](https://github.com/KrutiiDmytro/task-13/actions/workflows/ci.yml/badge.svg)](https://github.com/KrutiiDmytro/task-13/actions/workflows/ci.yml)
+[![CI](https://github.com/KrutiiDmytro/pixelpulse/actions/workflows/ci.yml/badge.svg)](https://github.com/KrutiiDmytro/pixelpulse/actions/workflows/ci.yml)
 
 Блог про ігри на Laravel 12 — з публічною частиною, адмінкою, REST API та ролями.
 Написаний як навчальний проєкт із наголосом на якість коду: тести, статичний аналіз і CI.
-
-> Репозиторій історично називається `task-13`, тому посилання для клонування та значок CI
-> містять цю назву. Сам застосунок називається **PixelPulse** (`APP_NAME` у `.env`).
 
 ## Можливості
 
@@ -48,8 +45,8 @@
 Потрібні PHP 8.2+, Composer і Node.js 20.19+ (вимога Vite 7).
 
 ```bash
-git clone https://github.com/KrutiiDmytro/task-13.git
-cd task-13
+git clone https://github.com/KrutiiDmytro/pixelpulse.git
+cd pixelpulse
 
 composer install
 npm install
